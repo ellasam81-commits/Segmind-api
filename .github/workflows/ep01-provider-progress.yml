@@ -1,0 +1,27 @@
+name: Read episode provider progress
+on:
+  push:
+    paths: ['.github/workflows/ep01-provider-progress.yml']
+permissions:
+  contents: read
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read progress only
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          auth={'Authorization':'Bearer '+os.environ['PROTOFACE_API_KEY']}
+          request=urllib.request.Request('https://api.protoface.com/v1/runs?limit=6',headers=auth)
+          with urllib.request.urlopen(request,timeout=60) as response: body=json.load(response)
+          for item in body.get('data',[]):
+              if item.get('model') not in {'alibaba/wan-3.0','minimax/minimax-h3'}: continue
+              status_request=urllib.request.Request('https://api.protoface.com/v1/runs/'+item['id']+'/status',headers=auth)
+              with urllib.request.urlopen(status_request,timeout=60) as response: status=json.load(response)
+              print(json.dumps({k:item.get(k) for k in ['id','model','status','created_at']},ensure_ascii=False))
+              print(json.dumps({k:status.get(k) for k in ['id','status','progress','queue_position','error']},ensure_ascii=False))
+          PY
