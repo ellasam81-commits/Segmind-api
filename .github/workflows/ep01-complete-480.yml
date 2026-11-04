@@ -50,7 +50,7 @@ jobs:
         run: |
           ffmpeg -hide_banner -loglevel error -y -i protoface/ep01/checkpoint/native-01.mp4 -i protoface/ep01/verified-audio/native-01.part -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -t 15 -movflags +faststart protoface/ep01/checkpoint/first-fixed.mp4
           mv protoface/ep01/checkpoint/first-fixed.mp4 protoface/ep01/checkpoint/native-01.mp4
-          ffmpeg -hide_banner -loglevel error -y -i protoface/ep01/checkpoint/native-01.mp4 -vn -ac 1 -ar 24000 -c:a libmp3lame -b:a 96k protoface/ep01/checkpoint/male-voice-reference.mp3
+          ffmpeg -hide_banner -loglevel error -y -ss 4 -i protoface/ep01/checkpoint/native-01.mp4 -t 3.5 -vn -ac 1 -ar 24000 -c:a libmp3lame -b:a 96k protoface/ep01/checkpoint/male-voice-reference.mp3
       - name: Test the production
         run: python -m unittest discover -s protoface/ep01 -p 'test_*.py' -v
       - name: Generate only missing parts and assemble the complete one-minute episode
