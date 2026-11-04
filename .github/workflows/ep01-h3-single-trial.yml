@@ -1,0 +1,54 @@
+name: EP01 H3 one storyboard - 480p
+on:
+  push:
+    paths: ['protoface/ep01/h3-single-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r protoface/ep01/requirements.txt
+      - name: Restore this same accepted trial if resuming
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ep01-h3-single-checkpoint-${{ github.run_id }}
+          path: protoface/ep01/h3-single-test/checkpoint
+      - name: Generate the requested one-storyboard trial
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep01/h3_single_trial.py
+      - name: Preserve the accepted provider run
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-h3-single-checkpoint-${{ github.run_id }}
+          path: protoface/ep01/h3-single-test/checkpoint
+          overwrite: true
+          if-no-files-found: ignore
+      - name: Download the one-storyboard H3 trial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-h3-single-480p-sample-${{ github.run_id }}
+          path: |
+            protoface/ep01/h3-single-test/*.mp4
+            protoface/ep01/h3-single-test/prompt.txt
+            protoface/ep01/h3-single-test/completion.json
+            protoface/ep01/h3-single-test/minimax-h3-contract.json
+          if-no-files-found: ignore
