@@ -101,9 +101,10 @@ async def build_guide(number,packet):
 
 
 def payload(packet,guide_bytes=b'validation-placeholder'):
-    return {'prompt':packet['prompt'],'reference':['data:image/jpeg;base64,'+packet['image']['data']],
-        'audio':['data:audio/mpeg;base64,'+base64.b64encode(guide_bytes).decode()],
+    body={'prompt':packet['prompt'],'reference':['data:image/jpeg;base64,'+packet['image']['data']],
         'duration_seconds':15,'quality':'480p','aspect_ratio':'16:9','generate_audio':True,'enhance_prompt':False}
+    if guide_bytes is not None:body['audio']=['data:audio/mpeg;base64,'+base64.b64encode(guide_bytes).decode()]
+    return body
 
 
 def api(client,method,path,**kwargs):
@@ -115,12 +116,12 @@ def api(client,method,path,**kwargs):
     return r.json()
 
 
-def price(model):
+def price(model,include_audio=True):
     p=model['pricing'];total=15*p['qualities']['480p']['credits_per_second']
-    for name in ['reference_image','reference_audio']:
+    for name in ['reference_image']+(['reference_audio'] if include_audio else []):
         rule=next(x for x in p['add_ons'] if x['id']==name)['by_quality']['480p']
         total+=max(0,1-rule.get('included',0))*rule['credits_each']
-    if total>21:raise RuntimeError('Live price exceeds the disclosed 21 credits per part; no generation submitted')
+    if total>(21 if include_audio else 18):raise RuntimeError('Live price exceeds the disclosed estimate; no generation submitted')
     return total
 
 
@@ -158,8 +159,8 @@ def generate(number,packet,guide):
     with httpx.Client(base_url='https://api.protoface.com',headers={'Authorization':'Bearer '+key},timeout=90,follow_redirects=False) as client:
         model=api(client,'GET','/v1/models/'+MODEL)
         if not model.get('available'):raise RuntimeError('MiniMax H3 unavailable')
-        body=payload(packet,guide.read_bytes());Draft202012Validator(model['request_schemas']['video.general']).validate(body)
-        expected=price(model)
+        body=payload(packet,guide.read_bytes() if guide else None);Draft202012Validator(model['request_schemas']['video.general']).validate(body)
+        expected=price(model,include_audio=guide is not None)
         if not state.get('run_id'):
             if state.get('submission_uncertain'):raise RuntimeError('Prior submission was uncertain; inspect that request instead of creating another')
             quota=api(client,'GET','/v1/billing/quota')
@@ -269,7 +270,8 @@ def assemble(folder):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=['check','generate','assemble']);p.add_argument('--part',type=int,choices=range(1,5));p.add_argument('--inputs',default='packed');p.add_argument('--schema',type=Path);p.add_argument('--collected',type=Path)
+    global OUT,STATE
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=['check','generate','assemble','native']);p.add_argument('--part',type=int,choices=range(1,5));p.add_argument('--inputs',default='packed');p.add_argument('--schema',type=Path);p.add_argument('--collected',type=Path);p.add_argument('--prompt',type=Path)
     a=p.parse_args();OUT.mkdir(exist_ok=True);PRIVATE.mkdir(exist_ok=True)
     if a.mode=='check':
         model=json.loads(a.schema.read_text());price(model)
@@ -278,6 +280,16 @@ def main():
     if a.mode=='assemble':assemble(a.collected);return
     if not a.part:raise ValueError('Choose one part')
     packet=read_packet(a.part,a.inputs)
+    if a.mode=='native':
+        if not a.prompt:raise ValueError('Native trial requires the user prompt')
+        OUT=ROOT/'native-user-prompt';STATE=ROOT/'checkpoint-user-prompt';OUT.mkdir(exist_ok=True);STATE.mkdir(exist_ok=True)
+        packet['prompt']=a.prompt.read_text();packet['trial']='user-prompt-native-v1'
+        native=generate(a.part,packet,None)
+        destination=OUT/f'C01_EP01_part-{a.part:02}_USERPROMPT_480p.mp4'
+        run(['ffmpeg','-v','error','-y','-threads','2','-filter_threads','1','-i',str(native),'-map','0:v:0','-map','0:a:0','-sn','-dn',
+            '-vf','fps=24,scale=854:480:force_original_aspect_ratio=decrease,pad=854:480:(ow-iw)/2:(oh-ih)/2,setsar=1',
+            '-t','15','-c:v','libx264','-preset','veryfast','-crf','19','-threads','2','-c:a','aac','-b:a','192k','-movflags','+faststart',str(destination)])
+        inspect(destination,15);return
     guide,speech=asyncio.run(build_guide(a.part,packet))
     native=generate(a.part,packet,guide)
     finalize_part(a.part,native,speech)
