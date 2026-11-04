@@ -114,7 +114,9 @@ def inspect_clip(path):
     streams=p.get("streams",[])
     if not any(s.get("codec_type")=="audio" for s in streams): raise ValueError("Generated clip has no dialogue/audio track")
     video=next((s for s in streams if s.get("codec_type")=="video"),None)
-    if not video or abs(video["width"]/video["height"]-16/9)>.02: raise ValueError("Generated clip must have a 16:9 video stream")
+    # Providers align the requested widescreen canvas to codec blocks (e.g.1344x768).
+    # Accept that small difference, then pad to exact16:9 without cutting the image.
+    if not video or abs(video["width"]/video["height"]-16/9)>.04: raise ValueError("Generated clip must have a widescreen video stream")
     if abs(float(p.get("format",{}).get("duration",0))-15)>.3: raise ValueError("Provider output is not a fifteen-second clip")
 
 
@@ -242,7 +244,7 @@ def assemble(manifest):
                      "[0:a]apad=whole_dur=15[a];[a][1:a]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:level=false[m]",
                      "-map","0:v:0","-map","[m]"]
         else: args += ["-map","0:v:0","-map","0:a:0","-af","apad=whole_dur=15"]
-        args += ["-vf","fps=24,scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,tpad=stop_mode=clone:stop_duration=0.3",
+        args += ["-vf","fps=24,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1,tpad=stop_mode=clone:stop_duration=0.3",
                  "-t","15","-c:v","libx264","-preset","veryfast","-crf","19","-pix_fmt","yuv420p",
                  "-c:a","aac","-ar","48000","-b:a","192k","-threads","2","-movflags","+faststart",str(OUT/f"raw/segment-{n:02}.mp4")]
         cmd(args)
@@ -266,7 +268,7 @@ def generate(mode):
     if os.environ.get("ALLOW_PAID_GENERATION")!="true": raise RuntimeError("Paid generation is not enabled for this request")
     key=os.environ.get("PROTOFACE_API_KEY","").strip()
     if not key: raise RuntimeError("Missing repository secret PROTOFACE_API_KEY")
-    workflow=os.environ.get("GITHUB_RUN_ID")
+    workflow=os.environ.get("EPISODE_RESUME_RUN_ID") or os.environ.get("GITHUB_RUN_ID")
     if not workflow: raise RuntimeError("Missing workflow identity for duplicate prevention")
     unpack();STATE.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
     manifest=json.loads((ROOT/"episode.json").read_text())
