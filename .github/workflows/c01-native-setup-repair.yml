@@ -1,0 +1,59 @@
+name: C01 user prompt - repair blocked setup
+on:
+  push:
+    paths: ['.github/workflows/c01-native-setup-repair.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Stop only the superseded job blocked before generation
+        env:
+          GH_ACTION_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import os,urllib.request,urllib.error
+          req=urllib.request.Request('https://api.github.com/repos/ellasam81-commits/Segmind-api/actions/runs/41908841371/cancel',data=b'',method='POST',headers={'Authorization':'Bearer '+os.environ['GH_ACTION_TOKEN'],'Accept':'application/vnd.github+json'})
+          try:
+              with urllib.request.urlopen(req,timeout=30) as r:print('Blocked setup cancellation:',r.status)
+          except urllib.error.HTTPError as e:
+              if e.code!=409:raise
+              print('Superseded setup already ended')
+          PY
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Reuse installed FFmpeg and install only needed Python packages
+        timeout-minutes: 4
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 numpy==2.3.5
+      - name: Generate the same single native-audio attempt
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep01-c01/produce_video.py native --part 1 --prompt protoface/ep01-c01/user-video-prompt.txt
+      - name: Preserve provider identity and native video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-user-native-repaired-checkpoint-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint-user-prompt/
+          overwrite: true
+          if-no-files-found: ignore
+      - name: Download the user-prompt first-part video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-user-native-repaired-part1-${{ github.run_id }}
+          path: protoface/ep01-c01/native-user-prompt/*.mp4
+          if-no-files-found: ignore
