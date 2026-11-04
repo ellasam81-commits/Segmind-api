@@ -1,0 +1,12 @@
+{
+  "episode": 1,
+  "part": 1,
+  "model": "alibaba/wan-3.0",
+  "operation": "video.reference",
+  "resolution": "480p",
+  "duration": 15,
+  "reference_count": 9,
+  "attempts": 1,
+  "dialogue": "青槐里十三号。",
+  "instruction": "Inspect native dialogue, continuity and suspense before proposing any further generation."
+}
