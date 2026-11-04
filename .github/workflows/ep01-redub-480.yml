@@ -1,0 +1,51 @@
+name: EP01 corrected Mandarin dialogue - 480p
+on:
+  workflow_run:
+    workflows: ['EP01 complete episode - 480p']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Completed episode generation run
+        required: true
+        default: '41887160208'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  correct-dialogue:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install editing tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-noto-cjk
+          python -m pip install -r protoface/ep01/requirements.txt
+      - name: Reuse the four generated pictures
+        uses: actions/download-artifact@v4
+        with:
+          name: ep01-full480-checkpoint-${{ github.event.workflow_run.id || inputs.source_run_id }}
+          run-id: ${{ github.event.workflow_run.id || inputs.source_run_id }}
+          github-token: ${{ github.token }}
+          path: protoface/ep01/checkpoint
+      - name: Replace all generated speech with exactly seven script lines
+        run: python protoface/ep01/redub.py --checkpoint protoface/ep01/checkpoint
+      - name: Download the corrected full episode
+        uses: actions/upload-artifact@v4
+        with:
+          name: EP01-corrected-Mandarin-480p-${{ github.run_id }}
+          path: |
+            protoface/ep01/corrected/episode01-corrected-*.mp4
+            protoface/ep01/corrected/part-*-clean-480p.mp4
+            protoface/ep01/corrected/episode01.zh-en.srt
+            protoface/ep01/corrected/audio-review.json
+          if-no-files-found: error
