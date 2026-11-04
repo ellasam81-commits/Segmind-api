@@ -1,0 +1,74 @@
+name: Protoface video (phone friendly)
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Start with check_connection
+        type: choice
+        options: [check_connection, generate_video, check_run]
+        default: check_connection
+        required: true
+      prompt:
+        description: Describe the video you want
+        type: string
+        default: A wide shot of a sailboat crossing a quiet bay at sunrise.
+      duration_seconds:
+        description: Video length in whole seconds (validated against the live model)
+        type: number
+        default: 8
+      quality:
+        description: MiniMax H3 quality
+        type: choice
+        options: [480p, 768p, 2k]
+        default: 768p
+      aspect_ratio:
+        description: Video shape (9:16 is vertical)
+        type: choice
+        options: ['16:9', '9:16', '1:1']
+        default: '16:9'
+      run_id:
+        description: For check_run only, paste the existing run_... ID
+        type: string
+      confirm_spend:
+        description: I authorize spending my Protoface credits on one video
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  protoface:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install dependencies
+        run: python -m pip install -r protoface/requirements.txt
+      - name: Verify the runner without API calls
+        run: python -m unittest discover -s protoface -p 'test_*.py' -v
+      - name: Run Protoface
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          PROTOFACE_ACTION: ${{ inputs.action }}
+          PROTOFACE_PROMPT: ${{ inputs.prompt }}
+          PROTOFACE_DURATION: ${{ inputs.duration_seconds }}
+          PROTOFACE_QUALITY: ${{ inputs.quality }}
+          PROTOFACE_ASPECT_RATIO: ${{ inputs.aspect_ratio }}
+          PROTOFACE_RUN_ID: ${{ inputs.run_id }}
+          PROTOFACE_CONFIRM_SPEND: ${{ inputs.confirm_spend }}
+        run: python protoface/run.py
+      - name: Save run ID and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: protoface-${{ github.run_id }}-${{ github.run_attempt }}
+          path: protoface-output/
+          if-no-files-found: ignore
+          retention-days: 7
