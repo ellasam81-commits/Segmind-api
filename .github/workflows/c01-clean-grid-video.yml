@@ -1,0 +1,52 @@
+name: C01 clean nine-panel video trial
+on:
+  push:
+    paths: ['protoface/ep01-c01/clean-native-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Reuse FFmpeg and install required Python packages
+        timeout-minutes: 4
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 numpy==2.3.5
+      - name: Resume the same accepted trial if rerunning
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: C01-clean-grid-checkpoint-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint-user-prompt
+      - name: Generate the clean-grid first-part trial
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep01-c01/produce_video.py native --part 1 --inputs packed-clean --prompt protoface/ep01-c01/clean-video-prompt.txt
+      - name: Preserve accepted run identity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-clean-grid-checkpoint-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint-user-prompt/
+          overwrite: true
+          if-no-files-found: ignore
+      - name: Download the clean-grid video trial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-clean-grid-video-${{ github.run_id }}
+          path: protoface/ep01-c01/native-user-prompt/*.mp4
+          if-no-files-found: ignore
