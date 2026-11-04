@@ -1,0 +1,76 @@
+name: EP01 finish existing pictures with exact dialogue
+on:
+  push:
+    paths: ['.github/workflows/ep01-finish-existing.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  finish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Retrieve only the four already completed episode videos
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,urllib.parse,pathlib
+          auth={'Authorization':'Bearer '+os.environ['PROTOFACE_API_KEY']}
+          ids=['run_01M6KW39YH2FVAKVSWR3K5844Y','run_01M6KX1AJRKWEHWMRGBW51YJMW','run_01M6KX5NSWAB2BZ88TWA18HVH5','run_01M6KX9T5K28HDC0T5WB0EM197']
+          dest=pathlib.Path('protoface/ep01/recovered');dest.mkdir(parents=True,exist_ok=True)
+          for n,run_id in enumerate(ids,1):
+              req=urllib.request.Request('https://api.protoface.com/v1/runs/'+run_id,headers=auth)
+              with urllib.request.urlopen(req,timeout=60) as response: body=json.load(response)
+              if body.get('status')!='completed':raise RuntimeError('Expected completed episode picture '+run_id)
+              url=(body.get('video') or {}).get('url')
+              if not url:url=next((x.get('file',{}).get('url') for x in body.get('outputs',[]) if x.get('modality')=='video'),None)
+              if not url or urllib.parse.urlparse(url).scheme!='https':raise RuntimeError('Invalid media URL')
+              # Separate request: provider credentials are never sent to media hosts.
+              with urllib.request.urlopen(url,timeout=120) as response, (dest/f'native-{n:02}.mp4').open('wb') as out:
+                  while chunk:=response.read(1024*1024):out.write(chunk)
+              print('Retrieved completed part',n)
+          PY
+      - name: Preserve existing pictures before editing
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-retrieved-existing-pictures-${{ github.run_id }}
+          path: protoface/ep01/recovered/*.mp4
+      - name: End the superseded GitHub assembly task
+        env:
+          GH_ACTION_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import os,urllib.request,urllib.error
+          url='https://api.github.com/repos/ellasam81-commits/Segmind-api/actions/runs/41887160208/cancel'
+          req=urllib.request.Request(url,data=b'',method='POST',headers={'Authorization':'Bearer '+os.environ['GH_ACTION_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
+          try:
+              with urllib.request.urlopen(req,timeout=30) as response:print('Superseded GitHub assembly stopped:',response.status)
+          except urllib.error.HTTPError as error:
+              if error.code!=409:raise
+              print('Superseded GitHub assembly already ended')
+          PY
+      - name: Install editing tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-noto-cjk
+          python -m pip install -r protoface/ep01/requirements.txt
+      - name: Replace unreliable generated audio with seven exact lines
+        run: python protoface/ep01/redub.py --checkpoint protoface/ep01/recovered
+      - name: Download the corrected complete one-minute episode
+        uses: actions/upload-artifact@v4
+        with:
+          name: EP01-corrected-complete-480p-${{ github.run_id }}
+          path: |
+            protoface/ep01/corrected/episode01-corrected-*.mp4
+            protoface/ep01/corrected/part-*-clean-480p.mp4
+            protoface/ep01/corrected/episode01.zh-en.srt
+            protoface/ep01/corrected/audio-review.json
+          if-no-files-found: error
