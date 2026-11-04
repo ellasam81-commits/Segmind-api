@@ -1,0 +1,34 @@
+name: Protoface model capabilities (read only)
+on:
+  push:
+    paths: ['.github/workflows/protoface-model-capabilities.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Inspect video reference and audio contracts without generating
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          key = os.environ.get("PROTOFACE_API_KEY", "")
+          if not key:
+              raise SystemExit("Missing PROTOFACE_API_KEY repository secret")
+          req = urllib.request.Request("https://api.protoface.com/v1/models", headers={"Authorization": "Bearer " + key})
+          with urllib.request.urlopen(req, timeout=60) as response:
+              models = json.load(response)
+          selected = [m for m in models.get("data", []) if any(s in m.get("id", "").lower() for s in ["seedance", "minimax-h3", "omni", "kling-3"])]
+          print("MODEL_CONTRACTS_BEGIN")
+          for model in selected:
+              print(json.dumps({k:model.get(k) for k in ["id", "available", "operations", "request_schemas"]}, ensure_ascii=False))
+          print("MODEL_CONTRACTS_END")
+          print("Read-only inspection completed. No media generated.")
+          PY
