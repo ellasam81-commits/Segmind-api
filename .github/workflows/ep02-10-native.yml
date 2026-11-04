@@ -1,0 +1,59 @@
+name: Thirteen Doors episodes 02-10 native audio production
+on:
+  push:
+    paths: ['protoface/ep02-10/generate-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        episode: [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare native-video tools and private input transport
+        timeout-minutes: 5
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0
+      - name: Create temporary private episode input channel
+        run: python protoface/ep02-10/series_runner.py init --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-episode-${{ matrix.episode }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD-ready-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep02-10/transport-public/ep*/ready.json
+          retention-days: 1
+      - name: Receive four encrypted storyboard inputs for this episode
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep02-10/series_runner.py receive --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-episode-${{ matrix.episode }}" --repository ${{ github.repository }}
+      - name: Generate four 15-second native-audio parts and assemble the episode
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep02-10/series_runner.py generate --episode ${{ matrix.episode }}
+      - name: Encrypt episode movies and provider checkpoints
+        if: always()
+        run: python protoface/ep02-10/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD-results-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep02-10/sealed-results/*.sealed.json
+          if-no-files-found: ignore
+      - name: Remove the ephemeral input private key
+        if: always()
+        run: python -c "import shutil; shutil.rmtree('${{ runner.temp }}/td-episode-${{ matrix.episode }}', ignore_errors=True)"
