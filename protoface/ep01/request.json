@@ -4,5 +4,6 @@
   "parts": 4,
   "panels_per_part": 9,
   "mode": "generate_episode",
-  "request": "Create episode one as requested by the author; publish episode-one materials and outputs with the user's explicit agreement."
+  "request": "Create episode one as requested by the author; publish episode-one materials and outputs with the user's explicit agreement.",
+  "resume_run_id": "41880689526"
 }
