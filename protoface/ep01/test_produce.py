@@ -63,5 +63,13 @@ class EpisodeTests(unittest.TestCase):
         self.assertEqual(len(self.manifest["knocks"]),6)
         self.assertTrue(all(45<=t<60 for t in self.manifest["knocks"]))
 
+    def test_codec_aligned_widescreen_is_accepted_but_portrait_is_rejected(self):
+        probe={"streams":[{"codec_type":"video","width":1344,"height":768},{"codec_type":"audio"}],"format":{"duration":"15.083333"}}
+        with patch.object(p.subprocess,"check_output",return_value=json.dumps(probe).encode()):
+            p.inspect_clip(Path("test.mp4"))
+        probe["streams"][0].update(width=768,height=1344)
+        with patch.object(p.subprocess,"check_output",return_value=json.dumps(probe).encode()):
+            with self.assertRaisesRegex(ValueError,"widescreen"): p.inspect_clip(Path("test.mp4"))
+
 
 if __name__=="__main__":unittest.main()
