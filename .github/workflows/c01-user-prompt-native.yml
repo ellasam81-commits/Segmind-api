@@ -1,0 +1,50 @@
+name: C01 first part - user prompt native audio
+on:
+  push:
+    paths: ['protoface/ep01-c01/user-native-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r protoface/ep01-c01/requirements-video.txt
+      - name: Restore this accepted native trial if resuming
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: C01-user-native-checkpoint-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint-user-prompt
+      - name: Generate first part using only the user prompt and storyboard
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep01-c01/produce_video.py native --part 1 --prompt protoface/ep01-c01/user-video-prompt.txt
+      - name: Preserve accepted provider run identity
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-user-native-checkpoint-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint-user-prompt/
+          overwrite: true
+          if-no-files-found: ignore
+      - name: Download the native first-part trial
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-user-native-part1-${{ github.run_id }}
+          path: protoface/ep01-c01/native-user-prompt/*.mp4
+          if-no-files-found: ignore
