@@ -43,7 +43,9 @@ def api(client,method,path,**kwargs):
     # A create is attempted once; the same workflow run reuses its key on rerun.
     r=client.request(method,path,**kwargs)
     if not r.is_success:
-        try: error=r.json().get("error",{}).get("code","request_failed")
+        try:
+            detail=r.json().get("error",{})
+            error=detail.get("code","request_failed")+": "+str(detail.get("message",""))
         except (ValueError,AttributeError): error="request_failed"
         raise RuntimeError(f"Protoface HTTP {r.status_code}: {error}")
     return r.json()
