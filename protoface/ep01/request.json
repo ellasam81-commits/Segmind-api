@@ -1,0 +1,8 @@
+{
+  "episode": 1,
+  "duration_seconds": 60,
+  "parts": 4,
+  "panels_per_part": 9,
+  "mode": "generate_episode",
+  "request": "Create episode one as requested by the author; publish episode-one materials and outputs with the user's explicit agreement."
+}
