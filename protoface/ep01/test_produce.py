@@ -67,6 +67,9 @@ class EpisodeTests(unittest.TestCase):
         probe={"streams":[{"codec_type":"video","width":1344,"height":768},{"codec_type":"audio"}],"format":{"duration":"15.083333"}}
         with patch.object(p.subprocess,"check_output",return_value=json.dumps(probe).encode()):
             p.inspect_clip(Path("test.mp4"))
+        probe["streams"][0].update(width=832,height=480)
+        with patch.object(p.subprocess,"check_output",return_value=json.dumps(probe).encode()):
+            p.inspect_clip(Path("test.mp4"))
         probe["streams"][0].update(width=768,height=1344)
         with patch.object(p.subprocess,"check_output",return_value=json.dumps(probe).encode()):
             with self.assertRaisesRegex(ValueError,"widescreen"): p.inspect_clip(Path("test.mp4"))
