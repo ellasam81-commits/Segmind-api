@@ -1,0 +1,81 @@
+name: Thirteen Doors EP01 - four 15s clips
+
+on:
+  push:
+    paths: ['protoface/ep01/request.json']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: First clip or the full four-clip episode
+        type: choice
+        options: [generate_first_clip, generate_episode]
+        default: generate_episode
+        required: true
+      quality:
+        description: MiniMax H3 output quality
+        type: choice
+        options: [480p, 768p, 2k]
+        default: 768p
+      confirm_spend:
+        description: Authorize Protoface credits for the selected generation
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  episode:
+    if: github.event_name == 'push' || inputs.confirm_spend
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install tools and Chinese fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-noto-cjk
+          python -m pip install -r protoface/ep01/requirements.txt
+      - name: Verify the four-board production without generating
+        run: python -m unittest discover -s protoface/ep01 -p 'test_*.py' -v
+      - name: Restore this run's previous checkpoint if available
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ep01-checkpoint-${{ github.run_id }}
+          path: protoface/ep01/checkpoint
+      - name: Generate native dialogue clips and combine the one-minute episode
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+          PROTOFACE_QUALITY: ${{ inputs.quality || '768p' }}
+          REQUESTED_MODE: ${{ inputs.mode || 'generate_episode' }}
+        run: python protoface/ep01/produce.py --mode "$REQUESTED_MODE"
+      - name: Save run IDs, native clips and the established male voice for resuming
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-checkpoint-${{ github.run_id }}
+          path: protoface/ep01/checkpoint/
+          overwrite: true
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Download final film, clean clips, subtitles and BGM here
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thirteen-doors-ep01-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            protoface/ep01/output/**/*.mp4
+            protoface/ep01/output/*.srt
+            protoface/ep01/output/*.ass
+            protoface/ep01/output/*.wav
+            protoface/ep01/STORYBOARD.md
+          if-no-files-found: ignore
+          retention-days: 7
