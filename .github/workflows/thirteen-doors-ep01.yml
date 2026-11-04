@@ -20,6 +20,9 @@ on:
         description: Authorize Protoface credits for the selected generation
         type: boolean
         default: false
+      resume_run_id:
+        description: Existing GitHub run to resume; leave empty for a fresh generation
+        type: string
 
 permissions:
   contents: read
@@ -34,6 +37,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Select the existing generation to resume
+        env:
+          INPUT_RESUME_ID: ${{ inputs.resume_run_id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          value = os.environ.get('INPUT_RESUME_ID', '')
+          if os.environ['GITHUB_EVENT_NAME'] == 'push':
+              with open('protoface/ep01/request.json') as f:
+                  value = str(json.load(f).get('resume_run_id', ''))
+          if value and not value.isdigit():
+              raise SystemExit('Invalid resume run ID')
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write('EPISODE_RESUME_RUN_ID=' + value + '\n')
+          PY
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -48,8 +66,10 @@ jobs:
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
-          name: ep01-checkpoint-${{ github.run_id }}
+          name: ep01-checkpoint-${{ env.EPISODE_RESUME_RUN_ID || github.run_id }}
           path: protoface/ep01/checkpoint
+          run-id: ${{ env.EPISODE_RESUME_RUN_ID || github.run_id }}
+          github-token: ${{ github.token }}
       - name: Generate native dialogue clips and combine the one-minute episode
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
