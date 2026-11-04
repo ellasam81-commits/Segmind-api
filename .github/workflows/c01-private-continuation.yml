@@ -1,0 +1,74 @@
+name: C01 private inputs - three remaining video parts
+on:
+  push:
+    paths: ['protoface/ep01-c01/private-native-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  private_generation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Reuse FFmpeg and install request validators and encryption
+        timeout-minutes: 4
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 numpy==2.3.5 cryptography==50.0.0
+      - name: Create a temporary private input channel
+        run: python protoface/ep01-c01/private_transport.py init --private-dir "${{ runner.temp }}/c01-private-input" --ready-dir transport-public --run-id ${{ github.run_id }}
+      - name: Export only the public transport key
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-private-ready-${{ github.run_id }}
+          path: transport-public/ready.json
+          retention-days: 1
+      - name: Wait for encrypted inputs and decrypt only on the runner
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep01-c01/private_transport.py receive --private-dir "${{ runner.temp }}/c01-private-input" --ready-file transport-public/ready.json --repository ${{ github.repository }} --run-id ${{ github.run_id }} --wait-seconds 900
+      - name: Validate all three inputs, live prices and total balance before spending
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/ep01-c01/fresh_video.py preflight
+      - name: Reuse the accepted first clip without another paid generation
+        uses: actions/download-artifact@v4
+        with:
+          name: C01-clean-grid-video-41916935045
+          run-id: 41916935045
+          github-token: ${{ github.token }}
+          path: protoface/ep01-c01/native-collected
+      - name: Generate the three requested 15-second native-audio clips once each
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: |
+          for part in 2 3 4; do
+            python protoface/ep01-c01/produce_video.py native --part "$part" --inputs packed-fresh --prompt "protoface/ep01-c01/prompts-fresh/part-0${part}.txt"
+          done
+      - name: Collect private clips and assemble one minute
+        run: |
+          cp protoface/ep01-c01/native-user-prompt/*.mp4 protoface/ep01-c01/native-collected/
+          python protoface/ep01-c01/fresh_video.py assemble
+      - name: Encrypt results and provider checkpoints for the local recipient
+        if: always()
+        run: python protoface/ep01-c01/private_transport.py seal-results --return-public protoface/ep01-c01/return-public.pem --run-id ${{ github.run_id }} --destination sealed-results
+      - name: Export only encrypted movies and encrypted checkpoints
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-private-results-${{ github.run_id }}
+          path: sealed-results/*.sealed.json
+          if-no-files-found: ignore
+      - name: Delete the temporary input private key
+        if: always()
+        run: python -c "import shutil; shutil.rmtree('${{ runner.temp }}/c01-private-input', ignore_errors=True)"
