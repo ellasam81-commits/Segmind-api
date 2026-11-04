@@ -244,7 +244,8 @@ def assemble(manifest):
                      "[0:a]apad=whole_dur=15[a];[a][1:a]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:level=false[m]",
                      "-map","0:v:0","-map","[m]"]
         else: args += ["-map","0:v:0","-map","0:a:0","-af","apad=whole_dur=15"]
-        args += ["-vf","fps=24,scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1,tpad=stop_mode=clone:stop_duration=0.3",
+        canvas="854:480" if os.environ.get("EPISODE_EXPORT_480P")=="true" else "1280:720"
+        args += ["-vf",f"fps=24,scale={canvas}:force_original_aspect_ratio=decrease,pad={canvas}:(ow-iw)/2:(oh-ih)/2,setsar=1,tpad=stop_mode=clone:stop_duration=0.3",
                  "-t","15","-c:v","libx264","-preset","veryfast","-crf","19","-pix_fmt","yuv420p",
                  "-c:a","aac","-ar","48000","-b:a","192k","-threads","2","-movflags","+faststart",str(OUT/f"raw/segment-{n:02}.mp4")]
         cmd(args)
