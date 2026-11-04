@@ -1,0 +1,13 @@
+{
+  "episode": 1,
+  "part": 1,
+  "model": "minimax/minimax-h3",
+  "duration_seconds": 15,
+  "quality": "480p",
+  "references": 1,
+  "generate_audio": true,
+  "attempts": 1,
+  "expected_credits": 18,
+  "expected_usd": 0.18,
+  "public_storyboard_and_prompt_approved": true
+}
