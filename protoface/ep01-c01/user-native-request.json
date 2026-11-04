@@ -1,0 +1,12 @@
+{
+  "part": 1,
+  "seconds": 15,
+  "quality": "480p",
+  "model": "minimax/minimax-h3",
+  "reference_images": 1,
+  "audio_references": 0,
+  "native_audio": true,
+  "attempts": 1,
+  "expected_credits": 18,
+  "prompt": "Use the user's supplied instructions; only fix nine-grid wording and include the middle row."
+}
