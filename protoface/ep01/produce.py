@@ -116,7 +116,7 @@ def inspect_clip(path):
     video=next((s for s in streams if s.get("codec_type")=="video"),None)
     # Providers align the requested widescreen canvas to codec blocks (e.g.1344x768).
     # Accept that small difference, then pad to exact16:9 without cutting the image.
-    if not video or abs(video["width"]/video["height"]-16/9)>.04: raise ValueError("Generated clip must have a widescreen video stream")
+    if not video or abs(video["width"]-video["height"]*16/9)>64: raise ValueError("Generated clip must have a widescreen video stream")
     if abs(float(p.get("format",{}).get("duration",0))-15)>.3: raise ValueError("Provider output is not a fifteen-second clip")
 
 
