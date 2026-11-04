@@ -1,0 +1,86 @@
+name: C01 EP01 exact dialogue - 480p
+on:
+  push:
+    paths: ['protoface/ep01-c01/generate-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install generation and editing tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r protoface/ep01-c01/requirements-video.txt
+      - name: Restore this accepted part if resuming the same run
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: C01-checkpoint-${{ matrix.part }}-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint
+      - name: Generate the requested storyboard with locked dialogue
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep01-c01/produce_video.py generate --part ${{ matrix.part }}
+      - name: Preserve provider identity and generated pictures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-checkpoint-${{ matrix.part }}-${{ github.run_id }}
+          path: protoface/ep01-c01/checkpoint/
+          overwrite: true
+          if-no-files-found: ignore
+      - name: Save the dialogue-checked segment
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-part-${{ matrix.part }}-${{ github.run_id }}
+          path: protoface/ep01-c01/output/C01_EP01_part-*_480p.mp4
+          if-no-files-found: error
+  assemble:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install editing tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r protoface/ep01-c01/requirements-video.txt
+      - name: Collect the four completed segments
+        uses: actions/download-artifact@v4
+        with:
+          pattern: C01-part-*-${{ github.run_id }}
+          path: protoface/ep01-c01/collected
+          merge-multiple: true
+      - name: Assemble one minute without subtitles or music
+        run: python protoface/ep01-c01/produce_video.py assemble --collected protoface/ep01-c01/collected
+      - name: Download the complete C01 episode
+        uses: actions/upload-artifact@v4
+        with:
+          name: C01-EP01-480p-60s-${{ github.run_id }}
+          path: |
+            protoface/ep01-c01/output/C01_EP01_480p_60s.mp4
+            protoface/ep01-c01/collected/C01_EP01_part-*_480p.mp4
+            protoface/ep01-c01/output/production-review.json
+          if-no-files-found: error
