@@ -1,0 +1,13 @@
+{
+  "episode": 1,
+  "part": 1,
+  "model": "minimax/minimax-h3",
+  "duration_seconds": 15,
+  "quality": "480p",
+  "references": 9,
+  "generate_audio": true,
+  "attempts": 1,
+  "expected_credits": 42,
+  "expected_usd": 0.42,
+  "description": "New explicit prompt for dialogue, action, expression, position, tone, restrained suspense, source camera language and synchronized source-only sound effects."
+}
