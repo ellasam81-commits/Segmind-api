@@ -1,0 +1,20 @@
+{
+  "model": "minimax/minimax-h3",
+  "parts": [
+    2,
+    3,
+    4
+  ],
+  "duration_seconds_each": 15,
+  "quality": "480p",
+  "aspect_ratio": "16:9",
+  "generate_audio": true,
+  "enhance_prompt": false,
+  "maximum_estimated_credits_each": 18,
+  "maximum_estimated_credits_total": 54,
+  "reuse_first_part_run_id": 41916935045,
+  "authorization": "User requested generation of the three new storyboard parts and a one-minute assembly.",
+  "input_transport": "RSA-OAEP-SHA256 and AES-256-GCM; only ciphertext is published; ephemeral input private key stays on the runner.",
+  "output_transport": "Movies and checkpoints encrypted to the local recipient public key; private recipient key never published.",
+  "paid_retries": false
+}
