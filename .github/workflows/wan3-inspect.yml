@@ -1,0 +1,33 @@
+name: Inspect Wan 3.0 capability
+on:
+  push:
+    paths: ['.github/workflows/wan3-inspect.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read the live model contract without submitting a generation
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os, json, urllib.request, urllib.error
+          key=os.environ['PROTOFACE_API_KEY']
+          req=urllib.request.Request('https://api.protoface.com/v1/models/alibaba/wan-3.0',headers={'Authorization':'Bearer '+key})
+          try:
+              with urllib.request.urlopen(req,timeout=60) as response:
+                  model=json.load(response)
+          except urllib.error.HTTPError as error:
+              print('Model lookup HTTP',error.code)
+              raise SystemExit(1)
+          open('wan3-contract.json','w').write(json.dumps(model,ensure_ascii=False,indent=2))
+          print(json.dumps(model,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wan3-live-contract
+          path: wan3-contract.json
