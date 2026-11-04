@@ -1,0 +1,14 @@
+{
+  "part": 1,
+  "seconds": 15,
+  "quality": "480p",
+  "model": "minimax/minimax-h3",
+  "clean_storyboard_images": 1,
+  "audio_reference_images": 0,
+  "native_audio": true,
+  "attempts": 1,
+  "expected_credits": 18,
+  "subtitles": false,
+  "music": false,
+  "dialogue": "Only the one line specified in shot 04 of the separate prompt."
+}
