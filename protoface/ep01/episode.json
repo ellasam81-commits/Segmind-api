@@ -1,0 +1,390 @@
+{
+  "series": "十三扇门",
+  "episode": 1,
+  "title": "被抹除的地址，三声敲门",
+  "english_title": "An Erased Address, Three Knocks",
+  "author": "林爱丽",
+  "author_en": "Lin Aili",
+  "duration": 60,
+  "aspect_ratio": "16:9",
+  "parts": [
+    {
+      "number": 1,
+      "duration": 15,
+      "panels": [
+        {
+          "number": 1,
+          "start": 0,
+          "end": 1.5,
+          "action": "事务所中景，沈照夜坐在贴满线索图的昏暗木桌前。",
+          "sfx": "室内低鸣",
+          "image": "refs/board-01/01.jpg"
+        },
+        {
+          "number": 2,
+          "start": 1.5,
+          "end": 3.0,
+          "action": "手部特写，右手撕开无寄件人的牛皮纸信封。",
+          "sfx": "撕纸",
+          "image": "refs/board-01/02.jpg"
+        },
+        {
+          "number": 3,
+          "start": 3.0,
+          "end": 4.5,
+          "action": "桌面特写，抽出唯一一份泛黄的失踪案卷。",
+          "sfx": "纸张摩擦",
+          "image": "refs/board-01/03.jpg"
+        },
+        {
+          "number": 4,
+          "start": 4.5,
+          "end": 6.0,
+          "action": "案卷特写，视线锁定纸面地址：青槐里十三号。",
+          "sfx": "轻微翻纸",
+          "image": "refs/board-01/04.jpg"
+        },
+        {
+          "number": 5,
+          "start": 6.0,
+          "end": 7.5,
+          "action": "眼部近景，冷静审视，眉头微皱。",
+          "sfx": "轻缓呼吸",
+          "image": "refs/board-01/05.jpg"
+        },
+        {
+          "number": 6,
+          "start": 7.5,
+          "end": 9.5,
+          "action": "侧面中近景，走到同一电脑前敲键盘搜索。",
+          "sfx": "键盘声",
+          "image": "refs/board-01/06.jpg"
+        },
+        {
+          "number": 7,
+          "start": 9.5,
+          "end": 11.0,
+          "action": "电脑屏幕特写，显示无搜索结果。",
+          "sfx": "电脑低鸣",
+          "image": "refs/board-01/07.jpg"
+        },
+        {
+          "number": 8,
+          "start": 11.0,
+          "end": 13.0,
+          "action": "中景，从旧档案堆翻出城区地图。",
+          "sfx": "档案翻动",
+          "image": "refs/board-01/08.jpg"
+        },
+        {
+          "number": 9,
+          "start": 13.0,
+          "end": 15.0,
+          "action": "俯拍桌面，展开地图，右手指向青槐里街区。",
+          "sfx": "地图展开",
+          "image": "refs/board-01/09.jpg"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "duration": 15,
+      "panels": [
+        {
+          "number": 1,
+          "start": 0,
+          "end": 1,
+          "action": "俯拍地图特写，右手食指划过青槐里。",
+          "sfx": "指尖摩擦纸张",
+          "image": "refs/board-02/01.jpg"
+        },
+        {
+          "number": 2,
+          "start": 1,
+          "end": 2,
+          "action": "地图特写，十三号位置被黑墨涂去，邻街也被划除。",
+          "sfx": "室内低鸣",
+          "image": "refs/board-02/02.jpg"
+        },
+        {
+          "number": 3,
+          "start": 2,
+          "end": 4.8,
+          "action": "正面近景，沈照夜冷笑，目光锐利。",
+          "sfx": "低声对白",
+          "image": "refs/board-02/03.jpg"
+        },
+        {
+          "number": 4,
+          "start": 4.8,
+          "end": 6.0,
+          "action": "手部特写，将唯一一份案卷塞进同一旧棕色皮包。",
+          "sfx": "纸张皮革摩擦",
+          "image": "refs/board-02/04.jpg"
+        },
+        {
+          "number": 5,
+          "start": 6.0,
+          "end": 9.5,
+          "action": "中近景，沈照夜神情坚定、反应克制。",
+          "sfx": "低沉男声",
+          "image": "refs/board-02/05.jpg"
+        },
+        {
+          "number": 6,
+          "start": 9.5,
+          "end": 10.5,
+          "action": "桌面特写，右手抓起唯一一把无字普通旧铜钥匙。",
+          "sfx": "金属轻碰",
+          "image": "refs/board-02/06.jpg"
+        },
+        {
+          "number": 7,
+          "start": 10.5,
+          "end": 11.5,
+          "action": "背面中景，背着同一皮包，推门离开事务所。",
+          "sfx": "脚步、门轴轻响",
+          "image": "refs/board-02/07.jpg"
+        },
+        {
+          "number": 8,
+          "start": 11.5,
+          "end": 13.0,
+          "action": "远景空镜，浓雾中的五层灰砖废弃老楼，锈蚀双扇铁门。",
+          "sfx": "微弱夜风",
+          "image": "refs/board-02/08.jpg"
+        },
+        {
+          "number": 9,
+          "start": 13.0,
+          "end": 15.0,
+          "action": "背面中景，沈照夜孤身站在同一老楼的锈铁门前。",
+          "sfx": "衣料、夜风",
+          "image": "refs/board-02/09.jpg"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "duration": 15,
+      "panels": [
+        {
+          "number": 1,
+          "start": 0,
+          "end": 1.5,
+          "action": "侧面中景，右手推锈铁门，门纹丝不动。",
+          "sfx": "铁门沉闷震动",
+          "image": "refs/board-03/01.jpg"
+        },
+        {
+          "number": 2,
+          "start": 1.5,
+          "end": 3.0,
+          "action": "门锁近景，沈照夜盯着锈锁，右手停在门边。",
+          "sfx": "低声对白",
+          "image": "refs/board-03/02.jpg"
+        },
+        {
+          "number": 3,
+          "start": 3.0,
+          "end": 4.5,
+          "action": "侧脸近景，凑近铁门审视。",
+          "sfx": "男声、呼吸",
+          "image": "refs/board-03/03.jpg"
+        },
+        {
+          "number": 4,
+          "start": 4.5,
+          "end": 6.0,
+          "action": "锈锁特写，门锁自行松开；没有用钥匙插锁。",
+          "sfx": "咔哒",
+          "image": "refs/board-03/04.jpg"
+        },
+        {
+          "number": 5,
+          "start": 6.0,
+          "end": 8.0,
+          "action": "正面中远景，同一双扇铁门缓慢向两侧敞开，冷雾涌出，无人影。",
+          "sfx": "门轴摩擦、冷风",
+          "image": "refs/board-03/05.jpg"
+        },
+        {
+          "number": 6,
+          "start": 8.0,
+          "end": 9.0,
+          "action": "眼部近景，目光微凝，不后退。",
+          "sfx": "短促吸气",
+          "image": "refs/board-03/06.jpg"
+        },
+        {
+          "number": 7,
+          "start": 9.0,
+          "end": 11.0,
+          "action": "皮包特写，右手拉开拉链，握住里面那把无字普通铜钥匙。",
+          "sfx": "拉链、皮革",
+          "image": "refs/board-03/07.jpg"
+        },
+        {
+          "number": 8,
+          "start": 11.0,
+          "end": 13.0,
+          "action": "背面中景，握着钥匙大步进入黑暗楼道。",
+          "sfx": "脚步回声",
+          "image": "refs/board-03/08.jpg"
+        },
+        {
+          "number": 9,
+          "start": 13.0,
+          "end": 15.0,
+          "action": "楼道中景，进入霉湿楼道，抬眼看向幽深楼梯间，空无一人。",
+          "sfx": "脚步、环境低鸣",
+          "image": "refs/board-03/09.jpg"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "duration": 15,
+      "panels": [
+        {
+          "number": 1,
+          "start": 0,
+          "end": 1,
+          "action": "楼梯间空镜，声控灯损坏，楼梯上方空无一人。",
+          "sfx": "脚步回声渐止",
+          "image": "refs/board-04/01.jpg"
+        },
+        {
+          "number": 2,
+          "start": 1,
+          "end": 2.5,
+          "action": "中近景，第一声敲门响起，沈照夜脚步猛停。",
+          "sfx": "咚",
+          "image": "refs/board-04/02.jpg"
+        },
+        {
+          "number": 3,
+          "start": 2.5,
+          "end": 4.0,
+          "action": "面部近景，目光锁定声音方向，极度戒备。",
+          "sfx": "咚、咚，与前格合成第一组三声",
+          "image": "refs/board-04/03.jpg"
+        },
+        {
+          "number": 4,
+          "start": 4.0,
+          "end": 5.5,
+          "action": "右手特写，握紧唯一一把无字普通铜钥匙，指节泛白。",
+          "sfx": "呼吸压低、衣料",
+          "image": "refs/board-04/04.jpg"
+        },
+        {
+          "number": 5,
+          "start": 5.5,
+          "end": 7.0,
+          "action": "楼道全景，扫视四周，所有门紧闭，没有其他人。",
+          "sfx": "空旷低鸣",
+          "image": "refs/board-04/05.jpg"
+        },
+        {
+          "number": 6,
+          "start": 7.0,
+          "end": 9.5,
+          "action": "正面近景，眉头紧锁，冷静压住不安。",
+          "sfx": "男声对白",
+          "image": "refs/board-04/06.jpg"
+        },
+        {
+          "number": 7,
+          "start": 9.5,
+          "end": 11.5,
+          "action": "幽暗楼道空镜，阴冷感加重，无实体出现。",
+          "sfx": "第二组三声：咚、咚、咚；更低、更近",
+          "image": "refs/board-04/07.jpg"
+        },
+        {
+          "number": 8,
+          "start": 11.5,
+          "end": 13.5,
+          "action": "仰角近景，猛然抬头，目光直刺楼梯上方。",
+          "sfx": "呼吸一滞",
+          "image": "refs/board-04/08.jpg"
+        },
+        {
+          "number": 9,
+          "start": 13.5,
+          "end": 15.0,
+          "action": "朝楼梯上方的空镜，黑暗中没有人影，停在悬念。",
+          "sfx": "男声画外音、低沉余响",
+          "image": "refs/board-04/09.jpg"
+        }
+      ]
+    }
+  ],
+  "dialogue": [
+    {
+      "start": 4.5,
+      "end": 6.0,
+      "speaker": "沈照夜（男）",
+      "zh": "青槐里十三号。",
+      "en": "Qinghuai Lane, No. 13.",
+      "offscreen": false
+    },
+    {
+      "start": 17.0,
+      "end": 19.8,
+      "speaker": "沈照夜（男）",
+      "zh": "系统查不到，旧地图被涂改……",
+      "en": "No record in the system. The old map's been altered...",
+      "offscreen": false
+    },
+    {
+      "start": 21.0,
+      "end": 24.5,
+      "speaker": "沈照夜（男）",
+      "zh": "越被抹除的东西，往往离真相越近。",
+      "en": "What's erased most often lies closest to the truth.",
+      "offscreen": false
+    },
+    {
+      "start": 31.5,
+      "end": 33.0,
+      "speaker": "沈照夜（男）",
+      "zh": "就是这儿？",
+      "en": "Is this the place?",
+      "offscreen": true
+    },
+    {
+      "start": 33.0,
+      "end": 34.5,
+      "speaker": "沈照夜（男）",
+      "zh": "青槐里十三号。",
+      "en": "Qinghuai Lane, No. 13.",
+      "offscreen": false
+    },
+    {
+      "start": 52.0,
+      "end": 54.5,
+      "speaker": "沈照夜（男）",
+      "zh": "空楼……哪来的敲门声？",
+      "en": "An empty building... Who's knocking?",
+      "offscreen": false
+    },
+    {
+      "start": 58.5,
+      "end": 60.0,
+      "speaker": "沈照夜（男）",
+      "zh": "头顶？",
+      "en": "Above me?",
+      "offscreen": true
+    }
+  ],
+  "knocks": [
+    46.3,
+    47.5,
+    48.2,
+    54.7,
+    55.3,
+    56.0
+  ]
+}
