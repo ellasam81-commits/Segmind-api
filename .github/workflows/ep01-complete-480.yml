@@ -1,0 +1,82 @@
+name: EP01 complete episode - 480p
+on:
+  push:
+    paths: ['protoface/ep01/full-480-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install editing tools and Chinese fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-noto-cjk
+          python -m pip install -r protoface/ep01/requirements.txt
+      - name: Restore this complete-episode run if resuming
+        id: restore
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ep01-full480-checkpoint-${{ github.run_id }}
+          path: protoface/ep01/checkpoint
+      - name: Reuse the completed 480p first clip
+        if: steps.restore.outcome != 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: ep01-first-480p-41884020753
+          run-id: 41884020753
+          github-token: ${{ github.token }}
+          path: protoface/ep01
+      - name: Restore the verified original male dialogue
+        if: steps.restore.outcome != 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: ep01-checkpoint-41880689526
+          run-id: 41880689526
+          github-token: ${{ github.token }}
+          path: protoface/ep01/verified-audio
+      - name: Keep the corrected first clip and establish its male voice
+        if: steps.restore.outcome != 'success'
+        run: |
+          ffmpeg -hide_banner -loglevel error -y -i protoface/ep01/checkpoint/native-01.mp4 -i protoface/ep01/verified-audio/native-01.part -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -t 15 -movflags +faststart protoface/ep01/checkpoint/first-fixed.mp4
+          mv protoface/ep01/checkpoint/first-fixed.mp4 protoface/ep01/checkpoint/native-01.mp4
+          ffmpeg -hide_banner -loglevel error -y -i protoface/ep01/checkpoint/native-01.mp4 -vn -ac 1 -ar 24000 -c:a libmp3lame -b:a 96k protoface/ep01/checkpoint/male-voice-reference.mp3
+      - name: Test the production
+        run: python -m unittest discover -s protoface/ep01 -p 'test_*.py' -v
+      - name: Generate only missing parts and assemble the complete one-minute episode
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+          PROTOFACE_QUALITY: '480p'
+          EPISODE_EXPORT_480P: 'true'
+          EPISODE_RESUME_RUN_ID: '41884020753'
+        run: python protoface/ep01/produce.py --mode generate_episode
+      - name: Preserve checkpoints to prevent duplicate submissions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-full480-checkpoint-${{ github.run_id }}
+          path: protoface/ep01/checkpoint/
+          overwrite: true
+          if-no-files-found: ignore
+      - name: Download the complete episode here
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-complete-480p-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            protoface/ep01/output/**/*.mp4
+            protoface/ep01/output/*.srt
+            protoface/ep01/output/*.ass
+            protoface/ep01/output/*.wav
+          if-no-files-found: ignore
