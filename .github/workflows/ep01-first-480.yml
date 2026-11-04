@@ -1,0 +1,85 @@
+name: EP01 first clip only - 480p
+on:
+  push:
+    paths: ['protoface/ep01/first-480-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  first:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Stop the superseded full-episode job and its pending non-first generation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request, urllib.error, time, zipfile, io, re
+          repo='ellasam81-commits/Segmind-api'; old=41883501564
+          def call(url, token, method='GET'):
+              req=urllib.request.Request(url,method=method)
+              req.add_unredirected_header('Authorization','Bearer '+token)
+              req.add_header('Accept','application/vnd.github+json' if 'api.github.com' in url else 'application/json')
+              return urllib.request.urlopen(req,timeout=60)
+          token=os.environ['GH_TOKEN'];base='https://api.github.com/repos/'+repo
+          with call(base+'/actions/runs/'+str(old),token) as r: state=json.load(r)
+          if state['status']!='completed':
+              try:
+                  with call(base+'/actions/runs/'+str(old)+'/cancel',token,'POST'): pass
+                  print('Requested cancellation of the superseded full-episode job.')
+              except urllib.error.HTTPError as e:
+                  if e.code!=409: raise
+          artifacts=[]
+          for i in range(30):
+              with call(base+'/actions/runs/'+str(old),token) as r: state=json.load(r)
+              with call(base+'/actions/runs/'+str(old)+'/artifacts',token) as r: artifacts=json.load(r).get('artifacts',[])
+              if state['status']=='completed': break
+              time.sleep(3)
+          for a in artifacts:
+              if not a['name'].startswith('ep01-checkpoint-'): continue
+              with call(a['archive_download_url'],token) as r: data=r.read()
+              with zipfile.ZipFile(io.BytesIO(data)) as z:
+                  for n in z.namelist():
+                      if not re.fullmatch(r'part-0[2-4]\.json',n): continue
+                      s=json.loads(z.read(n));rid=s.get('run_id','')
+                      if s.get('status') not in ['queued','running'] or not re.fullmatch(r'run_[A-Za-z0-9_-]+',rid): continue
+                      try:
+                          with call('https://api.protoface.com/v1/runs/'+rid+'/cancel',os.environ['PROTOFACE_API_KEY'],'POST'): pass
+                          print('Requested cancellation of superseded provider run '+rid)
+                      except urllib.error.HTTPError as e: print('Provider cancellation returned HTTP '+str(e.code))
+          PY
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install video tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r protoface/ep01/requirements.txt
+      - name: Test the first-clip production
+        run: python -m unittest discover -s protoface/ep01 -p 'test_*.py' -v
+      - name: Generate a new 15-second first clip at 480p
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+          PROTOFACE_QUALITY: '480p'
+        run: python protoface/ep01/produce.py --mode generate_first_clip
+      - name: Export only the first clip, without captions or music
+        run: |
+          mkdir -p protoface/ep01/output
+          ffmpeg -hide_banner -loglevel error -y -i protoface/ep01/checkpoint/native-01.mp4 -vf 'scale=854:480:force_original_aspect_ratio=decrease,pad=854:480:(ow-iw)/2:(oh-ih)/2,setsar=1' -t 15 -c:v libx264 -preset veryfast -crf 19 -c:a aac -movflags +faststart protoface/ep01/output/episode01-first-480p.mp4
+      - name: Download the 480p first clip here
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep01-first-480p-${{ github.run_id }}
+          path: |
+            protoface/ep01/output/episode01-first-480p.mp4
+            protoface/ep01/checkpoint/
+          if-no-files-found: ignore
