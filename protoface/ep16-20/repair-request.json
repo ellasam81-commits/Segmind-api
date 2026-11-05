@@ -1,5 +1,5 @@
 {
-  "request_id": "ep16-part04-fullscreen-and-exact-native-20261105-b",
+  "request_id": "qa-20261105-c",
   "budget_credits_per_attempt": 8,
   "preserve_accepted_parts": true,
   "native_audio": true,
@@ -7,6 +7,14 @@
     {
       "episode": 16,
       "parts": "4"
+    },
+    {
+      "episode": 17,
+      "parts": "3,4,5,8"
+    },
+    {
+      "episode": 20,
+      "parts": "2,3,4,5,6,8,11,12"
     }
   ]
 }
