@@ -1,20 +1,12 @@
 {
-  "request_id": "qa-20261105-c",
+  "request_id": "qa-20261105-d",
   "budget_credits_per_attempt": 8,
   "preserve_accepted_parts": true,
   "native_audio": true,
   "episodes": [
     {
-      "episode": 16,
-      "parts": "4"
-    },
-    {
-      "episode": 17,
-      "parts": "3,4,5,8"
-    },
-    {
-      "episode": 20,
-      "parts": "2,3,4,5,6,8,11,12"
+      "episode": 18,
+      "parts": "9,10,12"
     }
   ]
 }
