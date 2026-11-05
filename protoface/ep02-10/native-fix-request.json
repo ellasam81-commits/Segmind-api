@@ -1,16 +1,22 @@
 {
   "replacements": [
     {
-      "episode": 2,
-      "part": 1,
-      "reason": "Native opening dialogue was unintelligible"
+      "episode": 4,
+      "parts": [
+        1,
+        2
+      ]
     },
     {
-      "episode": 3,
-      "part": 4,
-      "reason": "Unscripted door numbers and generated captions"
+      "episode": 5,
+      "parts": [
+        2,
+        3
+      ]
     }
   ],
+  "reason": "Actual native speech review found omitted or substituted Mandarin lines. Use English production directions and only exact quoted Mandarin dialogue.",
+  "extra_estimated_credits": 72,
   "native_audio": true,
-  "extra_estimated_credits": 36
+  "post_dubbing": false
 }
