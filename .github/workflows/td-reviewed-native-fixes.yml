@@ -6,17 +6,32 @@ permissions:
   contents: read
   actions: read
 jobs:
+  select:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: select
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          a=json.loads(Path('protoface/ep02-10/native-fix-request.json').read_text())['replacements']
+          assert a and all(2<=j['episode']<=10 and j['parts'] and all(p in [1,2,3,4] for p in j['parts']) for j in a)
+          assert len(set(j['episode'] for j in a))==len(a)
+          matrix={'include':[{'episode':j['episode'],'parts':','.join(map(str,j['parts']))} for j in a]}
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('matrix='+json.dumps(matrix,separators=(',',':'))+'\n')
+          PY
   native-fix:
+    needs: select
     runs-on: ubuntu-latest
     timeout-minutes: 360
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - episode: 2
-            part: 1
-          - episode: 3
-            part: 4
+      matrix: ${{ fromJSON(needs.select.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,7 +60,7 @@ jobs:
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
           ALLOW_PAID_GENERATION: 'true'
-        run: python protoface/ep02-10/series_runner.py generate --episode ${{ matrix.episode }} --part ${{ matrix.part }}
+        run: python protoface/ep02-10/series_runner.py generate --episode ${{ matrix.episode }} --parts ${{ matrix.parts }}
       - name: Encrypt native movie and accepted run identity
         if: always()
         run: python protoface/ep02-10/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}

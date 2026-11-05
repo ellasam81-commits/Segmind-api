@@ -170,14 +170,15 @@ def generate(episode,selected_part=None):
             try:Draft202012Validator(model['request_schemas']['video.general']).validate(payload(packet))
             except ValidationError:raise RuntimeError('Private request schema validation failed; input was not logged') from None
         quota=api(client,'GET','/v1/billing/quota')
-        count=1 if selected_part else 4
+        selected_parts=([selected_part] if isinstance(selected_part,int) else selected_part)
+        count=len(selected_parts) if selected_parts else 4
         if quota.get('balance_credits',0)<count*estimate:raise RuntimeError('Balance does not cover the selected parts; no submission')
     print('Episode inputs and current price validated:',episode,'estimated credits',count*estimate,flush=True)
-    if selected_part:
-        state=generate_one(episode,selected_part,packets[selected_part-1])
-        save(work/'generation-report.json',{'episode':episode,'title':packets[0]['title'],'parts':[state],
-          'tts_used':False,'post_dubbing':False,'reviewed_replacement_part':selected_part})
-        print('Reviewed native replacement complete:',episode,selected_part,flush=True)
+    if selected_parts:
+        states=[generate_one(episode,p,packets[p-1]) for p in selected_parts]
+        save(work/'generation-report.json',{'episode':episode,'title':packets[0]['title'],'parts':states,
+          'tts_used':False,'post_dubbing':False,'reviewed_replacement_parts':selected_parts})
+        print('Reviewed native replacement complete:',episode,selected_parts,flush=True)
         return
     with ThreadPoolExecutor(max_workers=2) as pool:
         futures=[pool.submit(generate_one,episode,n,packets[n-1]) for n in [1,2,3,4]]
@@ -214,10 +215,15 @@ def main():
     p.add_argument('--episode',type=int,required=True,choices=range(2,11));p.add_argument('--run-id',type=int)
     p.add_argument('--private-dir',type=Path);p.add_argument('--repository')
     p.add_argument('--part',type=int,choices=[1,2,3,4])
+    p.add_argument('--parts')
     a=p.parse_args()
     if a.mode=='init':init(a.episode,a.run_id,a.private_dir)
     elif a.mode=='receive':receive(a.episode,a.run_id,a.private_dir,a.repository)
-    elif a.mode=='generate':generate(a.episode,a.part)
+    elif a.mode=='generate':
+        selected=[int(x) for x in a.parts.split(',')] if a.parts else a.part
+        if isinstance(selected,list) and (not selected or len(set(selected))!=len(selected) or any(x not in [1,2,3,4] for x in selected)):
+            raise ValueError('Invalid reviewed replacement selection')
+        generate(a.episode,selected)
     else:seal_results(a.episode,a.run_id)
 
 
