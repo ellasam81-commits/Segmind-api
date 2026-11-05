@@ -47,7 +47,7 @@ def estimated_part(model,packet=None):
     count=1+bool(packet.get('first_frame'))+bool(packet.get('last_frame'))+len(packet.get('extra_references',[]))
     value+=max(0,count-rule.get('included',0))*rule['credits_each']
     limit=packet.get('review_budget_credits',18)
-    if limit>27 or value>limit:raise RuntimeError('Live price exceeds the reviewed per-part limit; no submission')
+    if limit>42 or value>limit:raise RuntimeError('Live price exceeds the reviewed per-part limit; no submission')
     return value
 
 
@@ -125,7 +125,17 @@ def generate_one(episode,part,packet):
                 if response.status_code==429:
                     state['submission_uncertain']=False;save(state_path,state);time.sleep(10);continue
                 if not response.is_success:
-                    state['submission_uncertain']=False;save(state_path,state)
+                    state['submission_uncertain']=False
+                    def safe_error(value):
+                        if isinstance(value,dict):return {k:safe_error(v) for k,v in value.items() if k not in ['input','body','request','headers','authorization']}
+                        if isinstance(value,list):return [safe_error(v) for v in value[:20]]
+                        if isinstance(value,str):
+                            if value.startswith('data:') or len(value)>1500:return '[large private value omitted]'
+                            return value.replace(key,'[REDACTED]')
+                        return value
+                    try:state['submission_error']=safe_error(response.json())
+                    except Exception:state['submission_error']={'status':response.status_code,'message':response.text[:800].replace(key,'[REDACTED]')}
+                    save(state_path,state)
                     raise RuntimeError(f'Generation submission failed: HTTP {response.status_code}')
                 created=response.json();state.update(run_id=created['id'],status=created['status'],
                     credit_estimate=created.get('credit_estimate'),submission_uncertain=False)
@@ -177,6 +187,9 @@ def generate(episode,selected_part=None):
             if len(packet['panels'])!=9:raise RuntimeError('Every input must have nine panels')
             try:Draft202012Validator(model['request_schemas']['video.general']).validate(payload(packet))
             except ValidationError:raise RuntimeError('Private request schema validation failed; input was not logged') from None
+            body=payload(packet)
+            if any(body.get(x) for x in ['first_frame','last_frame']) and any(body.get(x) for x in ['reference','reference_video','audio']):
+                raise RuntimeError('H3 frame roles cannot combine with reference roles; stopped before submission')
         quota=api(client,'GET','/v1/billing/quota')
         selected_parts=([selected_part] if isinstance(selected_part,int) else selected_part)
         count=len(selected_parts) if selected_parts else 4
