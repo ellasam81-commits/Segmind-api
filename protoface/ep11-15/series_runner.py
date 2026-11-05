@@ -58,7 +58,7 @@ def payload(packet):
         raise RuntimeError('The approved8-credit request uses exactly one three-panel reference image, no other media roles')
     body={'prompt':packet['prompt'],'reference':['data:image/jpeg;base64,'+x['data'] for x in [packet['image']]+packet.get('extra_references',[])],
             'duration_seconds':5,'quality':'480p','aspect_ratio':'16:9',
-            'generate_audio':True,'enhance_prompt':False}
+            'generate_audio':True,'enhance_prompt':bool(packet.get('enhance_prompt',False))}
     for name in ['first_frame','last_frame']:
         if packet.get(name):body[name]='data:image/jpeg;base64,'+packet[name]['data']
     return body

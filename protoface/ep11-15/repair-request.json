@@ -1,16 +1,8 @@
 {
-  "revision": "quote-first-and-framing-repair-05",
+  "revision": "episode15-selected-physics-repair-06",
   "episodes": [
     {
-      "episode": 4,
-      "parts": "4,5"
-    },
-    {
-      "episode": 12,
-      "parts": "1,2,9"
-    },
-    {
-      "episode": 13,
+      "episode": 15,
       "parts": "6"
     }
   ],
