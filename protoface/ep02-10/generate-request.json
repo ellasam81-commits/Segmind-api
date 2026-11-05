@@ -1,9 +1,14 @@
 {
   "episodes": [
-    2,
-    3
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
   ],
   "native_audio": true,
   "no_post_dubbing": true,
-  "request": "ready-storyboards-02-03-v2"
+  "request": "remaining-authorized-episodes-04-10-v2"
 }
