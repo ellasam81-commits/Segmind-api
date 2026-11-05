@@ -1,0 +1,60 @@
+name: Thirteen Doors reviewed native fixes
+on:
+  push:
+    paths: ['protoface/ep02-10/native-fix-request.json']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native-fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - episode: 2
+            part: 1
+          - episode: 3
+            part: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare native generation tools
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg
+          fi
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0
+      - name: Create encrypted input channel
+        run: python protoface/ep02-10/series_runner.py init --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-native-fix-${{ matrix.episode }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD-ready-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep02-10/transport-public/ep*/ready.json
+          retention-days: 1
+      - name: Receive private storyboard inputs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep02-10/series_runner.py receive --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-native-fix-${{ matrix.episode }}" --repository ${{ github.repository }}
+      - name: Generate only the reviewed replacement part with native speech
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep02-10/series_runner.py generate --episode ${{ matrix.episode }} --part ${{ matrix.part }}
+      - name: Encrypt native movie and accepted run identity
+        if: always()
+        run: python protoface/ep02-10/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD-results-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep02-10/sealed-results/*.sealed.json
+          if-no-files-found: ignore
+      - name: Remove ephemeral input key
+        if: always()
+        run: python -c "import shutil; shutil.rmtree('${{ runner.temp }}/td-native-fix-${{ matrix.episode }}', ignore_errors=True)"

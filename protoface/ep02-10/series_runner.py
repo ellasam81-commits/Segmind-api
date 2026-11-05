@@ -153,7 +153,7 @@ def generate_one(episode,part,packet):
     raise TimeoutError('Provider run remains active; preserve its identity for recovery')
 
 
-def generate(episode):
+def generate(episode,selected_part=None):
     if os.environ.get('ALLOW_PAID_GENERATION')!='true':raise RuntimeError('Generation authorization is absent')
     key=os.environ.get('PROTOFACE_API_KEY','').strip()
     if not key:raise RuntimeError('Provider secret is missing')
@@ -170,8 +170,15 @@ def generate(episode):
             try:Draft202012Validator(model['request_schemas']['video.general']).validate(payload(packet))
             except ValidationError:raise RuntimeError('Private request schema validation failed; input was not logged') from None
         quota=api(client,'GET','/v1/billing/quota')
-        if quota.get('balance_credits',0)<4*estimate:raise RuntimeError('Balance does not cover this episode; no submission')
-    print('Episode inputs and current price validated:',episode,'estimated credits',4*estimate,flush=True)
+        count=1 if selected_part else 4
+        if quota.get('balance_credits',0)<count*estimate:raise RuntimeError('Balance does not cover the selected parts; no submission')
+    print('Episode inputs and current price validated:',episode,'estimated credits',count*estimate,flush=True)
+    if selected_part:
+        state=generate_one(episode,selected_part,packets[selected_part-1])
+        save(work/'generation-report.json',{'episode':episode,'title':packets[0]['title'],'parts':[state],
+          'tts_used':False,'post_dubbing':False,'reviewed_replacement_part':selected_part})
+        print('Reviewed native replacement complete:',episode,selected_part,flush=True)
+        return
     with ThreadPoolExecutor(max_workers=2) as pool:
         futures=[pool.submit(generate_one,episode,n,packets[n-1]) for n in [1,2,3,4]]
         states=[future.result() for future in futures]
@@ -206,10 +213,11 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('mode',choices=['init','receive','generate','seal'])
     p.add_argument('--episode',type=int,required=True,choices=range(2,11));p.add_argument('--run-id',type=int)
     p.add_argument('--private-dir',type=Path);p.add_argument('--repository')
+    p.add_argument('--part',type=int,choices=[1,2,3,4])
     a=p.parse_args()
     if a.mode=='init':init(a.episode,a.run_id,a.private_dir)
     elif a.mode=='receive':receive(a.episode,a.run_id,a.private_dir,a.repository)
-    elif a.mode=='generate':generate(a.episode)
+    elif a.mode=='generate':generate(a.episode,a.part)
     else:seal_results(a.episode,a.run_id)
 
 
