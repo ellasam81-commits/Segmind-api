@@ -1,17 +1,17 @@
 {
-  "revision": "confirmed-grid-and-speaker-repair-04",
+  "revision": "quote-first-and-framing-repair-05",
   "episodes": [
     {
       "episode": 4,
-      "parts": "4,5,6"
+      "parts": "4,5"
     },
     {
-      "episode": 11,
-      "parts": "2,6"
+      "episode": 12,
+      "parts": "1,2,9"
     },
     {
       "episode": 13,
-      "parts": "2,6,8,11,12"
+      "parts": "6"
     }
   ],
   "budget_credits_per_attempt": 8,
