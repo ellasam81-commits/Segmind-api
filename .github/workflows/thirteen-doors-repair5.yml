@@ -21,7 +21,7 @@ jobs:
           assert request['budget_credits_per_attempt']==8 and request['preserve_accepted_parts'] and request['native_audio']
           rows=request['episodes']
           for row in rows:
-            assert row['episode'] in range(11,16)
+            assert row['episode'] in range(1,16)
             parts=[int(x) for x in row['parts'].split(',')]
             assert parts and len(set(parts))==len(parts) and all(x in range(1,13) for x in parts)
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('selected='+json.dumps({'include':rows},separators=(',',':'))+'\n')

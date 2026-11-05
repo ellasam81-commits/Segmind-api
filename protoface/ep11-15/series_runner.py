@@ -65,19 +65,19 @@ def payload(packet):
 
 
 def init(episode,run_id,private_dir):
+    repair_parts=os.environ.get('REVIEWED_REPAIR_PARTS','')
+    repair=[int(x) for x in repair_parts.split(',')] if repair_parts else []
+    if repair and (len(set(repair))!=len(repair) or any(x not in range(1,13) for x in repair)):raise ValueError('Invalid reviewed repair parts')
     public=ROOT/f'transport-public/ep{episode:02}'
     transport.init(private_dir,public,run_id)
     path=public/'ready.json';data=json.loads(path.read_text())
-    data.update(episode=episode,parts=list(range(1,13)));save(path,data)
+    data.update(episode=episode,parts=repair or list(range(1,13)));save(path,data)
     key=os.environ.get('PROTOFACE_API_KEY','').strip()
     if not key:raise RuntimeError('Provider secret is missing')
     with httpx.Client(base_url='https://api.protoface.com',headers={'Authorization':'Bearer '+key},timeout=90) as client:
         model=api(client,'GET','/v1/models/'+MODEL)
         quota=api(client,'GET','/v1/billing/quota')
     price=estimated_part(model)
-    repair_parts=os.environ.get('REVIEWED_REPAIR_PARTS','')
-    repair=[int(x) for x in repair_parts.split(',')] if repair_parts else []
-    if repair and (len(set(repair))!=len(repair) or any(x not in range(1,13) for x in repair)):raise ValueError('Invalid reviewed repair parts')
     required=len(repair) if repair else 12
     if quota.get('balance_credits',0)<required*price:raise RuntimeError('Balance does not cover the selected episode parts')
     if episode==11 and not repair and quota.get('balance_credits',0)<60*price:raise RuntimeError('Balance does not cover all five requested episodes')
@@ -93,7 +93,7 @@ def receive(episode,run_id,private_dir,repository):
     private=(private_dir/'input-private.pem').read_bytes()
     headers={'Accept':'application/vnd.github+json','User-Agent':'ThirteenDoors-private-episode-input'}
     if os.environ.get('GITHUB_TOKEN'):headers['Authorization']='Bearer '+os.environ['GITHUB_TOKEN']
-    work=ROOT/f'work/ep{episode:02}';pending=set(range(1,13));deadline=time.monotonic()+19200
+    work=ROOT/f'work/ep{episode:02}';pending=set(ready['parts']);deadline=time.monotonic()+19200
     with httpx.Client(headers=headers,timeout=60,follow_redirects=False) as client:
         while pending and time.monotonic()<deadline:
             folder=f'protoface/ep11-15/private-inputs/{run_id}'
@@ -202,13 +202,15 @@ def generate(episode,selected_part=None):
     key=os.environ.get('PROTOFACE_API_KEY','').strip()
     if not key:raise RuntimeError('Provider secret is missing')
     work=ROOT/f'work/ep{episode:02}'
-    packets=[json.loads((work/'packets'/f'part-{n:02}.json').read_text()) for n in range(1,13)]
+    selected_parts=([selected_part] if isinstance(selected_part,int) else selected_part)
+    numbers=selected_parts or list(range(1,13))
+    packets={n:json.loads((work/'packets'/f'part-{n:02}.json').read_text()) for n in numbers}
     with httpx.Client(base_url='https://api.protoface.com',headers={'Authorization':'Bearer '+key},timeout=90) as client:
         model=api(client,'GET','/v1/models/'+MODEL)
         if not model.get('available'):raise RuntimeError('H3 is currently unavailable')
-        estimates=[]
-        for packet in packets:
-            estimates.append(estimated_part(model,packet))
+        estimates={}
+        for number,packet in packets.items():
+            estimates[number]=estimated_part(model,packet)
             for media in [packet['image']]+packet.get('extra_references',[])+[packet[n] for n in ['first_frame','last_frame'] if packet.get(n)]:
                 image=base64.b64decode(media['data'],validate=True)
                 if hashlib.sha256(image).hexdigest()!=media['sha256']:raise RuntimeError('Image checksum mismatch')
@@ -219,26 +221,24 @@ def generate(episode,selected_part=None):
             if any(body.get(x) for x in ['first_frame','last_frame']) and any(body.get(x) for x in ['reference','reference_video','audio']):
                 raise RuntimeError('H3 frame roles cannot combine with reference roles; stopped before submission')
         quota=api(client,'GET','/v1/billing/quota')
-        selected_parts=([selected_part] if isinstance(selected_part,int) else selected_part)
-        count=len(selected_parts) if selected_parts else 12
-        estimate=sum(estimates[p-1] for p in selected_parts) if selected_parts else sum(estimates)
+        estimate=sum(estimates.values())
         if quota.get('balance_credits',0)<estimate:raise RuntimeError('Balance does not cover the selected parts; no submission')
     print('Episode inputs and current price validated:',episode,'estimated credits',estimate,flush=True)
     if selected_parts:
-        states=[generate_one(episode,p,packets[p-1]) for p in selected_parts]
-        save(work/'generation-report.json',{'episode':episode,'title':packets[0]['title'],'parts':states,
+        states=[generate_one(episode,p,packets[p]) for p in selected_parts]
+        save(work/'generation-report.json',{'episode':episode,'title':packets[selected_parts[0]]['title'],'parts':states,
           'tts_used':False,'post_dubbing':False,'reviewed_replacement_parts':selected_parts})
         print('Reviewed native replacement complete:',episode,selected_parts,flush=True)
         return
     with ThreadPoolExecutor(max_workers=1) as pool:
-        futures=[pool.submit(generate_one,episode,n,packets[n-1]) for n in range(1,13)]
+        futures=[pool.submit(generate_one,episode,n,packets[n]) for n in range(1,13)]
         states=[future.result() for future in futures]
     listing=work/'concat.txt';listing.write_text(''.join(f"file '{work/'clips'/f'part-{n:02}.mp4'}'\n" for n in range(1,13)))
     done=subprocess.run(['ffmpeg','-v','error','-y','-threads','2','-f','concat','-safe','0',
         '-i',str(listing),'-map','0:v:0','-map','0:a:0','-c:v','copy','-c:a','aac','-b:a','192k',
         '-t','60','-movflags','+faststart',str(work/'episode-native.mp4')],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     if done.returncode:raise RuntimeError('Native episode assembly failed; individual clips are preserved')
-    save(work/'generation-report.json',{'episode':episode,'title':packets[0]['title'],'parts':states,
+    save(work/'generation-report.json',{'episode':episode,'title':packets[1]['title'],'parts':states,
         'tts_used':False,'post_dubbing':False,'subtitles_and_corner_credits':'Applied locally after actual speech review.'})
     print('Native episode complete:',episode,flush=True)
 
@@ -262,7 +262,7 @@ def seal_results(episode,run_id):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('mode',choices=['init','receive','generate','seal'])
-    p.add_argument('--episode',type=int,required=True,choices=range(11,16));p.add_argument('--run-id',type=int)
+    p.add_argument('--episode',type=int,required=True,choices=range(1,16));p.add_argument('--run-id',type=int)
     p.add_argument('--private-dir',type=Path);p.add_argument('--repository')
     p.add_argument('--part',type=int,choices=list(range(1,13)))
     p.add_argument('--parts')

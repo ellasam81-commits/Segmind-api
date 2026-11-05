@@ -1,9 +1,17 @@
 {
-  "revision": "repair12-input-channel-infrastructure-recovery",
+  "revision": "confirmed-grid-and-speaker-repair-04",
   "episodes": [
     {
-      "episode": 12,
-      "parts": "1,2,3,4,5,7,8,9"
+      "episode": 4,
+      "parts": "4,5,6"
+    },
+    {
+      "episode": 11,
+      "parts": "2,6"
+    },
+    {
+      "episode": 13,
+      "parts": "2,6,8,11,12"
     }
   ],
   "budget_credits_per_attempt": 8,
