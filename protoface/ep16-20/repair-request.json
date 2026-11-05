@@ -1,12 +1,12 @@
 {
-  "request_id": "ep16-native-dialogue-and-body-fixes-20261105-a",
+  "request_id": "ep16-part04-fullscreen-and-exact-native-20261105-b",
   "budget_credits_per_attempt": 8,
   "preserve_accepted_parts": true,
   "native_audio": true,
   "episodes": [
     {
       "episode": 16,
-      "parts": "1,4,5,6,7,8,11"
+      "parts": "4"
     }
   ]
 }
