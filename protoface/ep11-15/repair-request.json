@@ -1,13 +1,13 @@
 {
-  "revision": "confirmed-recorder-possession-and-native-fullframe-quality-v2",
+  "revision": "clip-specific-cast-and-speaker-boundary-correction-v3",
   "episodes": [
     {
       "episode": 13,
-      "parts": "1,2,3,4,5,9"
+      "parts": "2,3,4,9"
     },
     {
       "episode": 15,
-      "parts": "7,8,9,10,11"
+      "parts": "7,8,9"
     }
   ],
   "budget_credits_per_attempt": 8,
