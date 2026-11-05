@@ -7,14 +7,33 @@ permissions:
   contents: read
   actions: read
 jobs:
-  episode:
+  select:
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    outputs:
+      episodes: ${{ steps.episodes.outputs.episodes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: episodes
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          request=json.loads(Path('protoface/ep02-10/generate-request.json').read_text())
+          episodes=request['episodes']
+          assert episodes and len(set(episodes))==len(episodes) and all(type(n)==int and 2<=n<=10 for n in episodes)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('episodes='+json.dumps(episodes,separators=(',',':'))+'\n')
+          PY
+  episode:
+    needs: select
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
     strategy:
       fail-fast: false
       max-parallel: 2
       matrix:
-        episode: [2, 3, 4, 5, 6, 7, 8, 9, 10]
+        episode: ${{ fromJSON(needs.select.outputs.episodes) }}
     steps:
       - uses: actions/checkout@v4
         with:

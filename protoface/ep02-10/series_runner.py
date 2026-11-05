@@ -66,7 +66,7 @@ def receive(episode,run_id,private_dir,repository):
     private=(private_dir/'input-private.pem').read_bytes()
     headers={'Accept':'application/vnd.github+json','User-Agent':'ThirteenDoors-private-episode-input'}
     if os.environ.get('GITHUB_TOKEN'):headers['Authorization']='Bearer '+os.environ['GITHUB_TOKEN']
-    work=ROOT/f'work/ep{episode:02}';pending={1,2,3,4};deadline=time.monotonic()+2700
+    work=ROOT/f'work/ep{episode:02}';pending={1,2,3,4};deadline=time.monotonic()+19200
     with httpx.Client(headers=headers,timeout=60,follow_redirects=False) as client:
         while pending and time.monotonic()<deadline:
             for part in sorted(pending):
