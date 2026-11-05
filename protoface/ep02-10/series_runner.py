@@ -40,18 +40,24 @@ def api(client,method,path,**kwargs):
         return response.json()
 
 
-def estimated_part(model):
+def estimated_part(model,packet=None):
     price=model['pricing'];value=15*price['qualities']['480p']['credits_per_second']
     rule=next(x for x in price['add_ons'] if x['id']=='reference_image')['by_quality']['480p']
-    value+=max(0,1-rule.get('included',0))*rule['credits_each']
-    if value>18:raise RuntimeError('Live price exceeds the disclosed per-part limit; no submission')
+    packet=packet or {}
+    count=1+bool(packet.get('first_frame'))+bool(packet.get('last_frame'))+len(packet.get('extra_references',[]))
+    value+=max(0,count-rule.get('included',0))*rule['credits_each']
+    limit=packet.get('review_budget_credits',18)
+    if limit>27 or value>limit:raise RuntimeError('Live price exceeds the reviewed per-part limit; no submission')
     return value
 
 
 def payload(packet):
-    return {'prompt':packet['prompt'],'reference':['data:image/jpeg;base64,'+packet['image']['data']],
+    body={'prompt':packet['prompt'],'reference':['data:image/jpeg;base64,'+x['data'] for x in [packet['image']]+packet.get('extra_references',[])],
             'duration_seconds':15,'quality':'480p','aspect_ratio':'16:9',
             'generate_audio':True,'enhance_prompt':False}
+    for name in ['first_frame','last_frame']:
+        if packet.get(name):body[name]='data:image/jpeg;base64,'+packet[name]['data']
+    return body
 
 
 def init(episode,run_id,private_dir):
@@ -162,18 +168,21 @@ def generate(episode,selected_part=None):
     with httpx.Client(base_url='https://api.protoface.com',headers={'Authorization':'Bearer '+key},timeout=90) as client:
         model=api(client,'GET','/v1/models/'+MODEL)
         if not model.get('available'):raise RuntimeError('H3 is currently unavailable')
-        estimate=estimated_part(model)
+        estimates=[]
         for packet in packets:
-            image=base64.b64decode(packet['image']['data'],validate=True)
-            if hashlib.sha256(image).hexdigest()!=packet['image']['sha256']:raise RuntimeError('Storyboard checksum mismatch')
+            estimates.append(estimated_part(model,packet))
+            for media in [packet['image']]+packet.get('extra_references',[])+[packet[n] for n in ['first_frame','last_frame'] if packet.get(n)]:
+                image=base64.b64decode(media['data'],validate=True)
+                if hashlib.sha256(image).hexdigest()!=media['sha256']:raise RuntimeError('Image checksum mismatch')
             if len(packet['panels'])!=9:raise RuntimeError('Every input must have nine panels')
             try:Draft202012Validator(model['request_schemas']['video.general']).validate(payload(packet))
             except ValidationError:raise RuntimeError('Private request schema validation failed; input was not logged') from None
         quota=api(client,'GET','/v1/billing/quota')
         selected_parts=([selected_part] if isinstance(selected_part,int) else selected_part)
         count=len(selected_parts) if selected_parts else 4
-        if quota.get('balance_credits',0)<count*estimate:raise RuntimeError('Balance does not cover the selected parts; no submission')
-    print('Episode inputs and current price validated:',episode,'estimated credits',count*estimate,flush=True)
+        estimate=sum(estimates[p-1] for p in selected_parts) if selected_parts else sum(estimates)
+        if quota.get('balance_credits',0)<estimate:raise RuntimeError('Balance does not cover the selected parts; no submission')
+    print('Episode inputs and current price validated:',episode,'estimated credits',estimate,flush=True)
     if selected_parts:
         states=[generate_one(episode,p,packets[p-1]) for p in selected_parts]
         save(work/'generation-report.json',{'episode':episode,'title':packets[0]['title'],'parts':states,
