@@ -75,10 +75,15 @@ def init(episode,run_id,private_dir):
         model=api(client,'GET','/v1/models/'+MODEL)
         quota=api(client,'GET','/v1/billing/quota')
     price=estimated_part(model)
-    if quota.get('balance_credits',0)<12*price:raise RuntimeError('Balance does not cover this episode')
-    if episode==11 and quota.get('balance_credits',0)<60*price:raise RuntimeError('Balance does not cover all five requested episodes')
+    repair_parts=os.environ.get('REVIEWED_REPAIR_PARTS','')
+    repair=[int(x) for x in repair_parts.split(',')] if repair_parts else []
+    if repair and (len(set(repair))!=len(repair) or any(x not in range(1,13) for x in repair)):raise ValueError('Invalid reviewed repair parts')
+    required=len(repair) if repair else 12
+    if quota.get('balance_credits',0)<required*price:raise RuntimeError('Balance does not cover the selected episode parts')
+    if episode==11 and not repair and quota.get('balance_credits',0)<60*price:raise RuntimeError('Balance does not cover all five requested episodes')
     public=(TRANSPORT_ROOT/'return-public.pem').read_bytes()
-    envelope=transport.seal(json.dumps({'model':model,'quota':quota,'estimated_per_clip':price,'episode_count':5,'clip_count':60,'estimated_batch_credits':60*price,'generation_submitted':False}).encode(),public,f'ep11-15-preflight-v1:{run_id}:ep{episode:02}')
+    total=len(repair) if repair else 60
+    envelope=transport.seal(json.dumps({'model':model,'quota':quota,'estimated_per_clip':price,'episode_count':1 if repair else 5,'clip_count':total,'estimated_batch_credits':total*price,'generation_submitted':False}).encode(),public,f'ep11-15-preflight-v1:{run_id}:ep{episode:02}')
     save(ROOT/f'transport-public/ep{episode:02}/preflight.sealed.json',envelope)
     print('Live five-second model price and funding checked; private figures encrypted.',flush=True)
 
