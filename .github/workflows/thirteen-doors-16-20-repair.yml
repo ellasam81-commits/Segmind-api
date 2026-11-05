@@ -1,0 +1,86 @@
+name: Thirteen Doors reviewed five-second quality repair
+on:
+  push:
+    paths: ['protoface/ep16-20/repair-request.json']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  selection:
+    runs-on: ubuntu-latest
+    outputs:
+      selected: ${{ steps.select.outputs.selected }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: select
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          request=json.loads(Path('protoface/ep16-20/repair-request.json').read_text())
+          assert request['budget_credits_per_attempt']==8 and request['preserve_accepted_parts'] and request['native_audio']
+          rows=request['episodes']
+          for row in rows:
+            assert row['episode'] in range(16,21)
+            parts=[int(x) for x in row['parts'].split(',')]
+            assert parts and len(set(parts))==len(parts) and all(x in range(1,13) for x in parts)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('selected='+json.dumps({'include':rows},separators=(',',':'))+'\n')
+          PY
+  episode:
+    needs: selection
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.selection.outputs.selected) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare native-video tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import imageio_ffmpeg
+          folder=Path(os.environ['RUNNER_TEMP'])/'thirteen-doors-media-tools'
+          folder.mkdir(exist_ok=True)
+          (folder/'ffmpeg').symlink_to(imageio_ffmpeg.get_ffmpeg_exe())
+          with open(os.environ['GITHUB_PATH'],'a')as f:f.write(str(folder)+'\n')
+          PY
+      - name: Check selected repair price and create private input channel
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          REVIEWED_REPAIR_PARTS: ${{ matrix.parts }}
+        run: python protoface/ep16-20/series_runner.py init --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-repair-${{ matrix.episode }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD35R-ready-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep16-20/transport-public/ep*/
+          retention-days: 1
+      - name: Receive private storyboard inputs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep16-20/series_runner.py receive --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-repair-${{ matrix.episode }}" --repository ${{ github.repository }}
+      - name: Generate only the confirmed faulty parts
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep16-20/series_runner.py generate --episode ${{ matrix.episode }} --parts '${{ matrix.parts }}'
+      - name: Encrypt returned clips and request checkpoints
+        if: always()
+        run: python protoface/ep16-20/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD35R-results-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep16-20/sealed-results/*.sealed.json
+          if-no-files-found: ignore
+      - name: Remove private input key
+        if: always()
+        run: python -c "import shutil;shutil.rmtree('${{ runner.temp }}/td-repair-${{ matrix.episode }}',ignore_errors=True)"

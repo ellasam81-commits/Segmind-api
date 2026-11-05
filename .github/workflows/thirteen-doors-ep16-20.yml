@@ -1,0 +1,65 @@
+name: Thirteen Doors episodes 16-20 three-shot five-second production
+on:
+  push:
+    paths: ['protoface/ep16-20/generate-request.json']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        episode: [16,17,18,19,20]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare native-video tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import imageio_ffmpeg
+          folder=Path(os.environ['RUNNER_TEMP'])/'thirteen-doors-media-tools'
+          folder.mkdir(exist_ok=True)
+          (folder/'ffmpeg').symlink_to(imageio_ffmpeg.get_ffmpeg_exe())
+          with open(os.environ['GITHUB_PATH'],'a')as f:f.write(str(folder)+'\n')
+          PY
+      - name: Create private input channel and verify current price and funding
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/ep16-20/series_runner.py init --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-three5-${{ matrix.episode }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD35-ready-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep16-20/transport-public/ep*/
+          retention-days: 1
+      - name: Receive twelve encrypted three-panel storyboards
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep16-20/series_runner.py receive --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir "${{ runner.temp }}/td-three5-${{ matrix.episode }}" --repository ${{ github.repository }}
+      - name: Generate twelve five-second native-audio parts and assemble
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep16-20/series_runner.py generate --episode ${{ matrix.episode }}
+      - name: Encrypt movies and accepted request checkpoints
+        if: always()
+        run: python protoface/ep16-20/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD35-results-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep16-20/sealed-results/*.sealed.json
+          if-no-files-found: ignore
+      - name: Remove ephemeral input private key
+        if: always()
+        run: python -c "import shutil;shutil.rmtree('${{ runner.temp }}/td-three5-${{ matrix.episode }}',ignore_errors=True)"
