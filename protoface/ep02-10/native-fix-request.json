@@ -1,22 +1,63 @@
 {
   "replacements": [
     {
+      "episode": 2,
+      "parts": [
+        4
+      ]
+    },
+    {
       "episode": 4,
       "parts": [
-        1,
-        2
+        4
       ]
     },
     {
       "episode": 5,
       "parts": [
-        2,
         3
+      ]
+    },
+    {
+      "episode": 6,
+      "parts": [
+        2
+      ]
+    },
+    {
+      "episode": 7,
+      "parts": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "episode": 8,
+      "parts": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "episode": 9,
+      "parts": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "episode": 10,
+      "parts": [
+        2,
+        4
       ]
     }
   ],
-  "reason": "Actual native speech review found omitted or substituted Mandarin lines. Use English production directions and only exact quoted Mandarin dialogue.",
-  "extra_estimated_credits": 72,
+  "reason": "User requested a complete review and parallel regeneration of all obviously faulty parts. Separate single-shot first and last frames; only the actual cast; exact Mandarin quotes.",
+  "extra_estimated_credits": 363,
   "native_audio": true,
   "post_dubbing": false
 }
