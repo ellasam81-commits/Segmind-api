@@ -7,8 +7,15 @@
       ]
     },
     {
+      "episode": 3,
+      "parts": [
+        4
+      ]
+    },
+    {
       "episode": 4,
       "parts": [
+        3,
         4
       ]
     },
@@ -56,8 +63,8 @@
       ]
     }
   ],
-  "reason": "User requested a complete review and parallel regeneration of all obviously faulty parts. Separate single-shot first and last frames; only the actual cast; exact Mandarin quotes.",
-  "extra_estimated_credits": 363,
+  "reason": "Complete user-requested review: regenerate seventeen faulty parts in parallel from nine SEPARATE full-frame references. Do not combine reference and frame roles. Only present cast, clean male face, accurate prop text and exact quoted speech.",
+  "extra_estimated_credits": 714,
   "native_audio": true,
   "post_dubbing": false
 }
