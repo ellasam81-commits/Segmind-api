@@ -1,13 +1,9 @@
 {
-  "revision": "clip-specific-cast-and-speaker-boundary-correction-v3",
+  "revision": "resume-unsubmitted-episode13-precision-pass-with-bundled-media-tools-v4",
   "episodes": [
     {
       "episode": 13,
       "parts": "2,3,4,9"
-    },
-    {
-      "episode": 15,
-      "parts": "7,8,9"
     }
   ],
   "budget_credits_per_attempt": 8,

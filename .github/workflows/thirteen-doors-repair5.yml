@@ -43,8 +43,16 @@ jobs:
           python-version: '3.13'
       - name: Prepare native-video tools
         run: |
-          if ! command -v ffmpeg >/dev/null; then sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg; fi
-          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import imageio_ffmpeg
+          folder=Path(os.environ['RUNNER_TEMP'])/'thirteen-doors-media-tools'
+          folder.mkdir(exist_ok=True)
+          (folder/'ffmpeg').symlink_to(imageio_ffmpeg.get_ffmpeg_exe())
+          with open(os.environ['GITHUB_PATH'],'a')as f:f.write(str(folder)+'\n')
+          PY
       - name: Check selected repair price and create private input channel
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
