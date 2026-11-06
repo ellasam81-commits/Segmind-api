@@ -1,0 +1,25 @@
+{
+  "protocol": "ep31-35-three5-v1",
+  "request_kind": "initial",
+  "request_id": "td31-35-reviewed-initial-20261106",
+  "episodes": [
+    31,
+    32,
+    33,
+    34,
+    35
+  ],
+  "parts_per_episode": 12,
+  "clips": 60,
+  "duration_seconds_per_clip": 5,
+  "quality": "480p",
+  "aspect_ratio": "16:9",
+  "model": "minimax/minimax-h3",
+  "reference_images_per_clip": 1,
+  "maximum_credits_per_video_attempt": 8,
+  "maximum_initial_video_credits": 480,
+  "maximum_initial_video_usd": 4.8,
+  "source_inputs": "Only encrypted hash-reviewed three-panel boards and exact-dialogue prompts supplied to ephemeral runner channels",
+  "user_authorization": "Explicit user approval received for main updates, Actions generation and Creative Claw shared-link delivery",
+  "automatic_paid_retries": false
+}
