@@ -1,12 +1,20 @@
 {
-  "revision": "resume-unsubmitted-episode13-precision-pass-with-bundled-media-tools-v4",
+  "request_id": "face-hair-repair-13p08-14p12-15p01-20261106-v1",
+  "budget_credits_per_attempt": 8,
+  "preserve_accepted_parts": true,
+  "native_audio": true,
   "episodes": [
     {
       "episode": 13,
-      "parts": "2,3,4,9"
+      "parts": "8"
+    },
+    {
+      "episode": 14,
+      "parts": "12"
+    },
+    {
+      "episode": 15,
+      "parts": "1"
     }
-  ],
-  "budget_credits_per_attempt": 8,
-  "preserve_accepted_parts": true,
-  "native_audio": true
+  ]
 }
