@@ -1,0 +1,97 @@
+name: Thirteen Doors episodes 21-25 native five-second production
+on:
+  push:
+    paths: ['protoface/ep21-25/generate-request.json']
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: Select the authorized initial episode or all five
+        type: choice
+        required: true
+        default: all
+        options: ['all', '21', '22', '23', '24', '25']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: thirteen-doors-ep21-25-initial
+  cancel-in-progress: false
+jobs:
+  selection:
+    runs-on: ubuntu-latest
+    outputs:
+      episodes: ${{ steps.select.outputs.episodes }}
+    steps:
+      - id: select
+        env:
+          SELECT_EPISODE: ${{ inputs.episode || 'all' }}
+        run: |
+          python - <<'PY'
+          import json, os
+          choice = os.environ['SELECT_EPISODE']
+          if choice not in ['all','21','22','23','24','25']:
+              raise ValueError('Invalid episode choice')
+          episodes = list(range(21,26)) if choice == 'all' else [int(choice)]
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('episodes=' + json.dumps(episodes, separators=(',',':')) + '\n')
+          PY
+  episode:
+    needs: selection
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        episode: ${{ fromJSON(needs.selection.outputs.episodes) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare bundled native media tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python protoface/ep21-25/install_media_tools.py
+      - name: Create encrypted input channel and verify live eight-credit price
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/ep21-25/series_runner.py init --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td21-25-${{ matrix.episode }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD35-ready-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep21-25/transport-public/ep${{ matrix.episode }}/
+          retention-days: 1
+      - name: Receive encrypted storyboards and private prompts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep21-25/series_runner.py receive --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td21-25-${{ matrix.episode }}' --repository '${{ github.repository }}'
+      - name: Generate native audio clips or resume accepted runs
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep21-25/series_runner.py generate --episode ${{ matrix.episode }}
+      - name: Encrypt returned media and stable request checkpoints
+        if: always()
+        run: python protoface/ep21-25/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD35-results-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep21-25/sealed-results/ep${{ matrix.episode }}.sealed.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove ephemeral plaintext and input key
+        if: always()
+        env:
+          TD_EPISODE: ${{ matrix.episode }}
+          TD_PRIVATE_DIR: ${{ runner.temp }}/td21-25-${{ matrix.episode }}
+        run: |
+          python - <<'PY'
+          import os, shutil
+          from pathlib import Path
+          shutil.rmtree(os.environ['TD_PRIVATE_DIR'], ignore_errors=True)
+          shutil.rmtree(Path('protoface/ep21-25/work') / ('ep' + os.environ['TD_EPISODE']), ignore_errors=True)
+          PY

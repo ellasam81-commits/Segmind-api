@@ -1,0 +1,16 @@
+{
+  "request_id": "ep21-25-initial-20261106-v1",
+  "episodes": [
+    21,
+    22,
+    23,
+    24,
+    25
+  ],
+  "clips_per_episode": 12,
+  "duration_seconds": 5,
+  "budget_credits_per_attempt": 8,
+  "initial_batch_target_credits": 480,
+  "max_additional_generations_per_irreparable_clip": 1,
+  "native_audio": true
+}
