@@ -1,0 +1,123 @@
+name: Thirteen Doors confirmed five-second fallback repairs
+on:
+  push:
+    paths: ['protoface/ep31-35/repair-request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: thirteen-doors-ep31-35-reviewed-repair
+  cancel-in-progress: false
+jobs:
+  selection:
+    runs-on: ubuntu-latest
+    outputs:
+      selected: ${{ steps.select.outputs.selected }}
+      request_id: ${{ steps.select.outputs.request_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: select
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          request = json.loads(Path('protoface/ep31-35/repair-request.json').read_text())
+          for flag in ['confirmed_defect','free_or_picture_repair_insufficient','no_consecutive_attempts','preserve_accepted_parts','native_audio']:
+              if request.get(flag) is not True:
+                  raise ValueError('Repair precondition missing: ' + flag)
+          if request.get('budget_credits_per_attempt') != 8 or request.get('max_additional_generations_per_affected_clip') != 1:
+              raise ValueError('Only one additional eight-credit generation per affected clip is authorized')
+          rows = request.get('episodes')
+          if not isinstance(rows, list) or not rows or len(rows) > 5:
+              raise ValueError('Reviewed affected episodes are required')
+          selected, seen = [], set()
+          for row in rows:
+              episode = row.get('episode')
+              if type(episode) is not int or episode not in range(31,36) or episode in seen:
+                  raise ValueError('Repair episodes must be unique and between31 and35')
+              seen.add(episode)
+              parts = row.get('parts')
+              if not isinstance(parts,str) or not re.fullmatch(r'(?:[1-9]|1[0-2])(?:,(?:[1-9]|1[0-2]))*',parts):
+                  raise ValueError('Invalid reviewed five-second parts')
+              numbers = [int(part) for part in parts.split(',')]
+              if len(set(numbers)) != len(numbers):
+                  raise ValueError('Each affected clip may receive only one additional request')
+              originals = row.get('original_run_ids',{})
+              if set(originals) != {str(part) for part in numbers} or any(not isinstance(run,str) or not run.strip() for run in originals.values()):
+                  raise ValueError('Every affected clip must identify its original accepted run')
+              selected.append({'episode':episode,'parts':','.join(str(part) for part in sorted(numbers))})
+          expected = {(33,7),(35,9)}
+          actual = {(row['episode'],int(p)) for row in selected for p in row['parts'].split(',')}
+          if actual != expected or request.get('selected_clip_count') != 2 or request.get('maximum_total_credits') != 16:
+              raise ValueError('This one reviewed repair batch is limited to two selected clips and16credits')
+          request_id = request.get('request_id','')
+          if not isinstance(request_id,str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{7,79}',request_id):
+              raise ValueError('A stable unique repair request_id is required')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+              output.write('selected=' + json.dumps({'include':selected},separators=(',',':')) + '\n')
+              output.write('request_id=' + request_id + '\n')
+          PY
+  episode:
+    needs: selection
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.selection.outputs.selected) }}
+    env:
+      REVIEWED_REPAIR_PARTS: ${{ matrix.parts }}
+      REVIEWED_REPAIR_ID: ${{ needs.selection.outputs.request_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Prepare bundled native media tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python protoface/ep31-35/install_media_tools.py
+      - name: Verify selected fallback prices and initialize private channel
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/ep31-35/series_runner.py init --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td31-35-repair-${{ matrix.episode }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD3135R-ready-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep31-35/transport-public/ep${{ matrix.episode }}/
+          retention-days: 1
+      - name: Receive selected encrypted three-panel storyboards
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep31-35/series_runner.py receive --episode ${{ matrix.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td31-35-repair-${{ matrix.episode }}' --repository '${{ github.repository }}'
+      - name: Generate only confirmed fallback replacements or resume accepted runs
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep31-35/series_runner.py generate --episode ${{ matrix.episode }} --parts '${{ matrix.parts }}'
+      - name: Encrypt returned clip and accepted request checkpoint
+        if: always()
+        run: python protoface/ep31-35/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD3135R-results-ep${{ matrix.episode }}-${{ github.run_id }}
+          path: protoface/ep31-35/sealed-results/ep${{ matrix.episode }}.sealed.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove ephemeral plaintext and input key
+        if: always()
+        env:
+          TD_EPISODE: ${{ matrix.episode }}
+          TD_PRIVATE_DIR: ${{ runner.temp }}/td31-35-repair-${{ matrix.episode }}
+        run: |
+          python - <<'PY'
+          import os, shutil
+          from pathlib import Path
+          shutil.rmtree(os.environ['TD_PRIVATE_DIR'], ignore_errors=True)
+          shutil.rmtree(Path('protoface/ep31-35/work') / ('ep' + os.environ['TD_EPISODE']), ignore_errors=True)
+          PY

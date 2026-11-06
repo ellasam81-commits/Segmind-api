@@ -1,0 +1,28 @@
+{
+  "request_id": "td3135-dialogue-repair-a",
+  "confirmed_defect": true,
+  "free_or_picture_repair_insufficient": true,
+  "no_consecutive_attempts": true,
+  "preserve_accepted_parts": true,
+  "native_audio": true,
+  "budget_credits_per_attempt": 8,
+  "max_additional_generations_per_affected_clip": 1,
+  "selected_clip_count": 2,
+  "maximum_total_credits": 16,
+  "episodes": [
+    {
+      "episode": 33,
+      "parts": "7",
+      "original_run_ids": {
+        "7": "run_01M6S5BTW62SGWPRZWN2EHZMT9"
+      }
+    },
+    {
+      "episode": 35,
+      "parts": "9",
+      "original_run_ids": {
+        "9": "run_01M6S6A6Y081EVKASF0G99GGK7"
+      }
+    }
+  ]
+}
