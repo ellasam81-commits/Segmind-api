@@ -15,7 +15,7 @@ permissions:
   actions: read
 concurrency:
   group: thirteen-doors-ep21-25-initial
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   selection:
     runs-on: ubuntu-latest

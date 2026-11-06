@@ -8,7 +8,9 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
 import time
+import wave
 import zipfile
 import httpx
 from jsonschema import Draft202012Validator, ValidationError
@@ -162,20 +164,77 @@ def audio_duration(path):
     return max(timings) / 1000000
 
 
+def video_duration(path):
+    output = media(['-threads', '2', '-i', str(path), '-map', '0:v:0', '-an', '-f', 'null', '-', '-progress', 'pipe:1'], 'Native video timing verification failed')
+    timings = [int(x) for x in re.findall(rb'out_time_us=(\d+)', output)]
+    if not timings:
+        raise RuntimeError('Native video timing is unavailable')
+    return max(timings) / 1000000
+
+
 def normalize(raw, target):
+    """Fit the complete bounded native take into its slot, without tail cuts.
+
+    H3 may return about 5.17 seconds for a five-second request. A uniform
+    pitch-preserving audio tempo change and matching picture retime keep all
+    source content. Only silence is appended after the complete retimed sound.
+    AAC packet padding is reported separately from the exact five-second PCM.
+    """
     target.parent.mkdir(parents=True, exist_ok=True)
     source_audio = audio_duration(raw)
-    if not 4.75 <= source_audio <= 5.10:
-        raise RuntimeError('Source native audio requires timing review; no automatic truncation or replacement')
-    media(['-threads', '2', '-filter_threads', '1', '-i', str(raw), '-map', '0:v:0', '-map', '0:a:0', '-sn', '-dn',
-           '-vf', 'fps=24,scale=854:480:force_original_aspect_ratio=decrease,pad=854:480:(ow-iw)/2:(oh-ih)/2,setsar=1,tpad=stop_mode=clone:stop_duration=0.3',
-           '-t', '5', '-frames:v', '120', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-threads', '2', '-pix_fmt', 'yuv420p',
-           '-af', 'apad=pad_dur=0.3,atrim=duration=5,asetpts=PTS-STARTPTS', '-ar', '32000', '-ac', '2', '-c:a', 'aac', '-b:a', '192k',
-           '-movflags', '+faststart', str(target)], 'Native clip normalization failed')
-    target_audio = audio_duration(target)
-    if not 4.98 <= target_audio <= 5.10:
-        raise RuntimeError('Normalized clip audio does not cover the full five-second slot')
-    return {'source_audio_seconds': source_audio, 'normalized_audio_seconds': target_audio, 'native_audio': True}
+    source_video = video_duration(raw)
+    if not all(4.75 <= duration <= 5.35 for duration in (source_audio, source_video)) or abs(source_audio - source_video) > .15:
+        raise RuntimeError('Source native timing lies outside the bounded retime window; preserve it for review, no replacement purchased')
+    tempo = max(source_audio, source_video) / 5
+    exact_frames, rate, channels, frame_bytes = 160000, 32000, 2, 4
+    with tempfile.TemporaryDirectory(prefix='native-retime-', dir=target.parent) as directory:
+        temporary = Path(directory)
+        retimed_pcm = None
+        for attempt in range(6):
+            retimed_pcm = media(['-threads', '2', '-i', str(raw), '-map', '0:a:0', '-vn', '-af', f'atempo={tempo:.12f}',
+                '-ar', str(rate), '-ac', str(channels), '-c:a', 'pcm_s16le', '-f', 's16le', 'pipe:1'], 'Complete native audio retime failed')
+            if len(retimed_pcm) % frame_bytes:
+                raise RuntimeError('Retimed native PCM has a partial sample frame')
+            content_frames = len(retimed_pcm) // frame_bytes
+            if content_frames <= exact_frames:
+                break
+            # atempo's overlap windows can overshoot by a few milliseconds.
+            # Reprocess the full source a little faster; never trim its tail.
+            tempo *= content_frames / exact_frames + .001
+            if tempo > 1.085:
+                raise RuntimeError('Native take would require more than the bounded small tempo adjustment')
+        else:
+            raise RuntimeError('Complete native sound could not fit the slot without trimming; source preserved')
+        if content_frames < int(4.80 * rate):
+            raise RuntimeError('Retimed source has excessive missing slot coverage; inspect source timing')
+        silence_frames = exact_frames - content_frames
+        wav_path = temporary / 'complete-native-five-seconds.wav'
+        with wave.open(str(wav_path), 'wb') as wav:
+            wav.setnchannels(channels)
+            wav.setsampwidth(2)
+            wav.setframerate(rate)
+            wav.writeframes(retimed_pcm + b'\0' * silence_frames * frame_bytes)
+        picture = temporary / 'picture-only.mp4'
+        media(['-threads', '2', '-filter_threads', '1', '-i', str(raw), '-map', '0:v:0', '-an', '-sn', '-dn',
+            '-vf', f'setpts=(PTS-STARTPTS)/{tempo:.12f},fps=24,scale=854:480:force_original_aspect_ratio=decrease,pad=854:480:(ow-iw)/2:(oh-ih)/2,setsar=1,tpad=stop_mode=clone:stop_duration=1',
+            '-frames:v', '120', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-threads', '2', '-pix_fmt', 'yuv420p',
+            '-movflags', '+faststart', str(picture)], 'Native picture retime failed')
+        staged = temporary / 'normalized.mp4'
+        # No -t, -shortest, frame cap or trim touches this complete sound input.
+        media(['-i', str(picture), '-i', str(wav_path), '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy',
+            '-c:a', 'aac', '-b:a', '192k', '-ar', str(rate), '-ac', str(channels), '-movflags', '+faststart', str(staged)],
+            'Complete native clip mux failed')
+        target_audio = audio_duration(staged)
+        target_video = video_duration(staged)
+        if not 4.999 <= target_video <= 5.001 or not 4.999 <= target_audio <= 5.05:
+            raise RuntimeError('Normalized native slot timing verification failed; source preserved')
+        staged.replace(target)
+    return {'source_audio_seconds': source_audio, 'source_video_seconds': source_video,
+            'normalized_audio_seconds': target_audio, 'normalized_video_seconds': target_video,
+            'exact_pcm_seconds': exact_frames / rate, 'retimed_audio_content_seconds': content_frames / rate,
+            'trailing_silence_seconds': silence_frames / rate, 'uniform_tempo_factor': tempo,
+            'audio_pitch_preserved': True, 'full_source_audio_processed': True, 'source_audio_tail_trimmed': False,
+            'native_audio': True, 'post_dubbing': False}
 
 
 def generate_one(episode, part, packet):
@@ -251,6 +310,90 @@ def generate_one(episode, part, packet):
     raise TimeoutError('Accepted run remains pending; preserve its ID and poll the same run later')
 
 
+def assemble_native_exact_slots(work):
+    """Join twelve normalized five-second native slots with one AAC encode.
+
+    normalize() must already preserve each original clip's complete intended
+    native content in its approved five-second slot. The extra decoded samples
+    removed here are limited to padding from those controlled normalized AAC
+    clips. This helper never repairs or truncates an unnormalized provider file.
+    """
+    import hashlib
+
+    rate, channels, bytes_per_sample = 32000, 2, 2
+    samples_per_slot = 5 * rate
+    bytes_per_slot = samples_per_slot * channels * bytes_per_sample
+    files = [work / f'clips/part-{number:02}.mp4' for number in PARTS]
+    if len(files) != 12 or any(not path.is_file() for path in files):
+        raise RuntimeError('Exactly twelve normalized native clips are required for assembly')
+    before = {str(number): hashlib.sha256(path.read_bytes()).hexdigest() for number, path in zip(PARTS, files)}
+    assembly = work / 'assembly-temp'
+    assembly.mkdir(parents=True, exist_ok=True)
+    listing = assembly / 'picture-concat.txt'
+    picture = assembly / 'picture-only.mp4'
+    pcm = assembly / 'native-exact-slots.s16le'
+    staged = work / 'episode-native.assembling.mp4'
+    target = work / 'episode-native.mp4'
+
+    def quote(path):
+        return str(path.resolve()).replace("'", "'\\''")
+
+    # Demux only picture. Explicit slot durations prevent an input container's
+    # audio padding from moving the next picture's starting timestamp.
+    listing.write_text(''.join("file '" + quote(path) + "'\nduration 5.000000\n" for path in files))
+    media(['-threads', '2', '-f', 'concat', '-safe', '0', '-i', str(listing),
+           '-map', '0:v:0', '-an', '-c:v', 'copy', '-movflags', '+faststart', str(picture)],
+          'Picture-only native assembly failed')
+
+    padding = {}
+    with pcm.open('wb') as timeline:
+        for number, path in zip(PARTS, files):
+            decoded = media(['-threads', '2', '-i', str(path), '-map', '0:a:0', '-vn',
+                             '-ar', str(rate), '-ac', str(channels), '-c:a', 'pcm_s16le',
+                             '-f', 's16le', 'pipe:1'], 'Native slot PCM decoding failed')
+            frame_size = channels * bytes_per_sample
+            if len(decoded) % frame_size:
+                raise RuntimeError('Native PCM ended with an incomplete sample frame')
+            sample_count = len(decoded) // frame_size
+            if not samples_per_slot <= sample_count <= samples_per_slot + 2048:
+                raise RuntimeError('Normalized native audio requires timing review; no assembly padding or truncation applied')
+            padding[str(number)] = sample_count - samples_per_slot
+            timeline.write(decoded[:bytes_per_slot])
+    if pcm.stat().st_size != 12 * bytes_per_slot:
+        raise RuntimeError('Native audio timeline does not contain twelve exact five-second sample slots')
+
+    # The PCM input has exactly sixty seconds. No shortest/duration switch may
+    # hide an audio deficit. Encode this complete native timeline only once.
+    media(['-threads', '2', '-i', str(picture), '-f', 's16le', '-ar', str(rate), '-ac', str(channels), '-i', str(pcm),
+           '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy', '-c:a', 'aac', '-ar', str(rate), '-ac', str(channels),
+           '-b:a', '192k', '-movflags', '+faststart', str(staged)], 'Exact native sample-slot assembly failed')
+    decoded_master = media(['-threads', '2', '-i', str(staged), '-map', '0:a:0', '-vn', '-c:a', 'pcm_s16le',
+                            '-ar', str(rate), '-ac', str(channels), '-f', 's16le', 'pipe:1'],
+                           'Assembled native audio verification failed')
+    master_samples = len(decoded_master) // (channels * bytes_per_sample)
+    expected_samples = 12 * samples_per_slot
+    if len(decoded_master) % (channels * bytes_per_sample) or not expected_samples <= master_samples <= expected_samples + 1024:
+        raise RuntimeError('Assembled native audio does not cover sixty exact seconds within codec padding tolerance')
+    picture_check = media(['-threads', '2', '-i', str(staged), '-map', '0:v:0', '-an',
+                           '-fps_mode', 'passthrough', '-f', 'null', '-', '-progress', 'pipe:1'],
+                          'Assembled native picture verification failed')
+    frame_counts = [int(value) for value in re.findall(rb'frame=(\d+)', picture_check)]
+    frame_times = [int(value) for value in re.findall(rb'out_time_us=(\d+)', picture_check)]
+    if not frame_counts or max(frame_counts) != 1440 or not frame_times or abs(max(frame_times) / 1000000 - 60) > 0.055:
+        raise RuntimeError('Assembled picture does not contain 1440 frames spanning sixty seconds')
+    if any(hashlib.sha256(path.read_bytes()).hexdigest() != before[str(number)] for number, path in zip(PARTS, files)):
+        raise RuntimeError('A selected source clip changed during assembly; previous master is preserved')
+    staged.replace(target)
+    picture.unlink()
+    pcm.unlink()
+    return {'assembled_audio_seconds': master_samples / rate,
+            'assembled_audio_sample_rate': rate, 'assembled_audio_channels': channels,
+            'native_audio_assembly': 'Twelve exact five-second native PCM slots; one master AAC encode',
+            'native_audio_samples_per_slot': samples_per_slot,
+            'normalized_AAC_padding_samples_removed': padding,
+            'selected_clip_sha256': before, 'source_clips_unchanged': True}
+
+
 def generate(episode, parts=None):
     if os.environ.get('ALLOW_PAID_GENERATION') != 'true':
         raise RuntimeError('Generation authorization is absent')
@@ -291,14 +434,7 @@ def generate(episode, parts=None):
     if parts:
         report['reviewed_replacement_parts'] = numbers
     else:
-        listing = work / 'concat.txt'
-        listing.write_text(''.join(f"file '{work / f'clips/part-{n:02}.mp4'}'\n" for n in PARTS))
-        media(['-threads', '2', '-f', 'concat', '-safe', '0', '-i', str(listing), '-map', '0:v:0', '-map', '0:a:0',
-               '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', str(work / 'episode-native.mp4')], 'Episode native assembly failed')
-        duration = audio_duration(work / 'episode-native.mp4')
-        if not 59.98 <= duration <= 60.20:
-            raise RuntimeError('Assembled native audio does not cover the full sixty seconds')
-        report['assembled_audio_seconds'] = duration
+        report.update(assemble_native_exact_slots(work))
     save(work / 'generation-report.json', report)
     print('Selected native parts complete:', episode, numbers, flush=True)
 

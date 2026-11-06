@@ -1,5 +1,5 @@
 {
-  "request_id": "ep21-25-initial-20261106-v1",
+  "request_id": "ep21-25-initial-20261106-v2-preserve-accepted",
   "episodes": [
     21,
     22,
@@ -11,6 +11,10 @@
   "duration_seconds": 5,
   "budget_credits_per_attempt": 8,
   "initial_batch_target_credits": 480,
+  "previous_workflow": 42190672235,
+  "already_accepted_initial_clips": 2,
+  "already_charged_initial_credits": 16,
+  "resume_existing_run_ids_without_new_POST": true,
   "max_additional_generations_per_irreparable_clip": 1,
   "native_audio": true
 }
