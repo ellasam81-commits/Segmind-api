@@ -1,0 +1,23 @@
+{
+  "request_id": "ep25-critical-audio-p05-p09-20261106-v1",
+  "confirmed_defect": true,
+  "free_or_picture_repair_insufficient": true,
+  "no_consecutive_attempts": true,
+  "preserve_accepted_parts": true,
+  "native_audio": true,
+  "budget_credits_per_attempt": 8,
+  "max_additional_generations_per_affected_clip": 1,
+  "episodes": [
+    {
+      "episode": 25,
+      "parts": "5,9",
+      "original_run_ids": {
+        "5": "run_01M6R5GAZD5B0TQTZD6NXZ6QQR",
+        "9": "run_01M6R5RCBP09MWWE3PJAKCQPTJ"
+      }
+    }
+  ],
+  "maximum_batch_credits": 16,
+  "initial_batch_actual_credits": 480,
+  "maximum_total_video_credits": 496
+}
