@@ -50,8 +50,9 @@ jobs:
               choice=os.environ['SELECT_EPISODE']
               episodes=list(range(36,41)) if choice=='all' else [int(choice)];parts=[];repair_parts=[];repair_id=''
           assert episodes and len(episodes)==len(set(episodes)) and all(type(e)is int and e in range(36,41) for e in episodes)
-          assert len(parts)==len(set(parts)) and all(type(n)is int and n in range(1,13) for n in parts)
-          assert len(repair_parts)==len(set(repair_parts)) and all(type(n)is int and n in range(1,13) for n in repair_parts)
+          selected_range=range(1,17) if episodes==[37] else range(1,13)
+          assert len(parts)==len(set(parts)) and all(type(n)is int and n in selected_range for n in parts)
+          assert len(repair_parts)==len(set(repair_parts)) and all(type(n)is int and n in selected_range for n in repair_parts)
           assert not repair_parts or len(episodes)==1
           with open(os.environ['GITHUB_OUTPUT'],'a') as out:
               out.write('episodes='+json.dumps(episodes,separators=(',',':'))+'\n')

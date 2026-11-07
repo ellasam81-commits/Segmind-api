@@ -14,7 +14,7 @@ import wave
 import zipfile
 import httpx
 from jsonschema import Draft202012Validator, ValidationError
-from config import ROOT, AAD_PREFIX, REMOTE_ROOT, EPISODES, PARTS, MODEL
+from config import ROOT, AAD_PREFIX, REMOTE_ROOT, EPISODES, PARTS, MODEL, parts_for, INITIAL_CLIP_COUNT, INITIAL_CREDITS
 import private_transport as transport
 from packet_constraints import estimated_part, payload, input_signature, request_key, validate_packet
 
@@ -71,22 +71,24 @@ def init(episode, run_id, private_dir):
         raise RuntimeError('H3 is unavailable; no input channel or paid request created')
     price = estimated_part(model)
     selection = parts or initial_parts
-    count = len(selection) if selection else 60
-    funding_count = len(selection) if selection else (60 if episode == 36 else 12)
+    count = len(selection) if selection else INITIAL_CLIP_COUNT
+    funding_count = len(selection) if selection else len(parts_for(episode))
+    if any(n not in parts_for(episode) for n in selection):
+        raise ValueError("Selected part outside this episode")
     funding_required = funding_count * price
     funding_sufficient = quota.get('balance_credits', 0) >= funding_required
     transport.init(private_dir, public_dir, run_id)
     ready_path = public_dir / 'ready.json'
     ready = json.loads(ready_path.read_text())
-    ready.update(episode=episode, parts=parts or initial_parts or list(PARTS), initial_part_selection=bool(initial_parts), protocol='ep36-40-three5-v1',
+    ready.update(episode=episode, parts=parts or initial_parts or list(parts_for(episode)), initial_part_selection=bool(initial_parts), protocol='ep36-40-three5-v1',
                  request_kind='repair' if parts else 'initial', repair_request_id=repair_id or None,
                  maximum_credits_per_attempt=8, maximum_additional_generations_per_defective_clip=1)
     save(ready_path, ready)
     details = {'model': model, 'quota': quota, 'estimated_per_clip': price, 'episode_count': 1 if parts else 5,
-               'clip_count': count, 'estimated_batch_credits': count * price, 'maximum_initial_batch_credits': 480,
+               'clip_count': count, 'estimated_batch_credits': count * price, 'maximum_initial_batch_credits': INITIAL_CREDITS,
                'generation_submitted': False, 'request_kind': ready['request_kind'], 'funding_check_clip_count': funding_count,
                'funding_required_credits': funding_required, 'funding_sufficient': funding_sufficient,
-               'full_initial_batch_funding_sufficient': quota.get('balance_credits', 0) >= 60 * price}
+               'full_initial_batch_funding_sufficient': quota.get('balance_credits', 0) >= INITIAL_CLIP_COUNT * price}
     public = (ROOT / 'return-public.pem').read_bytes()
     save(public_dir / 'preflight.sealed.json', transport.seal(json.dumps(details).encode(), public,
          f'{AAD_PREFIX}-preflight-v1:{run_id}:ep{episode:02}'))
@@ -324,13 +326,16 @@ def assemble_native_exact_slots(work):
     """
     import hashlib
 
+    numbers = parts_for(int(work.name.removeprefix("ep")))
+    clip_count = len(numbers)
+    duration = clip_count * 5
     rate, channels, bytes_per_sample = 32000, 2, 2
     samples_per_slot = 5 * rate
     bytes_per_slot = samples_per_slot * channels * bytes_per_sample
-    files = [work / f'clips/part-{number:02}.mp4' for number in PARTS]
-    if len(files) != 12 or any(not path.is_file() for path in files):
-        raise RuntimeError('Exactly twelve normalized native clips are required for assembly')
-    before = {str(number): hashlib.sha256(path.read_bytes()).hexdigest() for number, path in zip(PARTS, files)}
+    files = [work / f'clips/part-{number:02}.mp4' for number in numbers]
+    if len(files) != clip_count or any(not path.is_file() for path in files):
+        raise RuntimeError('The complete reviewed normalized clip count are required for assembly')
+    before = {str(number): hashlib.sha256(path.read_bytes()).hexdigest() for number, path in zip(numbers, files)}
     assembly = work / 'assembly-temp'
     assembly.mkdir(parents=True, exist_ok=True)
     listing = assembly / 'picture-concat.txt'
@@ -351,7 +356,7 @@ def assemble_native_exact_slots(work):
 
     padding = {}
     with pcm.open('wb') as timeline:
-        for number, path in zip(PARTS, files):
+        for number, path in zip(numbers, files):
             decoded = media(['-threads', '2', '-i', str(path), '-map', '0:a:0', '-vn',
                              '-ar', str(rate), '-ac', str(channels), '-c:a', 'pcm_s16le',
                              '-f', 's16le', 'pipe:1'], 'Native slot PCM decoding failed')
@@ -363,8 +368,8 @@ def assemble_native_exact_slots(work):
                 raise RuntimeError('Normalized native audio requires timing review; no assembly padding or truncation applied')
             padding[str(number)] = sample_count - samples_per_slot
             timeline.write(decoded[:bytes_per_slot])
-    if pcm.stat().st_size != 12 * bytes_per_slot:
-        raise RuntimeError('Native audio timeline does not contain twelve exact five-second sample slots')
+    if pcm.stat().st_size != clip_count * bytes_per_slot:
+        raise RuntimeError('Native audio timeline does not contain the reviewed exact five-second sample slots')
 
     # The PCM input has exactly sixty seconds. No shortest/duration switch may
     # hide an audio deficit. Encode this complete native timeline only once.
@@ -375,7 +380,7 @@ def assemble_native_exact_slots(work):
                             '-ar', str(rate), '-ac', str(channels), '-f', 's16le', 'pipe:1'],
                            'Assembled native audio verification failed')
     master_samples = len(decoded_master) // (channels * bytes_per_sample)
-    expected_samples = 12 * samples_per_slot
+    expected_samples = clip_count * samples_per_slot
     if len(decoded_master) % (channels * bytes_per_sample) or not expected_samples <= master_samples <= expected_samples + 1024:
         raise RuntimeError('Assembled native audio does not cover sixty exact seconds within codec padding tolerance')
     picture_check = media(['-threads', '2', '-i', str(staged), '-map', '0:v:0', '-an',
@@ -383,16 +388,16 @@ def assemble_native_exact_slots(work):
                           'Assembled native picture verification failed')
     frame_counts = [int(value) for value in re.findall(rb'frame=(\d+)', picture_check)]
     frame_times = [int(value) for value in re.findall(rb'out_time_us=(\d+)', picture_check)]
-    if not frame_counts or max(frame_counts) != 1440 or not frame_times or abs(max(frame_times) / 1000000 - 60) > 0.055:
-        raise RuntimeError('Assembled picture does not contain 1440 frames spanning sixty seconds')
-    if any(hashlib.sha256(path.read_bytes()).hexdigest() != before[str(number)] for number, path in zip(PARTS, files)):
+    if not frame_counts or max(frame_counts) != duration * 24 or not frame_times or abs(max(frame_times) / 1000000 - duration) > 0.055:
+        raise RuntimeError('Assembled picture does not contain the reviewed frame count and duration')
+    if any(hashlib.sha256(path.read_bytes()).hexdigest() != before[str(number)] for number, path in zip(numbers, files)):
         raise RuntimeError('A selected source clip changed during assembly; previous master is preserved')
     staged.replace(target)
     picture.unlink()
     pcm.unlink()
     return {'assembled_audio_seconds': master_samples / rate,
             'assembled_audio_sample_rate': rate, 'assembled_audio_channels': channels,
-            'native_audio_assembly': 'Twelve exact five-second native PCM slots; one master AAC encode',
+            'native_audio_assembly': f'{clip_count} exact five-second native PCM slots; one master AAC encode',
             'native_audio_samples_per_slot': samples_per_slot,
             'normalized_AAC_padding_samples_removed': padding,
             'selected_clip_sha256': before, 'source_clips_unchanged': True}
@@ -401,7 +406,9 @@ def assemble_native_exact_slots(work):
 def generate(episode, parts=None):
     if os.environ.get('ALLOW_PAID_GENERATION') != 'true':
         raise RuntimeError('Generation authorization is absent')
-    numbers = parts or selected_parts(os.environ.get('INITIAL_PARTS', '')) or list(PARTS)
+    numbers = parts or selected_parts(os.environ.get('INITIAL_PARTS', '')) or list(parts_for(episode))
+    if any(n not in parts_for(episode) for n in numbers):
+        raise ValueError('Selected part outside reviewed episode')
     work = ROOT / f'work/ep{episode:02}'
     packets = {n: validate_packet(json.loads((work / f'packets/part-{n:02}.json').read_text()), episode, n) for n in numbers}
     if any(p.get('request_kind', 'initial') != ('repair' if parts else 'initial') for p in packets.values()):
@@ -437,7 +444,7 @@ def generate(episode, parts=None):
               'subtitles_and_corner_credits': 'Applied locally after actual native-speech review.'}
     if parts:
         report['reviewed_replacement_parts'] = numbers
-    elif len(numbers) < len(PARTS):
+    elif len(numbers) < len(parts_for(episode)):
         report['reviewed_initial_partial_parts'] = numbers
         report['assembly_deferred_until_all_initial_parts_exist'] = True
     else:

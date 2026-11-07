@@ -3,11 +3,9 @@ import base64
 import hashlib
 import math
 from decimal import Decimal, InvalidOperation
-from config import EPISODES, PARTS
+from config import EPISODES, PARTS, parts_for, INITIAL_CLIP_COUNT, INITIAL_CREDITS
 
 PER_CLIP_CREDITS = Decimal('8')
-INITIAL_CLIP_COUNT = 60
-INITIAL_CREDITS = 480
 
 
 def decimal(value):
@@ -67,7 +65,7 @@ def request_key(packet):
 
 
 def validate_packet(packet, episode=None, part=None):
-    if packet.get('episode') not in EPISODES or packet.get('part') not in PARTS:
+    if packet.get('episode') not in EPISODES or packet.get('part') not in parts_for(packet['episode']):
         raise ValueError('Packet identity outside the authorized batch')
     if episode is not None and packet['episode'] != episode or part is not None and packet['part'] != part:
         raise ValueError('Private input identity mismatch')
