@@ -1,1 +1,16 @@
-{"request_id":"td3640-initial-pilot-1794065073230","episodes":[36],"initial_parts":[1,2,3],"maximum_credits_per_clip":8,"maximum_selected_initial_credits":24,"initial_batch_target_credits":480,"quality":"480p","native_audio":true,"post_dubbing":false,"check_before_delivery":true}
+{
+  "request_id": "td3640-ep36-p01-audio-clean-v2",
+  "request_kind": "repair",
+  "episodes": [
+    36
+  ],
+  "initial_parts": [],
+  "repair_parts": [
+    1
+  ],
+  "repair_request_id": "td3640-ep36-p01-audio-clean-v2",
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_repair_credits": 8,
+  "maximum_additional_requests": 1,
+  "original_run_id": "run_01M6VA3M7HW52H7MSCJJAHDDKC"
+}
