@@ -1,14 +1,1 @@
-{
-  "request_id": "td3640-ep38-p03-audio-identity-v2",
-  "request_kind": "repair",
-  "episodes": [
-    38
-  ],
-  "repair_parts": [
-    3
-  ],
-  "repair_request_id": "td3640-ep38-p03-audio-identity-v2",
-  "maximum_credits_per_clip": 8,
-  "maximum_selected_repair_credits": 8,
-  "maximum_additional_generations_per_selected_clip": 1
-}
+{"request_id": "td3640-ep37-initial16-fulltext-v1", "request_kind": "initial", "episodes": [37], "initial_parts": [], "maximum_credits_per_clip": 8, "maximum_selected_initial_credits": 128, "maximum_initial_batch_credits": 512, "reviewed_boards": 16, "episode_duration": 80, "exact_source_dialogue_preserved": true, "new_storyboard_generation_calls": 0}
