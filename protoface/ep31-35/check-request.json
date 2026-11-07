@@ -1,1 +1,1 @@
-{"request_id":"td3135-review-branch-price-20261106","episodes":[31,32,33,34,35],"read_only":true,"provider_methods":["GET","GET"],"paid_generation_authorized_in_this_request":false,"default_branch_mutation":false}
+{"request_id":"td3640-readonly-1794063922076","episodes":[36,37,38,39,40],"purpose":"reuse_existing_GET_only_price_checker_for_next_batch","read_only":true,"provider_methods":["GET","GET"],"paid_generation_authorized_in_this_request":false}
