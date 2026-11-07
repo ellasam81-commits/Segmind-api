@@ -22,6 +22,8 @@ jobs:
     outputs:
       episodes: ${{ steps.select.outputs.episodes }}
       initial_parts: ${{ steps.select.outputs.initial_parts }}
+      repair_parts: ${{ steps.select.outputs.repair_parts }}
+      repair_id: ${{ steps.select.outputs.repair_id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,15 +39,25 @@ jobs:
           if os.environ['EVENT_NAME']=='push':
               data=json.loads(Path('protoface/ep36-40/generate-request.json').read_text())
               episodes=data['episodes'];parts=data.get('initial_parts',[])
+              repair_parts=data.get('repair_parts',[]);repair_id=data.get('repair_request_id','')
+              kind=data.get('request_kind','initial')
+              assert kind in ('initial','repair')
+              assert bool(repair_parts)==bool(repair_id)
+              assert (kind=='repair')==bool(repair_parts)
+              assert not(parts and repair_parts)
               assert data['maximum_credits_per_clip']==8
           else:
               choice=os.environ['SELECT_EPISODE']
-              episodes=list(range(36,41)) if choice=='all' else [int(choice)];parts=[]
+              episodes=list(range(36,41)) if choice=='all' else [int(choice)];parts=[];repair_parts=[];repair_id=''
           assert episodes and len(episodes)==len(set(episodes)) and all(type(e)is int and e in range(36,41) for e in episodes)
           assert len(parts)==len(set(parts)) and all(type(n)is int and n in range(1,13) for n in parts)
+          assert len(repair_parts)==len(set(repair_parts)) and all(type(n)is int and n in range(1,13) for n in repair_parts)
+          assert not repair_parts or len(episodes)==1
           with open(os.environ['GITHUB_OUTPUT'],'a') as out:
               out.write('episodes='+json.dumps(episodes,separators=(',',':'))+'\n')
               out.write('initial_parts='+','.join(str(n) for n in parts)+'\n')
+              out.write('repair_parts='+','.join(str(n) for n in repair_parts)+'\n')
+              out.write('repair_id='+repair_id+'\n')
           PY
   episode:
     needs: selection
@@ -58,6 +70,8 @@ jobs:
         episode: ${{ fromJSON(needs.selection.outputs.episodes) }}
     env:
       INITIAL_PARTS: ${{ needs.selection.outputs.initial_parts }}
+      REVIEWED_REPAIR_PARTS: ${{ needs.selection.outputs.repair_parts }}
+      REVIEWED_REPAIR_ID: ${{ needs.selection.outputs.repair_id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,7 +100,12 @@ jobs:
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
           ALLOW_PAID_GENERATION: 'true'
-        run: python protoface/ep36-40/series_runner.py generate --episode ${{ matrix.episode }}
+        run: |
+          if [ -n "$REVIEWED_REPAIR_PARTS" ]; then
+            python protoface/ep36-40/series_runner.py generate --episode ${{ matrix.episode }} --parts "$REVIEWED_REPAIR_PARTS"
+          else
+            python protoface/ep36-40/series_runner.py generate --episode ${{ matrix.episode }}
+          fi
       - name: Encrypt returned original media and request checkpoints
         if: always()
         run: python protoface/ep36-40/series_runner.py seal --episode ${{ matrix.episode }} --run-id ${{ github.run_id }}
