@@ -1,15 +1,13 @@
 {
-  "request_id": "td3640-ep38-p01-p12-confirmed-picture-v2",
-  "request_kind": "repair",
+  "request_id": "td3640-ep39-initial12-v1",
+  "request_kind": "initial",
   "episodes": [
-    38
+    39
   ],
-  "repair_parts": [
-    1,
-    12
-  ],
-  "repair_request_id": "td3640-ep38-p01-p12-confirmed-picture-v2",
+  "initial_parts": [],
   "maximum_credits_per_clip": 8,
-  "maximum_selected_repair_credits": 16,
-  "maximum_additional_generations_per_selected_clip": 1
+  "maximum_selected_initial_credits": 96,
+  "maximum_initial_batch_credits": 480,
+  "reviewed_boards": 12,
+  "exact_source_dialogue_preserved": true
 }
