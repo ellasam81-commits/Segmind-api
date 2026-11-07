@@ -1,13 +1,13 @@
 {
-  "request_id": "td3640-ep40-p07-native-fulltext-v2",
+  "request_id": "td3640-ep37-p04-wrong-mirror-identity-v2",
   "request_kind": "repair",
   "episodes": [
-    40
+    37
   ],
   "repair_parts": [
-    7
+    4
   ],
-  "repair_request_id": "td3640-ep40-p07-native-fulltext-v2",
+  "repair_request_id": "td3640-ep37-p04-wrong-mirror-identity-v2",
   "maximum_credits_per_clip": 8,
   "maximum_selected_repair_credits": 8,
   "maximum_additional_generations_per_selected_clip": 1
