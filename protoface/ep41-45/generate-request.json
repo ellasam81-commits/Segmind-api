@@ -1,0 +1,18 @@
+{
+  "request_id": "td4145-ep41-initial-p01p02-20261108",
+  "request_kind": "initial",
+  "episodes": [
+    41
+  ],
+  "initial_parts": [
+    1,
+    2
+  ],
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_initial_credits": 16,
+  "maximum_initial_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "1": "ec7b0caf1d193ce8aa7b423738c7bd94542b83d831868427acfe15bdc128feb9",
+    "2": "27bd514fb94f00de1d4edd52819df5106f989625b834471d09b98335f56aad77"
+  }
+}
