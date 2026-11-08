@@ -1,0 +1,11 @@
+{
+  "request_id": "td4145-original-native-preflight-20261108",
+  "episode": 41,
+  "action": "read_only_preflight",
+  "user_format": {
+    "boards_per_episode": 12,
+    "shots_per_board": 3,
+    "seconds_per_board": 5
+  },
+  "video_generation_authorized_by_this_request": false
+}
