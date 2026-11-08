@@ -1,0 +1,79 @@
+name: T Hoo Hoo - QQ Music tutorial (Protoface)
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: Check connection, inspect model, or generate ONE reviewed part
+        type: choice
+        options: [check_connection, inspect_model, generate_part]
+        default: check_connection
+      part:
+        description: Tutorial part (1 to 5), each exactly 12 seconds
+        type: choice
+        options: ['1', '2', '3', '4', '5']
+        default: '1'
+      prompt:
+        description: Reviewed shot directions and Chinese dialogue for this part
+        type: string
+        default: ''
+      reference_image_url:
+        description: HTTPS URL for the approved T Hoo Hoo storyboard image
+        type: string
+        default: ''
+      quality:
+        description: Video resolution
+        type: choice
+        options: [480p, 768p]
+        default: 480p
+      max_credits:
+        description: Maximum estimated credits for ONE part (0 blocks generation)
+        type: number
+        default: 0
+      confirm_spend:
+        description: Authorize one paid T Hoo Hoo part only
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: thoo-hoo-qqmusic-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  tutorial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install independent tutorial dependencies
+        run: python -m pip install -r protoface/thoo-hoo-qqmusic/requirements.txt
+      - name: Restore this run checkpoint only
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: thoo-hoo-qqmusic-${{ github.run_id }}
+          path: thoo-hoo-output
+      - name: Run T Hoo Hoo only
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ACTION: ${{ inputs.action }}
+          PART: ${{ inputs.part }}
+          PROMPT: ${{ inputs.prompt }}
+          REFERENCE_IMAGE_URL: ${{ inputs.reference_image_url }}
+          QUALITY: ${{ inputs.quality }}
+          MAX_CREDITS: ${{ inputs.max_credits }}
+          CONFIRM_SPEND: ${{ inputs.confirm_spend }}
+        run: python protoface/thoo-hoo-qqmusic/run.py
+      - name: Save T Hoo Hoo results and checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thoo-hoo-qqmusic-${{ github.run_id }}
+          path: thoo-hoo-output/
+          overwrite: true
+          if-no-files-found: ignore
+          retention-days: 7
