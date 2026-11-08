@@ -47,8 +47,8 @@ def main():
             raise ValueError('Part must be 1 through 5')
         prompt = os.environ.get('PROMPT', '').strip()
         reference = os.environ.get('REFERENCE_IMAGE_URL', '').strip()
-        if not prompt or not reference.startswith('https://'):
-            raise ValueError('Supply a reviewed prompt and HTTPS reference image URL')
+        if not prompt or not reference.startswith(('https://', 'data:image/jpeg;base64,')):
+            raise ValueError('Supply a reviewed prompt and HTTPS or JPEG data URI reference')
         payload = dict(prompt=prompt, reference=[reference], duration_seconds=12,
                        quality=os.environ.get('QUALITY', '480p'), aspect_ratio='16:9',
                        generate_audio=True, enhance_prompt=False)
