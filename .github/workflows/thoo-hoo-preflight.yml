@@ -1,0 +1,33 @@
+name: T Hoo Hoo - read-only Protoface preflight
+on:
+  push:
+    paths: ['protoface/thoo-hoo-qqmusic/preflight-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: thoo-hoo-readonly-preflight
+  cancel-in-progress: false
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r protoface/thoo-hoo-qqmusic/requirements.txt
+      - name: Check Protoface without submitting generation
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ACTION: inspect_model
+          CONFIRM_SPEND: 'false'
+        run: python protoface/thoo-hoo-qqmusic/run.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thoo-hoo-preflight-${{ github.run_id }}
+          path: thoo-hoo-output/model.json
+          retention-days: 7
