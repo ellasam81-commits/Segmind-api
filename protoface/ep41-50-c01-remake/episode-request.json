@@ -2,14 +2,24 @@
   "production_scope": "explicit_user_c01_remake41_50_20261109",
   "episode": 41,
   "initial_parts": [
-    6
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
   ],
   "request_kind": "initial",
   "maximum_credits_per_clip": 8,
-  "maximum_selected_initial_credits": 8,
+  "maximum_selected_initial_credits": 48,
   "maximum_initial_generations_per_selected_clip": 1,
   "authorized_payload_sha256": {
-    "6": "247dd25b96623a1da797ca50b3e64ea8d9c4da17aec2ced601e0cc8a0d5a9420"
+    "7": "f3444b0a53927ff03826897136040e7536ce1ec86b7622c9d9c852f4e8f932e2",
+    "8": "fa429305d8b202f9c923c9d667bc310a37227ad886c5e7453b5ad0adb1c09105",
+    "9": "dae8835119c5a5bd303307937e6c4f6ea05e153471007a294e9380345606350e",
+    "10": "e658464f4eb28064c6efcbc1e279a68eb0081c9f770312ebfeeff768f8a287f3",
+    "11": "c797ff5dd700944cf419df7669738e83b91b547468b6881b67de8f5911bb165b",
+    "12": "14b694c340604a0c2e553bb02e4b71f28167ade917ed45abed30a64f30e269c3"
   },
   "batch_initial_video_cap_credits": 960,
   "original41_45_generation_not_reopened": true
