@@ -1,20 +1,19 @@
-name: Thirteen Doors41 fixed two-clip native pilot
+name: Thirteen Doors approved remaining initial clips
 on:
   push:
-    paths: ['protoface/ep41-45/generate-request.json']
+    paths: ['protoface/ep41-45/episode-request.json']
 permissions:
   contents: read
   actions: read
 concurrency:
-  group: thirteen-doors41-fixed-initial-pilot
+  group: thirteen-doors-approved-initial-episodes
   cancel-in-progress: false
 jobs:
-  episode41-pilot:
+  selected-episode:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     env:
       TD_INPUT_REF: ${{ github.ref_name }}
-      INITIAL_PARTS: '1,2'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,58 +21,65 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: Verify fixed reviewed request scope
+      - name: Verify exact remaining clip hashes and budget
+        id: scope
         run: |
           python - <<'PY_SCOPE'
-          import json,sys
+          import json,os,sys
           sys.path.insert(0,'protoface/ep41-45')
-          from config import EPISODES,PARTS,AUTHORIZED_INPUT_SHA256
-          d=json.load(open('protoface/ep41-45/generate-request.json'))
-          assert EPISODES==(41,) and PARTS==(1,2)
-          assert d['episodes']==[41] and d['initial_parts']==[1,2]
+          from config import EPISODES,parts_for,AUTHORIZED_INPUT_SHA256,INITIAL_CLIP_COUNT,INITIAL_CREDITS
+          d=json.load(open('protoface/ep41-45/episode-request.json'))
+          e=d['episode'];p=d['initial_parts']
+          assert e in EPISODES and p==list(parts_for(e)) and p==sorted(set(p))
           assert d['request_kind']=='initial' and not d.get('repair_parts')
-          assert d['maximum_credits_per_clip']==8 and d['maximum_selected_initial_credits']==16
+          assert d['maximum_credits_per_clip']==8 and d['maximum_selected_initial_credits']==8*len(p)
           assert d['maximum_initial_generations_per_selected_clip']==1
-          assert d['authorized_payload_sha256']==AUTHORIZED_INPUT_SHA256
+          assert d['authorized_payload_sha256']=={str(n):AUTHORIZED_INPUT_SHA256[f'{e}:{n}'] for n in p}
+          assert INITIAL_CLIP_COUNT<=58 and INITIAL_CREDITS<=464
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write(f'episode={e}\nep={e:02}\nparts='+','.join(map(str,p))+'\n')
           PY_SCOPE
       - name: Prepare existing native media tools
         run: |
           python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
           python protoface/ep41-45/install_media_tools.py
-      - name: Initialize fixed pilot input channel and verify live quote
+      - name: Initialize approved input channel and verify live price
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
-        run: python protoface/ep41-45/series_runner.py init --episode 41 --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td41-pilot'
+          INITIAL_PARTS: ${{ steps.scope.outputs.parts }}
+        run: python protoface/ep41-45/series_runner.py init --episode ${{ steps.scope.outputs.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td4145-input'
       - uses: actions/upload-artifact@v4
         with:
-          name: TD4145-ready-ep41-${{ github.run_id }}
-          path: protoface/ep41-45/transport-public/ep41/
+          name: TD4145-ready-ep${{ steps.scope.outputs.ep }}-${{ github.run_id }}
+          path: protoface/ep41-45/transport-public/ep${{ steps.scope.outputs.ep }}/
           retention-days: 1
-      - name: Receive only matching encrypted pilot packets
+      - name: Receive only matching approved encrypted inputs
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python protoface/ep41-45/series_runner.py receive --episode 41 --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td41-pilot' --repository '${{ github.repository }}'
-      - name: Generate or retrieve only the two fixed initial requests
+        run: python protoface/ep41-45/series_runner.py receive --episode ${{ steps.scope.outputs.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td4145-input' --repository '${{ github.repository }}'
+      - name: Generate only selected unsubmitted initial clips
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
           ALLOW_PAID_GENERATION: 'true'
-        run: python protoface/ep41-45/series_runner.py generate --episode 41
-      - name: Encrypt returned media and request checkpoints
+          INITIAL_PARTS: ${{ steps.scope.outputs.parts }}
+        run: python protoface/ep41-45/series_runner.py generate --episode ${{ steps.scope.outputs.episode }}
+      - name: Encrypt outputs and accepted-request checkpoints
         if: always()
-        run: python protoface/ep41-45/series_runner.py seal --episode 41 --run-id ${{ github.run_id }}
+        run: python protoface/ep41-45/series_runner.py seal --episode ${{ steps.scope.outputs.episode }} --run-id ${{ github.run_id }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: TD4145-results-ep41-${{ github.run_id }}
-          path: protoface/ep41-45/sealed-results/ep41.sealed.json
+          name: TD4145-results-ep${{ steps.scope.outputs.ep }}-${{ github.run_id }}
+          path: protoface/ep41-45/sealed-results/ep${{ steps.scope.outputs.ep }}.sealed.json
           if-no-files-found: ignore
           retention-days: 7
-      - name: Remove ephemeral plaintext and input private key
+      - name: Remove ephemeral plaintext and input key
         if: always()
         run: |
           python - <<'PY_CLEAN'
           import os,shutil
           from pathlib import Path
-          shutil.rmtree(Path(os.environ['RUNNER_TEMP'])/'td41-pilot',ignore_errors=True)
-          shutil.rmtree(Path('protoface/ep41-45/work/ep41'),ignore_errors=True)
+          shutil.rmtree(Path(os.environ['RUNNER_TEMP'])/'td4145-input',ignore_errors=True)
+          shutil.rmtree(Path('protoface/ep41-45/work')/('ep'+str('${{ steps.scope.outputs.ep }}')),ignore_errors=True)
           PY_CLEAN
+

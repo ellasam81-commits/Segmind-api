@@ -409,8 +409,15 @@ def generate(episode, parts=None):
     if os.environ.get('ALLOW_PAID_GENERATION') != 'true':
         raise RuntimeError('Generation authorization is absent')
     numbers = parts or selected_parts(os.environ.get('INITIAL_PARTS', '')) or list(parts_for(episode))
-    if episode != 41 or sorted(numbers) != [1, 2] or parts:
-        raise ValueError('Only the two fixed initial episode41 pilot parts are authorized')
+    if parts is not None:
+        raise ValueError('Repair and replacement generation are disabled')
+    request = json.loads((ROOT / 'episode-request.json').read_text())
+    if request['episode'] != episode or numbers != request['initial_parts']:
+        raise ValueError('Generation differs from the fixed selected episode request')
+    if numbers != sorted(set(numbers)) or request['maximum_initial_generations_per_selected_clip'] != 1:
+        raise ValueError('Only one initial request per selected part is allowed')
+    if request['maximum_credits_per_clip'] != 8 or request['maximum_selected_initial_credits'] != 8*len(numbers):
+        raise ValueError('Selected budget differs from approved bounds')
     if any(n not in parts_for(episode) for n in numbers):
         raise ValueError('Selected part outside reviewed episode')
     work = ROOT / f'work/ep{episode:02}'
@@ -443,18 +450,32 @@ def generate(episode, parts=None):
         if quota.get('balance_credits', 0) < estimate:
             raise RuntimeError('Live balance does not cover the selected unsubmitted parts')
     print('Reviewed inputs and live quote validated:', episode, 'maximum fresh credits', estimate, flush=True)
-    states = [generate_one(episode, n, packets[n]) for n in numbers]
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    pool = ThreadPoolExecutor(max_workers=min(3, len(numbers)))
+    futures = {pool.submit(generate_one, episode, n, packets[n]): n for n in numbers}
+    states = []
+    try:
+        for future in as_completed(futures):
+            states.append(future.result())
+    except BaseException:
+        for future in futures: future.cancel()
+        pool.shutdown(wait=True, cancel_futures=True)
+        raise
+    else:
+        pool.shutdown(wait=True)
+    states.sort(key=lambda state: state['part'])
     report = {'episode': episode, 'title': packets[numbers[0]]['title'], 'parts': states, 'tts_used': False, 'post_dubbing': False,
               'subtitles_and_corner_credits': 'Applied locally after actual native-speech review.'}
     if parts:
         report['reviewed_replacement_parts'] = numbers
-    elif len(numbers) < len(parts_for(episode)):
+    elif len(numbers) < 12:
         report['reviewed_initial_partial_parts'] = numbers
         report['assembly_deferred_until_all_initial_parts_exist'] = True
     else:
         report.update(assemble_native_exact_slots(work))
     save(work / 'generation-report.json', report)
     print('Selected native parts complete:', episode, numbers, flush=True)
+
 
 
 def seal_results(episode, run_id):

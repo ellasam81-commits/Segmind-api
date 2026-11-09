@@ -131,9 +131,9 @@ def validate_packet(packet, episode=None, part=None):
         if authorization.get('maximum_additional_generations') != 1 or not authorization.get('original_run_id'):
             raise ValueError('Only one additional generation for the reviewed original is authorized')
     if packet.get('request_kind', 'initial') != 'initial' or packet.get('repair_request_id'):
-        raise ValueError('The fixed pilot does not authorize repair or replacement requests')
-    if input_signature(packet) != AUTHORIZED_INPUT_SHA256.get(str(packet['part'])):
-        raise ValueError('Input differs from the exact approved pilot payload')
+        raise ValueError('Only approved initial requests are allowed; replacement takes are disabled')
+    if input_signature(packet) != AUTHORIZED_INPUT_SHA256.get(f"{packet['episode']}:{packet['part']}"):
+        raise ValueError('Input differs from the exact approved remaining payload')
     payload(packet)
     request_key(packet)
     state = packet.get('resume_state')

@@ -1,0 +1,32 @@
+{
+  "request_id": "td4145-ep41-initial-unsubmitted-v1",
+  "request_kind": "initial",
+  "episode": 41,
+  "initial_parts": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_initial_credits": 80,
+  "maximum_initial_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "3": "3b5c8bdcf12ca229ed93a316103ea128dfd4d7ec95c43663473f33f4a1a01162",
+    "4": "5c3c825b94565489623d20e16760ced6631926dd85a8e87f448f2c7c1ba463cf",
+    "5": "d1bf0b3887671a834e286faa9a81003960dcf78ad9acb1aebf1be1b4c0ab8312",
+    "6": "34b2b72e527d7858f650c3efee1c736d9d0b4f867e85ec959d13ac817fc08be1",
+    "7": "549369ab5a4513d5973a6f3174af9a8a8409f2896b7a4e46a2354aa3a77566a0",
+    "8": "6a4e855e6eae07bc11786f9b4cbbd689644985e7ffec7b4cc6d5e47e472d5e0c",
+    "9": "7a2257eae26d598f082ab465078c3302caa1d0b386a75ca87aa12be99c8e4836",
+    "10": "77e005b23bb495f9306f13b4c45fb120c1b8ce8f1d7b237f083adf88cbb0e8d1",
+    "11": "57aaca12f298fb65ecc86d32805fdb3039aee1e1863b19e78c1a57ba163312a3",
+    "12": "b87ab322ffd9a7269f60d96eec687594d4cc99fe5efeb2f268b8d11da92f38bf"
+  }
+}
