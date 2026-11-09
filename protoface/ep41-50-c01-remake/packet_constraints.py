@@ -2,6 +2,7 @@
 import base64
 import hashlib
 import math
+import re
 from decimal import Decimal, InvalidOperation
 from config import EPISODES, PARTS, parts_for, INITIAL_CLIP_COUNT, INITIAL_CREDITS, AUTHORIZED_INPUT_SHA256
 
@@ -134,6 +135,13 @@ def validate_packet(packet, episode=None, part=None):
         raise ValueError('Only approved initial requests are allowed; replacement takes are disabled')
     if input_signature(packet) != AUTHORIZED_INPUT_SHA256.get(f"{packet['episode']}:{packet['part']}"):
         raise ValueError('Input differs from the exact approved remaining payload')
+    # Preserve already accepted initial payload identities. Every new initial
+    # slot must keep Chinese out of silent direction, preventing stage narration.
+    legacy={(41,1),(41,2),(41,3),(41,4)}
+    if (packet['episode'],packet['part']) not in legacy:
+        silent=re.sub('“[^”]*”','',packet['prompt'])
+        if re.search(r'[\u3400-\u9fff]',silent):
+            raise ValueError('New native prompts require English silent direction and Chinese only inside spoken quotes')
     payload(packet)
     request_key(packet)
     state = packet.get('resume_state')
