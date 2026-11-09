@@ -7,7 +7,7 @@ permissions:
   actions: read
 concurrency:
   group: thirteen-doors-c01-remake-20261109
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   selected-episode:
     runs-on: ubuntu-latest
