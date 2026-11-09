@@ -1,36 +1,16 @@
 {
-  "request_id": "td4145-ep42-initial-unsubmitted-v1",
+  "request_id": "td4145-ep43-initial-unsubmitted-v1",
   "request_kind": "initial",
-  "episode": 42,
+  "episode": 43,
   "initial_parts": [
-    1,
-    2,
     3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12
+    5
   ],
   "maximum_credits_per_clip": 8,
-  "maximum_selected_initial_credits": 96,
+  "maximum_selected_initial_credits": 16,
   "maximum_initial_generations_per_selected_clip": 1,
   "authorized_payload_sha256": {
-    "1": "b1738bc75b7dfa15ba36c2fe54415b438a5f57025c4aae246e1dc71936af6194",
-    "2": "6fbddfdcc7cf00e2235a2d5572a6aa45aaa41a31c92e4b35301b0b3e33c7d36e",
-    "3": "2ff1f6d90b69e9b6ec118af768b73a55a3e1721dc0e24a4bb1a1982360409f02",
-    "4": "230398170e7ab8a4ebffab6765fab024bfea1509f688eab8e329f173f6e53c02",
-    "5": "de339a7231270593391b8f8ae82d768b8adc7634baa73a6df5a3086d92421af3",
-    "6": "7a572fdcc8ab2381d8089c965b9e3521fe7e3d8fe78cce782df56b76a3d314a6",
-    "7": "9ecbc409418f2849bcb423bfd6896bcb3d3a55def1d44099752a14c64d914525",
-    "8": "8460391d0d9bbbd40038707d4b93b76345229474b9cb57de6a3ba138301e9b57",
-    "9": "b925a3bdda34e7eea5fe00901cb3df24e0b97481d8324d83b172090b073d4928",
-    "10": "0fe5da7209a732e25f74892550851df3bbeb322986f019ba0ab6c838b66d7226",
-    "11": "28f3d39a39aab058377573c873ddf569f9622ddd6b9251809f33ccf2dc4b0abc",
-    "12": "2d062618b2bac0aa01e236994e72c3b9e3b9cfed47da44f7501b87d01c7c3572"
+    "3": "f33854aadc73e59232e4c2530d169ff4aa601791ed56fcab4de6a04f1493d54e",
+    "5": "5129309c4b7a348c240a77535f0ba9a9a3a57bd1c5837d2d8ae4eb1a80c9e83e"
   }
 }
