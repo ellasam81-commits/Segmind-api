@@ -3,14 +3,30 @@
   "request_kind": "initial",
   "episode": 43,
   "initial_parts": [
-    3,
-    5
+    1,
+    2,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
   ],
   "maximum_credits_per_clip": 8,
-  "maximum_selected_initial_credits": 16,
+  "maximum_selected_initial_credits": 80,
   "maximum_initial_generations_per_selected_clip": 1,
   "authorized_payload_sha256": {
-    "3": "f33854aadc73e59232e4c2530d169ff4aa601791ed56fcab4de6a04f1493d54e",
-    "5": "5129309c4b7a348c240a77535f0ba9a9a3a57bd1c5837d2d8ae4eb1a80c9e83e"
+    "1": "d0623387676f3c034e3b2d026a42646b1861456036116e7214c2d8c74d18f3b3",
+    "2": "f9fc7f4b85a29f6626586052b3e0bbc5f9a2dae11ff7e92e6c5598b516627469",
+    "4": "9cef5e1cd4ff21685b9d3d788c0539ae55abb6d6117d76224eff86dbe052e3f6",
+    "6": "99a59d6d8f6434ba845e7628f855dc6f54eb7a8ff75e137ab09d6c6605654c58",
+    "7": "7388dc28958cc1f4efe56b568cb00249af53566d9c13cd21595e4d69bcba7ef8",
+    "8": "a8113264917da0e2e111d71898da10576d779749e6e961037308bbbd0cd5e372",
+    "9": "a0883adfef4a092504f7a3343c89f51067f40adda4ef87389eb1889a7dcd924a",
+    "10": "09ddf2dbaf4be3151b739fd6c5333e2f48c121a151b4d78d8ef48d8b5743debf",
+    "11": "96056b7ee701898d44bf164d05697b227543058f43ce157768f887db29ed225d",
+    "12": "611e3e99cd615fffa2a30a47136c26d18a85501c2494b7d640d0e9d131a4372e"
   }
 }
