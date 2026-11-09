@@ -1,0 +1,88 @@
+name: Thirteen Doors41-50 explicit C01 remake selected clips
+on:
+  push:
+    paths: ['protoface/ep41-50-c01-remake/episode-request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: thirteen-doors-c01-remake-20261109
+  cancel-in-progress: false
+jobs:
+  selected-episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      TD_INPUT_REF: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify exact remaining clip hashes and budget
+        id: scope
+        run: |
+          python - <<'PY_SCOPE'
+          import json,os,sys
+          sys.path.insert(0,'protoface/ep41-50-c01-remake')
+          from config import EPISODES,parts_for,AUTHORIZED_INPUT_SHA256,INITIAL_CLIP_COUNT,INITIAL_CREDITS
+          d=json.load(open('protoface/ep41-50-c01-remake/episode-request.json'))
+          e=d['episode'];p=d['initial_parts']
+          assert e in EPISODES and p==list(parts_for(e)) and p==sorted(set(p))
+          assert d['request_kind']=='initial' and not d.get('repair_parts')
+          assert d['maximum_credits_per_clip']==8 and d['maximum_selected_initial_credits']==8*len(p)
+          assert d['maximum_initial_generations_per_selected_clip']==1
+          assert d['authorized_payload_sha256']=={str(n):AUTHORIZED_INPUT_SHA256[f'{e}:{n}'] for n in p}
+          assert INITIAL_CLIP_COUNT==120 and INITIAL_CREDITS==960
+          assert len(AUTHORIZED_INPUT_SHA256)<=120
+          assert d['production_scope']=='explicit_user_c01_remake41_50_20261109'
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write(f'episode={e}\nep={e:02}\nparts='+','.join(map(str,p))+'\n')
+          PY_SCOPE
+      - name: Prepare existing native media tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python protoface/ep41-50-c01-remake/install_media_tools.py
+      - name: Initialize approved input channel and verify live price
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          INITIAL_PARTS: ${{ steps.scope.outputs.parts }}
+        run: python protoface/ep41-50-c01-remake/series_runner.py init --episode ${{ steps.scope.outputs.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td4150-c01-input'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD4150-C01-ready-ep${{ steps.scope.outputs.ep }}-${{ github.run_id }}
+          path: protoface/ep41-50-c01-remake/transport-public/ep${{ steps.scope.outputs.ep }}/
+          retention-days: 1
+      - name: Receive only matching approved encrypted inputs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep41-50-c01-remake/series_runner.py receive --episode ${{ steps.scope.outputs.episode }} --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td4150-c01-input' --repository '${{ github.repository }}'
+      - name: Generate only selected unsubmitted initial clips
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+          INITIAL_PARTS: ${{ steps.scope.outputs.parts }}
+        run: python protoface/ep41-50-c01-remake/series_runner.py generate --episode ${{ steps.scope.outputs.episode }}
+      - name: Encrypt outputs and accepted-request checkpoints
+        if: always()
+        run: python protoface/ep41-50-c01-remake/series_runner.py seal --episode ${{ steps.scope.outputs.episode }} --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD4150-C01-results-ep${{ steps.scope.outputs.ep }}-${{ github.run_id }}
+          path: protoface/ep41-50-c01-remake/sealed-results/ep${{ steps.scope.outputs.ep }}.sealed.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove ephemeral plaintext and input key
+        if: always()
+        run: |
+          python - <<'PY_CLEAN'
+          import os,shutil
+          from pathlib import Path
+          shutil.rmtree(Path(os.environ['RUNNER_TEMP'])/'td4150-c01-input',ignore_errors=True)
+          shutil.rmtree(Path('protoface/ep41-50-c01-remake/work')/('ep'+str('${{ steps.scope.outputs.ep }}')),ignore_errors=True)
+          PY_CLEAN
+
+
