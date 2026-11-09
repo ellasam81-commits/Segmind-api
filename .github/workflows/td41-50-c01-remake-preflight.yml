@@ -1,0 +1,27 @@
+name: Thirteen Doors41-50 C01 remake read-only quote
+on:
+  push:
+    paths: ['protoface/ep41-50-c01-remake/preflight-request.json']
+permissions:
+  contents: read
+jobs:
+  quote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install --timeout 30 --retries 1 httpx==0.28.1 cryptography==50.0.0
+      - name: Inspect exact one-reference5s480p model and quota without generation
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/ep41-50-c01-remake/preflight.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD4150-C01-remake-price-${{ github.run_id }}
+          path: protoface/ep41-50-c01-remake/preflight.sealed.json
+          retention-days: 1
