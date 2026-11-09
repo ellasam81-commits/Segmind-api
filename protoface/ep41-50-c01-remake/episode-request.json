@@ -18,5 +18,6 @@
     "4": "dc611cfcde672e7b57c975f2eb33d50c4bb8046358e17f41877f48bde65c7e20"
   },
   "batch_initial_video_cap_credits": 960,
-  "original41_45_generation_not_reopened": true
+  "original41_45_generation_not_reopened": true,
+  "setup_revision": "subset-guard-v2-no-earlier-provider-submission"
 }

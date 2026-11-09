@@ -30,7 +30,7 @@ jobs:
           from config import EPISODES,parts_for,AUTHORIZED_INPUT_SHA256,INITIAL_CLIP_COUNT,INITIAL_CREDITS
           d=json.load(open('protoface/ep41-50-c01-remake/episode-request.json'))
           e=d['episode'];p=d['initial_parts']
-          assert e in EPISODES and p==list(parts_for(e)) and p==sorted(set(p))
+          assert e in EPISODES and p and p==sorted(set(p)) and all(n in parts_for(e) for n in p)
           assert d['request_kind']=='initial' and not d.get('repair_parts')
           assert d['maximum_credits_per_clip']==8 and d['maximum_selected_initial_credits']==8*len(p)
           assert d['maximum_initial_generations_per_selected_clip']==1
