@@ -1,0 +1,20 @@
+{
+  "episode": 41,
+  "repair_parts": [
+    2,
+    4
+  ],
+  "request_kind": "repair",
+  "repair_request_id": "c01-native-first4-fix01",
+  "original_run_ids": {
+    "41:2": "run_01M70ES2NZ5A5QFF17WRBGGNHS",
+    "41:4": "run_01M70ESR32V4DSKDJFJM5XM6EC"
+  },
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_repair_credits": 16,
+  "maximum_additional_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "2": "ab0236bb607f9d69c43f5cb1d5bf8a9a1d42740e594ff4e0cb33daadc7ed829d",
+    "4": "31207c5fc623b830ccc646f5e37621b96885578eafdc45299722466634a8c4a7"
+  }
+}
