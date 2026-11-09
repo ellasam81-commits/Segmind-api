@@ -1,0 +1,17 @@
+{
+  "episode": 41,
+  "repair_parts": [
+    5
+  ],
+  "request_kind": "repair",
+  "repair_request_id": "c01-native-part5-fix02",
+  "original_run_ids": {
+    "41:5": "run_01M70J4GNJVAYJFC5V2RM2FG0W"
+  },
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_repair_credits": 8,
+  "maximum_additional_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "5": "565dcf769c0e5a20362ee66e7e209b6cca503980fb20f7afa405c44a0298204e"
+  }
+}

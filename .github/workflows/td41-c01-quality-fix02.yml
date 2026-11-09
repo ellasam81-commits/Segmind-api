@@ -1,0 +1,83 @@
+name: Thirteen Doors41 part5 confirmed wrong native line repair02
+on:
+  push:
+    paths: ['protoface/ep41-50-c01-remake/quality-fix02-request.json']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: thirteen-doors-c01-quality-fix02
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      TD_INPUT_REF: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify one exact defective original and eight-credit maximum
+        id: scope
+        run: |
+          python - <<'PY_SCOPE'
+          import json,os,sys
+          sys.path.insert(0,'protoface/ep41-50-c01-remake')
+          from quality_fix02_config import ORIGINAL_RUNS,AUTHORIZED_INPUT_SHA256,REPAIR_ID
+          d=json.load(open('protoface/ep41-50-c01-remake/quality-fix02-request.json'))
+          assert d['episode']==41 and d['repair_parts']==[5]
+          assert d['request_kind']=='repair' and d['repair_request_id']==REPAIR_ID
+          assert d['original_run_ids']==ORIGINAL_RUNS and len(ORIGINAL_RUNS)==1
+          assert d['maximum_credits_per_clip']==8 and d['maximum_selected_repair_credits']==8
+          assert d['maximum_additional_generations_per_selected_clip']==1
+          assert d['authorized_payload_sha256']=={str(n):AUTHORIZED_INPUT_SHA256[f'41:{n}']for n in[5]}
+          with open(os.environ['GITHUB_OUTPUT'],'a')as f:f.write('parts=5\n')
+          PY_SCOPE
+      - name: Prepare native media tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python protoface/ep41-50-c01-remake/install_media_tools.py
+      - name: Initialize exact repair channel and verify live eight-credit quote
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          REVIEWED_REPAIR_PARTS: '5'
+          REVIEWED_REPAIR_ID: 'c01-native-part5-fix02'
+        run: python protoface/ep41-50-c01-remake/quality_fix02_runner.py init --episode 41 --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td4150-quality-fix02'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TD4150-C01-fix02-ready-${{ github.run_id }}
+          path: protoface/ep41-50-c01-remake/transport-public/ep41/
+          retention-days: 1
+      - name: Receive only matching reviewed repair inputs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep41-50-c01-remake/quality_fix02_runner.py receive --episode 41 --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td4150-quality-fix02' --repository '${{ github.repository }}'
+      - name: One bounded attempt per defective original, never an automatic retry
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+          REVIEWED_REPAIR_ID: 'c01-native-part5-fix02'
+        run: python protoface/ep41-50-c01-remake/quality_fix02_runner.py generate --episode 41 --parts 5
+      - name: Seal native replacements and accepted-run checkpoints
+        if: always()
+        run: python protoface/ep41-50-c01-remake/quality_fix02_runner.py seal --episode 41 --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD4150-C01-fix02-results-${{ github.run_id }}
+          path: protoface/ep41-50-c01-remake/sealed-results/ep41.sealed.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove ephemeral private input key and plaintext work
+        if: always()
+        run: |
+          python - <<'PY_CLEAN'
+          import os,shutil
+          from pathlib import Path
+          shutil.rmtree(Path(os.environ['RUNNER_TEMP'])/'td4150-quality-fix02',ignore_errors=True)
+          shutil.rmtree(Path('protoface/ep41-50-c01-remake/work/ep41'),ignore_errors=True)
+          PY_CLEAN
