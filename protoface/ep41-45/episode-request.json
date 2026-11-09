@@ -1,11 +1,13 @@
 {
-  "request_id": "td4145-ep43-initial-unsubmitted-v1",
+  "request_id": "td4145-ep44-initial-unsubmitted-v1",
   "request_kind": "initial",
-  "episode": 43,
+  "episode": 44,
   "initial_parts": [
     1,
     2,
+    3,
     4,
+    5,
     6,
     7,
     8,
@@ -15,18 +17,20 @@
     12
   ],
   "maximum_credits_per_clip": 8,
-  "maximum_selected_initial_credits": 80,
+  "maximum_selected_initial_credits": 96,
   "maximum_initial_generations_per_selected_clip": 1,
   "authorized_payload_sha256": {
-    "1": "d0623387676f3c034e3b2d026a42646b1861456036116e7214c2d8c74d18f3b3",
-    "2": "f9fc7f4b85a29f6626586052b3e0bbc5f9a2dae11ff7e92e6c5598b516627469",
-    "4": "9cef5e1cd4ff21685b9d3d788c0539ae55abb6d6117d76224eff86dbe052e3f6",
-    "6": "99a59d6d8f6434ba845e7628f855dc6f54eb7a8ff75e137ab09d6c6605654c58",
-    "7": "7388dc28958cc1f4efe56b568cb00249af53566d9c13cd21595e4d69bcba7ef8",
-    "8": "a8113264917da0e2e111d71898da10576d779749e6e961037308bbbd0cd5e372",
-    "9": "a0883adfef4a092504f7a3343c89f51067f40adda4ef87389eb1889a7dcd924a",
-    "10": "09ddf2dbaf4be3151b739fd6c5333e2f48c121a151b4d78d8ef48d8b5743debf",
-    "11": "96056b7ee701898d44bf164d05697b227543058f43ce157768f887db29ed225d",
-    "12": "611e3e99cd615fffa2a30a47136c26d18a85501c2494b7d640d0e9d131a4372e"
+    "1": "048fb86b2cdb20e0ffc713177e81e0bb2789808e09a1508cf8c159f265f4c555",
+    "2": "56fc427607e2408f50bf1c621171dea4044a60af38a625d41f1eaf39f41ddba2",
+    "3": "1caaad7f7def30720445ba92ea914c1e5664b79ded846d54c0f8388fe071546d",
+    "4": "0edb3f4325d84eadb4a3e2d246acd175fd61c88da5de4b4547366f5f12856342",
+    "5": "8fd11efc2253591d06785f16b860367ddfb8100082b8857709c3300355ead84b",
+    "6": "fa428668e513d88685d1477a9de2209741fadbebad445c69bd6c415559231420",
+    "7": "75f86de52ca6e1b086fda0f06e3a913a0c50453295815583f7e6e46b90332698",
+    "8": "df451abd476431b429d1e7bddefaee111cab7e55b44dfedd94d33cc416fffbcb",
+    "9": "599b069e64631749e5213bc55a37586ac6644f11bc6508d924e3507484e5e733",
+    "10": "77a9176535f26650d3e83c98c4f5607557718373b01b9d9022df5f00f93afee9",
+    "11": "f6377771522c0b1996c1d6d195faebe61b334cba40a2a0750fa19a0190536a43",
+    "12": "e6ca47c5f81a93978457db80493ea1c72371944408510c58e0fdf897fb045d69"
   }
 }
