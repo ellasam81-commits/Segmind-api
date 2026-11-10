@@ -1,0 +1,17 @@
+{
+  "episode": 48,
+  "repair_parts": [
+    8
+  ],
+  "request_kind": "repair",
+  "repair_request_id": "c01-ep48-p08-native-date-fix04",
+  "original_run_ids": {
+    "48:8": "run_01M72CHCVRD5K2GMV2WASJ56D3"
+  },
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_repair_credits": 8,
+  "maximum_additional_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "8": "d09bb8c329cd69483ff7470187279adb957ac157373aa26108f24b7bcb2aaa1e"
+  }
+}
