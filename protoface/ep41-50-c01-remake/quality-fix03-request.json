@@ -1,0 +1,17 @@
+{
+  "episode": 44,
+  "repair_parts": [
+    5
+  ],
+  "request_kind": "repair",
+  "repair_request_id": "c01-ep44-p05-native-dialogue-fix03",
+  "original_run_ids": {
+    "44:5": "run_01M714BWV9B8B2DB9PE68952R8"
+  },
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_repair_credits": 8,
+  "maximum_additional_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "5": "1a59e159470538ea91c24c043c5e6c9dc18ad11dbdad0c07c0f95b52c94e6dc0"
+  }
+}
