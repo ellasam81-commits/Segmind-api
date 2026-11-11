@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-11-11T12:48:55.893406+00:00",
+  "has_secret": true,
+  "model_http": 200,
+  "model_available": true,
+  "model_id": "minimax/minimax-h3",
+  "qualities": [
+    "480p",
+    "768p",
+    "2k"
+  ],
+  "has_video_general": true,
+  "quota_http": 200,
+  "balance_credits": 2679
+}
