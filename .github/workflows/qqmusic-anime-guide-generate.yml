@@ -1,0 +1,43 @@
+name: QQ Music anime guide - Protoface
+on:
+  push:
+    paths:
+      - 'protoface/qqmusic-anime-guide/generation-request.json'
+permissions:
+  contents: write
+concurrency:
+  group: qqmusic-anime-guide-v1
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install dependencies
+        run: python -m pip install 'httpx>=0.27,<1' 'jsonschema>=4.23,<5'
+      - name: Generate five reviewed parts
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/qqmusic-anime-guide/generate.py
+      - name: Commit generated clips
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add protoface/qqmusic-anime-guide/output/
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Add generated QQ Music anime guide clips"
+          git push
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qqmusic-anime-guide-${{ github.run_id }}
+          path: protoface/qqmusic-anime-guide/output/
+          if-no-files-found: ignore
+          retention-days: 7
