@@ -1,0 +1,26 @@
+{
+  "id": "run_01M75BR87BEQW602858QS4N3EE",
+  "object": "run",
+  "model": "minimax/minimax-h3",
+  "model_revision": "2026-08-20",
+  "operation": "video.general",
+  "status": "queued",
+  "credit_estimate": {
+    "pricing_version": "model-2026-08-15",
+    "estimated_credits": 15,
+    "maximum_reserved_credits": 15,
+    "lines": [
+      {
+        "unit": "second",
+        "meter": "output_seconds",
+        "model": "minimax-h3",
+        "credits": 15,
+        "quantity": 12,
+        "operation": "video.general"
+      }
+    ]
+  },
+  "status_url": "/v1/runs/run_01M75BR87BEQW602858QS4N3EE/status",
+  "response_url": "/v1/runs/run_01M75BR87BEQW602858QS4N3EE",
+  "created_at": "2026-11-11T13:11:24.893312Z"
+}

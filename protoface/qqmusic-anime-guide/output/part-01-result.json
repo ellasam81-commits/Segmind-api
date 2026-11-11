@@ -1,0 +1,47 @@
+{
+  "id": "run_01M75B6DXJXKXXJQ80PF0B1VJK",
+  "object": "run",
+  "model": "minimax/minimax-h3",
+  "model_revision": "2026-08-20",
+  "operation": "video.general",
+  "status": "completed",
+  "progress": 100,
+  "video": {
+    "url": "https://protoface-artifacts-prod-700951986394.s3.us-west-2.amazonaws.com/orgs/org_01M6KM7THBGYVTSRPX7G4Y579D/runs/run_01M75B6DXJXKXXJQ80PF0B1VJK/outputs/asset_01M75BA5FXXFPD1KW8BQQK6ASX.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA2GM76QDNPDQC7Z3M%2F20261111%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261111T130556Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDvV9FxZ9bIURHCPJZXiZizVYDA7g7cUFutIviMKlJxDgIgOq0xual4748huNOx46HQ8bqjXu4lSspqqdnCvFpXVrMqtQQIVRAAGgw3MDA5NTE5ODYzOTQiDGoep47rcwvQtOnOmiqSBP0w0p94W9x4uaup%2FwfdiuS5ICNKF9SQqHkVvsyC6syDAnLba7irvFmYx%2BGd3HLPsM8JPQIG1BQiK5pFIxxMkLB3te5q%2BEnJN1%2BEfG2CWa%2BNTENIniQjFYbfYsB74o6HWSfkpQVVlhhdj0FO3jPG9BBW5c7%2BRU6s3fEhUSpU6ns99eQJUOJiZiAiY7BySub90VWK9RrYPq2vD88Lzr5pLDj%2FGLTv2tWZvgy57oawThQXKA0bG5p7gkZplq58BAMVgYy4tL%2B6zJ1v6TZndYiQuHE9UCXJEK7pwLdn57%2FKLoyXzdG8HWBdgDgbpUQXLA%2FbRIkPQdYli9wJ2csy%2BfDDiwN9Nm1d7oWG8Ohj7R1dthgF4C66ImKB2oek0yZWQvVUkowOpB1kRTTM6R4fpDYN54QqAAbE61zzLj205Q8C69qhP%2B7a6Fr0g%2FhFZlwpTkocDn3LNHKp8yvLEQjgP7jgW9DWjFmGJcLTBzR1IThW9LBM7bQ3kx1046tvdRcc5bnnUYjJ21xuXf4%2FRHeQSH4a43Vaeh3iTqSNXQ4%2BQGCOOBHJtMFxM72E8BrzHR2R2UGJhyEBEPWQn1fa%2FA6y%2FRK3dAicIyl4ecKcAcbMfoIS3T7A6D79jcj8oZRYxUub3kP%2FQm5WiK0L9dNGsjfNYDYvgf3DdmZeLyN%2FftqxQ0%2B7Jm2e4ykXpqlpWL8Qf5DV8XvSZJ7fMMu50dcGOqYBzYzXaTrbnp79wNI94bCBWLRhK814gkndfPR0bO5NLq3DPzfRdyKGyYwTW%2FKdvhJVHnJFMN9T9isUlz91LiXOIAMK2H92OV2ryrSUozPwFF0luYtryGj%2FiMmI1DKLchDH2wf5lrMuztU1e%2BuUFerJqpEcjgdvqFTVSuHgI9fRzxKNA3KNTkEVBCZ1UKFrmUqoJM4GZ9sJo0pti8CiS%2BoPTw5OAJhn%2FA%3D%3D&X-Amz-Signature=783994ee896f9833a8080ec1250943ebf9e9502cd8dd56dd25e3aaed83e1d696",
+    "content_type": "video/mp4",
+    "file_name": "output.mp4",
+    "file_size": 1992260
+  },
+  "image": null,
+  "audio": null,
+  "outputs": [
+    {
+      "role": "output",
+      "modality": "video",
+      "type": "asset",
+      "asset_id": "asset_01M75BA5FXXFPD1KW8BQQK6ASX",
+      "file": {
+        "url": "https://protoface-artifacts-prod-700951986394.s3.us-west-2.amazonaws.com/orgs/org_01M6KM7THBGYVTSRPX7G4Y579D/runs/run_01M75B6DXJXKXXJQ80PF0B1VJK/outputs/asset_01M75BA5FXXFPD1KW8BQQK6ASX.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA2GM76QDNPDQC7Z3M%2F20261111%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261111T130556Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIz%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDvV9FxZ9bIURHCPJZXiZizVYDA7g7cUFutIviMKlJxDgIgOq0xual4748huNOx46HQ8bqjXu4lSspqqdnCvFpXVrMqtQQIVRAAGgw3MDA5NTE5ODYzOTQiDGoep47rcwvQtOnOmiqSBP0w0p94W9x4uaup%2FwfdiuS5ICNKF9SQqHkVvsyC6syDAnLba7irvFmYx%2BGd3HLPsM8JPQIG1BQiK5pFIxxMkLB3te5q%2BEnJN1%2BEfG2CWa%2BNTENIniQjFYbfYsB74o6HWSfkpQVVlhhdj0FO3jPG9BBW5c7%2BRU6s3fEhUSpU6ns99eQJUOJiZiAiY7BySub90VWK9RrYPq2vD88Lzr5pLDj%2FGLTv2tWZvgy57oawThQXKA0bG5p7gkZplq58BAMVgYy4tL%2B6zJ1v6TZndYiQuHE9UCXJEK7pwLdn57%2FKLoyXzdG8HWBdgDgbpUQXLA%2FbRIkPQdYli9wJ2csy%2BfDDiwN9Nm1d7oWG8Ohj7R1dthgF4C66ImKB2oek0yZWQvVUkowOpB1kRTTM6R4fpDYN54QqAAbE61zzLj205Q8C69qhP%2B7a6Fr0g%2FhFZlwpTkocDn3LNHKp8yvLEQjgP7jgW9DWjFmGJcLTBzR1IThW9LBM7bQ3kx1046tvdRcc5bnnUYjJ21xuXf4%2FRHeQSH4a43Vaeh3iTqSNXQ4%2BQGCOOBHJtMFxM72E8BrzHR2R2UGJhyEBEPWQn1fa%2FA6y%2FRK3dAicIyl4ecKcAcbMfoIS3T7A6D79jcj8oZRYxUub3kP%2FQm5WiK0L9dNGsjfNYDYvgf3DdmZeLyN%2FftqxQ0%2B7Jm2e4ykXpqlpWL8Qf5DV8XvSZJ7fMMu50dcGOqYBzYzXaTrbnp79wNI94bCBWLRhK814gkndfPR0bO5NLq3DPzfRdyKGyYwTW%2FKdvhJVHnJFMN9T9isUlz91LiXOIAMK2H92OV2ryrSUozPwFF0luYtryGj%2FiMmI1DKLchDH2wf5lrMuztU1e%2BuUFerJqpEcjgdvqFTVSuHgI9fRzxKNA3KNTkEVBCZ1UKFrmUqoJM4GZ9sJo0pti8CiS%2BoPTw5OAJhn%2FA%3D%3D&X-Amz-Signature=783994ee896f9833a8080ec1250943ebf9e9502cd8dd56dd25e3aaed83e1d696",
+        "content_type": "video/mp4",
+        "file_name": "output.mp4",
+        "file_size": 1992260
+      },
+      "text": null,
+      "data": null
+    }
+  ],
+  "credits": {
+    "pricing_version": "model-2026-08-15",
+    "reserved": 15,
+    "charged": 15
+  },
+  "error": null,
+  "metadata": {},
+  "external_id": null,
+  "created_at": "2026-11-11T13:01:42.586443Z",
+  "started_at": "2026-11-11T13:01:46.596954Z",
+  "completed_at": "2026-11-11T13:03:48.566194Z",
+  "deleted_at": null,
+  "eta": null,
+  "capacity_wait": null
+}
