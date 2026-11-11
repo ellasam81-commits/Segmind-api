@@ -1,0 +1,78 @@
+name: Thirteen Doors exact EP53 part03 dialogue repair01
+on:
+  push:
+    paths: ['protoface/ep51-60-final/quality-repair01/episode-request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: td5160-exact53-p03-repair01
+  cancel-in-progress: false
+jobs:
+  one-confirmed-defect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      TD_INPUT_REF: ${{ github.ref_name }}
+      REVIEWED_REPAIR_PARTS: '3'
+      REVIEWED_REPAIR_ID: ep53-p03-dialogue-r01
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify exact single defect and eight-credit repair cap
+        run: |
+          python - <<'PY'
+          import json,sys
+          sys.path.insert(0,'protoface/ep51-60-final/quality-repair01')
+          from config import EPISODES,PARTS,INITIAL_CLIP_COUNT,INITIAL_CREDITS,AUTHORIZED_INPUT_SHA256
+          r=json.load(open('protoface/ep51-60-final/quality-repair01/episode-request.json'))
+          assert EPISODES==(53,)and PARTS==(3,)and INITIAL_CLIP_COUNT==1 and INITIAL_CREDITS==8
+          assert r['episode']==53 and r['parts']==[3]and r['request_kind']=='repair'
+          assert r['repair_request_id']=='ep53-p03-dialogue-r01'
+          assert r['maximum_repair_batch_credits']==8 and r['maximum_additional_generations']==1
+          assert r['authorized_input_sha256']==AUTHORIZED_INPUT_SHA256['53:3']
+          PY
+      - name: Prepare existing native media tools
+        run: |
+          python -m pip install --timeout 30 --retries 1 httpx==0.28.1 jsonschema==4.26.0 cryptography==50.0.0 imageio-ffmpeg==0.6.0
+          python protoface/ep51-60-final/quality-repair01/install_media_tools.py
+      - name: Read-only price check and ephemeral input channel
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/ep51-60-final/quality-repair01/series_runner.py init --episode 53 --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td5160-repair01-input'
+      - name: Publish public input key and encrypted quote only
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep51-60-final/quality-repair01/publish_ready.py 53 ${{ github.run_id }} '${{ github.repository }}' '${{ github.ref_name }}'
+      - name: Receive exactly one encrypted approved repair packet
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep51-60-final/quality-repair01/series_runner.py receive --episode 53 --run-id ${{ github.run_id }} --private-dir '${{ runner.temp }}/td5160-repair01-input' --repository '${{ github.repository }}'
+      - name: Generate exactly one native-audio replacement within eight credits
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+          ALLOW_PAID_GENERATION: 'true'
+        run: python protoface/ep51-60-final/quality-repair01/series_runner.py generate --episode 53 --parts 3
+      - name: Seal output and accepted-request checkpoint
+        if: always()
+        run: python protoface/ep51-60-final/quality-repair01/series_runner.py seal --episode 53 --run-id ${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TD5160-repair01-results-ep53-${{ github.run_id }}
+          path: protoface/ep51-60-final/quality-repair01/sealed-results/ep53.sealed.json
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove ephemeral plaintext and input key
+        if: always()
+        run: |
+          python - <<'PY'
+          import os,shutil
+          from pathlib import Path
+          shutil.rmtree(Path(os.environ['RUNNER_TEMP'])/'td5160-repair01-input',ignore_errors=True)
+          shutil.rmtree(Path('protoface/ep51-60-final/quality-repair01/work/ep53'),ignore_errors=True)
+          PY

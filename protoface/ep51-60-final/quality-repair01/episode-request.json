@@ -1,0 +1,12 @@
+{
+  "episode": 53,
+  "parts": [
+    3
+  ],
+  "request_kind": "repair",
+  "repair_request_id": "ep53-p03-dialogue-r01",
+  "original_run_id": "run_01M767ERDC6F47TXRTAK8KKWSA",
+  "maximum_repair_batch_credits": 8,
+  "maximum_additional_generations": 1,
+  "authorized_input_sha256": "5c371c252b69021a852a9a140fd89b5db9582a282533ffe68d95516f5a9a9fd3"
+}
