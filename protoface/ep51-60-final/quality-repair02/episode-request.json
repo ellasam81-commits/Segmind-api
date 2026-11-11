@@ -1,0 +1,12 @@
+{
+  "episode": 58,
+  "parts": [
+    12
+  ],
+  "request_kind": "repair",
+  "repair_request_id": "ep58-p12-name-r02",
+  "original_run_id": "run_01M76A13B0D9GHT2517KJ2P2PH",
+  "maximum_repair_batch_credits": 8,
+  "maximum_additional_generations": 1,
+  "authorized_input_sha256": "cd6dcd954c238e03b24d278f72d1075621b11c84bafa32885d3738f4e8d71130"
+}
