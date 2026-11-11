@@ -41,7 +41,9 @@ def main():
     with httpx.Client(base_url="https://api.protoface.com",headers={"Authorization":"Bearer "+key},timeout=60,follow_redirects=True) as client:
         def api(method,path,**kwargs):
             r=client.request(method,path,**kwargs)
-            if not r.is_success: raise RuntimeError(f"Protoface HTTP {r.status_code}; no automatic resubmission")
+            if not r.is_success:
+                body=(r.text or "")[:1200]
+                raise RuntimeError(f"Protoface HTTP {r.status_code}: {body}; no automatic resubmission")
             return r.json()
         model=api("GET","/v1/models/"+MODEL)
         schema=model.get("request_schemas",{}).get("video.general")
