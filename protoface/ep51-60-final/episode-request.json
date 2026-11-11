@@ -34,5 +34,6 @@
     "12": "94a6a26391ce01d48f277f5c1a29cbbf58ec1ff89da6b858f665fcd2de560fe3"
   },
   "batch_initial_video_cap_credits": 960,
-  "previous_1_50_generations_not_reopened": true
+  "previous_1_50_generations_not_reopened": true,
+  "transport_revision": "public-ready-v2"
 }

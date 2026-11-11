@@ -3,7 +3,7 @@ on:
   push:
     paths: ['protoface/ep51-60-final/episode-request.json']
 permissions:
-  contents: read
+  contents: write
   actions: read
 concurrency:
   group: thirteen-doors-final-20261112
@@ -55,6 +55,10 @@ jobs:
           name: TD5160-final-ready-ep${{ steps.scope.outputs.ep }}-${{ github.run_id }}
           path: protoface/ep51-60-final/transport-public/ep${{ steps.scope.outputs.ep }}/
           retention-days: 1
+      - name: Publish nonsecret public input key and encrypted quote
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python protoface/ep51-60-final/publish_ready.py ${{ steps.scope.outputs.episode }} ${{ github.run_id }} '${{ github.repository }}' '${{ github.ref_name }}'
       - name: Receive only matching approved encrypted inputs
         env:
           GITHUB_TOKEN: ${{ github.token }}
