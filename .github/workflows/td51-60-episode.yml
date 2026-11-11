@@ -6,7 +6,7 @@ permissions:
   contents: write
   actions: read
 concurrency:
-  group: thirteen-doors-final-20261112
+  group: thirteen-doors-final-20261112-${{ github.run_id }}
   cancel-in-progress: false
 jobs:
   selected-episode:
