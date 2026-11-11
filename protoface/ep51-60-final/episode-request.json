@@ -1,6 +1,6 @@
 {
   "production_scope": "explicit_user_final51_60_20261112",
-  "episode": 53,
+  "episode": 55,
   "initial_parts": [
     1,
     2,
@@ -20,18 +20,18 @@
   "maximum_selected_initial_credits": 96,
   "maximum_initial_generations_per_selected_clip": 1,
   "authorized_payload_sha256": {
-    "1": "f3077a11127b7c0f4a8592259d70f7d35c5d1e561204513bf8f75fe52c82cc31",
-    "2": "f702c32ac5c578717a1f9f0c9fb04a202cee9565bad1aadceac48912a94b8163",
-    "3": "499442b53d6e51a5813aeed7c5867d992baefc510e1bba18b6616294bbd6ff63",
-    "4": "90cc09b5efa7462d6d75f8713fd8fb9b403b7ab120a6c5d7b689e77aabe82cf1",
-    "5": "2958e14b512adb50764633d6361c3200a1d72a1b79d27fb328a71864ddf808b8",
-    "6": "7ace21af119e48f8a53b97b4601a3a8fe0da3dfe0b1ffc9739d943d404348d64",
-    "7": "323926349186ab152cb252760a20234ee7185ebf691d0237e83558855c0aece7",
-    "8": "b43bb473c40ec14ed33a8396450b797785aaa6d433a5a3df9495e6becccb9959",
-    "9": "a14fc9e10ec7126eca9912fb535a7ad90748e3a28f16e7b3e1c981ebc3ced48f",
-    "10": "2b767003188797a82b5238abce27013f9e754b7d38ba51d92a9906a3f9383aef",
-    "11": "47e2f2edbed89b191d9503d975944434e62aa3ed4e5952e235221bafdd97e93c",
-    "12": "94a6a26391ce01d48f277f5c1a29cbbf58ec1ff89da6b858f665fcd2de560fe3"
+    "1": "dfdcb10407bbd9d9c04dd573b4caff20671112b02c8f5f02b7ade7156f3ec899",
+    "2": "e06bc44282bdc3b6d542d15496a97fa22e4969c72ae3742c9d86b52ddb099e08",
+    "3": "a6e0b41ca579a68bd4d3245f1f988c2674b2de12becd5368b12d6e38700a2a9b",
+    "4": "08aeaf2b45fc1b16c897c101c84a357da545bc3adfdc7dc00d9d6ab1d85b7064",
+    "5": "1d896be9badc57dad829f03bcebba73c85f4fa1aa0219351ebf56dc2bec42e80",
+    "6": "930de854479b9a682becbc7efe05107f6b8e3fd81c60299d6c668c25aba96d43",
+    "7": "9ea0ba2d50a8531a2f3b04f3144bad3024fd2b635f968cae5c0b45307ef151e5",
+    "8": "ca8de6b1134cf8e4d59c0f59f93f792dfc5b37d004ed8172fbaf634cf86b8942",
+    "9": "58be47a58c599e99eea848bbffede19f1db5e4798e3fc54bfee598d26157d7ec",
+    "10": "60829b97bac3446d4f69fa7fc4dafac7b8a60856968a51cdf16e655cc3ba9af3",
+    "11": "9a7e29fa4c3a820cb9bd19ab1a3834d751858ba1a853e787251b1fc070562619",
+    "12": "c7e9a3efdf22681048fd6a2963974b4b74da331b961fccdc597c67c2d4f32c3c"
   },
   "batch_initial_video_cap_credits": 960,
   "previous_1_50_generations_not_reopened": true,
