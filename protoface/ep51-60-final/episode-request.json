@@ -1,0 +1,24 @@
+{
+  "production_scope": "explicit_user_final51_60_20261112",
+  "episode": 51,
+  "initial_parts": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "request_kind": "initial",
+  "maximum_credits_per_clip": 8,
+  "maximum_selected_initial_credits": 40,
+  "maximum_initial_generations_per_selected_clip": 1,
+  "authorized_payload_sha256": {
+    "1": "58b519ba4a2e539d55b1fdef6876dc8981deb7618d54eda1e0c640bcda0cceb6",
+    "2": "376939640d1a0b1568c795e5ee97e9bbdee12510eb6517e234603162aae7246e",
+    "3": "44802131fc4428299f9b86f6e12324981f35ddc08c72f7da96510aef2dd3d101",
+    "4": "0cd2da86c8cd81bf68ac4515d76c1e74cf0994c6d8fd1fdb6f34e0391943b8aa",
+    "5": "ef12296157667c6741fa9d7834b1a860d928cdca405c5272de5f3f13427a279c"
+  },
+  "batch_initial_video_cap_credits": 960,
+  "previous_1_50_generations_not_reopened": true
+}
