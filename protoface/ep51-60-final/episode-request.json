@@ -1,7 +1,12 @@
 {
   "production_scope": "explicit_user_final51_60_20261112",
-  "episode": 51,
+  "episode": 52,
   "initial_parts": [
+    1,
+    2,
+    3,
+    4,
+    5,
     6,
     7,
     8,
@@ -12,16 +17,21 @@
   ],
   "request_kind": "initial",
   "maximum_credits_per_clip": 8,
-  "maximum_selected_initial_credits": 56,
+  "maximum_selected_initial_credits": 96,
   "maximum_initial_generations_per_selected_clip": 1,
   "authorized_payload_sha256": {
-    "6": "837932e6abdd2c30017703f6bd5b59eaa696e650b15f27d11bf8a992cfabdafd",
-    "7": "6630eb9a55f6da90adf23c9e390ecdc588d894be98ecc9b94d2e461b97ad98f8",
-    "8": "309f8bc8703af7066481753aaf1d13003fb17bf0a2604c9ed3af7671812f2ad0",
-    "9": "a873863c37315fee5654935486e7c55fa72c57cb4570b7d7b16e096618e28a93",
-    "10": "7e9caedf64dd8282aa767642c4de14b2483071b01e289ad900d2f6f8e489531b",
-    "11": "d691e9ecb9fd5bde7868f0ed73b7d49d2abd0c1e69fe2c28d3836e61c904acd8",
-    "12": "453d902f24446b9e1ba318a1b7dcfbcccc7e9d2e071ee7a8c9cb0b99b9a6fd82"
+    "1": "ff72599a006b970f99919283199d744f2cb8416bb782dc243878c225e3fd2856",
+    "2": "46c7bff945fdac7a39452e994bdbe6de0d22118555aa89902af0466576c2d2a3",
+    "3": "f3eaa3ee1bcb42febd4edba95412375f58eae5af8cc98c38815a5f2f4bafe0a2",
+    "4": "79de15ed0068e15b48a656a050303fe9b1eacd0746f085e8c0f98fb4d8fdaae6",
+    "5": "3e957d45a13741ede10482663c4a36720722cdcca06f3bd05a925c2ed86f050c",
+    "6": "953e6481fa83c4baadb675bd00ae59c4a8e81c50189afb173800c779b3a1ef66",
+    "7": "633e141cc8c6a45f8810fe8950db2682baf479ac04ca52c9e00aa63bef49040e",
+    "8": "b2882a02766c4eaab978338325042c726da2ff83415918a4e2b15b66d6399c71",
+    "9": "d20882d2ab86704c0347f54f58821b35c2d562f1d7472ca946b27c479522dc19",
+    "10": "67d2ab3cb3b6e6eadd1dcee67498d55a21a535f2fd704a585548a0703a8264e1",
+    "11": "0b2350f6909f8ffeb709351b447dbbf1c7e585d6497a88597d6913b70826c3c4",
+    "12": "4096822f8f7fbd8adfd5a1085c006ecd78d606430b544216229ac67e158cce67"
   },
   "batch_initial_video_cap_credits": 960,
   "previous_1_50_generations_not_reopened": true
