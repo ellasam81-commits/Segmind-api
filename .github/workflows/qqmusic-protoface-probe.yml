@@ -1,0 +1,56 @@
+name: QQ Music Protoface read-only probe
+on:
+  push:
+    paths:
+      - 'protoface/qqmusic-anime-guide/probe-trigger.txt'
+permissions:
+  contents: write
+concurrency:
+  group: qqmusic-protoface-probe-v1
+  cancel-in-progress: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install 'httpx>=0.27,<1'
+      - name: Read-only Protoface check
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, httpx, pathlib, datetime
+          key=os.environ.get("PROTOFACE_API_KEY","").strip()
+          out={"checked_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"has_secret":bool(key)}
+          if key:
+              with httpx.Client(base_url="https://api.protoface.com",headers={"Authorization":"Bearer "+key},timeout=30) as c:
+                  for name,path in [("model","/v1/models/minimax/minimax-h3"),("quota","/v1/billing/quota")]:
+                      try:
+                          r=c.get(path)
+                          out[name+"_http"]=r.status_code
+                          if r.is_success:
+                              d=r.json()
+                              if name=="model":
+                                  out["model_available"]=d.get("available")
+                                  out["model_id"]=d.get("id") or d.get("model")
+                                  out["qualities"]=list((d.get("pricing",{}).get("qualities",{}) or {}).keys())
+                                  out["has_video_general"]="video.general" in (d.get("request_schemas",{}) or {})
+                              else:
+                                  out["balance_credits"]=d.get("balance_credits")
+                      except Exception as e:
+                          out[name+"_error"]=type(e).__name__
+          p=pathlib.Path("protoface/qqmusic-anime-guide/probe-status.json")
+          p.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding="utf-8")
+          print(json.dumps({k:v for k,v in out.items() if k!="balance_credits"},ensure_ascii=False))
+          PY
+      - name: Commit sanitized probe result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add protoface/qqmusic-anime-guide/probe-status.json
+          git commit -m "Record QQ Music Protoface read-only probe" || exit 0
+          git push
