@@ -32,8 +32,8 @@ def packet(content,label):
     publish([OUT], "Return encrypted "+label)
 def fetch_payload():
     for i in range(150):
-        git("fetch","-q","--depth=1","origin",BRANCH)
-        v=subprocess.run(["git","show","FETCH_HEAD:"+str(ROOT/"input.txt")],capture_output=True)
+        git("fetch","-q","origin",BRANCH)
+        v=subprocess.run(["git","show","FETCH_HEAD:"+str(ROOT/"cast-input.txt")],capture_output=True)
         if v.returncode==0:
             git("merge","--ff-only","FETCH_HEAD")
             raw=base64.b64decode(v.stdout)
