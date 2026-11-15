@@ -10,7 +10,7 @@ Author: 林爱丽. This is an independent fan-made skit, not connected to any of
 3. To generate ONE 7s test, select generate_range, start_scene=1, end_scene=1.
 4. To generate all 42s, select generate_range, start_scene=1, end_scene=6.
 5. Use the model pricing from the free inspection to enter a positive max_total_credits; zero blocks all paid requests. Tick confirm_spend.
-6. Download the run artifact (MP4 clips, subtitles.srt and—if ffmpeg joins successfully—hangbo_42s.mp4). Review spoken audio before publishing.
+6. When start_scene=1 and end_scene=6, this workflow **automatically joins all six 7-second clips into one 42-second MP4**, permanently overlays upper-right **制作 林爱丽** and burns in Chinese subtitles. Download `挂播_挂在哪儿_制作林爱丽_42秒.mp4` from the run Artifacts. Six source MP4s and an editable subtitles.srt remain available.
 
 ## Production rules
 
@@ -25,3 +25,7 @@ Author: 林爱丽. This is an independent fan-made skit, not connected to any of
 
 ## Story
 1. Day-chart surprise / 2. Mascot literally hangs a phone / 3. Idol corrects the misunderstanding / 4. QQ Music play tutorial / 5. Music while doing everyday tasks / 6. Hangbo three times and friendly closing.
+
+## Final assembly
+
+Run `python protoface/thoo-hoo-hangbo/assemble.py thoo-hoo-hangbo-output` after collecting all six MP4s into one folder. FFmpeg and `fonts-noto-cjk` are required. This is entirely offline and costs **zero Protoface credits**. It creates `挂播_挂在哪儿_制作林爱丽_42秒.mp4` with a permanent top-right producer credit and Chinese subtitles. Partial scene generation does not by itself create the full video. GitHub's default action remains **free model inspection**.
