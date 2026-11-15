@@ -16,3 +16,6 @@ The edit removes unrelated generated speech, uses a close-up to hide inconsisten
 The final five seconds now show the two actual user-supplied production photographs: black armor and mask, followed by the uncovered face. A 0.6-second crossfade connects them; the actor/role credit is enlarged to 44px. No photo regeneration and no additional provider charge. Runtime remains 45 seconds.
 
 Use `python3 render_story.py --masked-photo /path/masked.jpeg --unmasked-photo /path/face.jpeg`, then `python3 finish_photo_ending.py --audio-source /path/previous-finished-video.mp4`. The second command copies the prior mastered audio without re-encoding, preserving dialogue, music, effects and synchronization. The photo revision replaces the previous delivered file.
+
+## First sword handling correction
+Run `python3 trim_first_sword.py` after the photo ending revision. This removes source frames 552 through 580 (18.400–19.367 seconds), cutting directly to the existing mask close-up. A centered 80 ms audio crossfade smooths the seam without changing subsequent synchronization. Result: approximately 44.03 seconds. The actual-photo ending, all dialogue and later action remain.

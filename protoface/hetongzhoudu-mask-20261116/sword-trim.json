@@ -1,0 +1,12 @@
+{
+  "source": "何不同舟渡_面具之下_真人剧照片尾版.mp4",
+  "output": "何不同舟渡_面具之下_拿剑修剪版.mp4",
+  "removed_source_interval_seconds": [
+    18.4,
+    19.366666666666667
+  ],
+  "removed_frames": 29,
+  "duration_seconds": 44.03333333333333,
+  "audio_crossfade_seconds": 0.08,
+  "reason": "Remove unnatural first sword handling and cut directly to masked close-up; preserve actual-photo end card and all dialogue."
+}
