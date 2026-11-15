@@ -1,0 +1,25 @@
+{
+  "title": "何不同舟渡 · 先把药瓶打开",
+  "duration_seconds": 36.6,
+  "charged_credits": 60,
+  "assets": [
+    {
+      "label": "scene-01",
+      "asset_id": "asset_01M7GBVX244BRDRXJHY57GHX14"
+    },
+    {
+      "label": "scene-02",
+      "asset_id": "asset_01M7GBVXJ73DHEZST39X8GG5XA"
+    },
+    {
+      "label": "scene-03",
+      "asset_id": "asset_01M7GBYSREBX7DSM7TP478FY6C"
+    },
+    {
+      "label": "scene-04",
+      "asset_id": "asset_01M7GBYT5ZY9DKHS75AVYTPV2K"
+    }
+  ],
+  "music": "用户提供：游爱场",
+  "edit_note": "Removed generated unscripted speech, repeated actions and long pauses; inserted a tighter face shot, retained moving character shots, bottle reveal and hands opening the stopper. No paid retries."
+}
