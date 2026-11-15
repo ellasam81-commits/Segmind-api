@@ -59,7 +59,7 @@ def main():
   store(OUT/"model.json",model)
   if action=="inspect_model":
    schema=model.get("request_schemas",{}).get("video.general")
-   test={"prompt":project["common"]+" "+scenes[0]["prompt"],"reference":project["reference"],
+   test={"prompt":project["common"]+" "+scenes[0]["prompt"],"reference":[project["reference"]],
          "duration_seconds":7,"quality":"480p","aspect_ratio":"16:9","generate_audio":True,"enhance_prompt":False}
    if len(model.get("operations",{}))>1:test["operation"]="video.general"
    if not isinstance(schema,dict):
@@ -83,7 +83,7 @@ def main():
   payloads={}
   for i in range(start,end+1):
    s=scenes[i-1]
-   p={"prompt":project["common"]+"\nSINGLE SHOT: "+s["prompt"],"reference":project["reference"],
+   p={"prompt":project["common"]+"\nSINGLE SHOT: "+s["prompt"],"reference":[project["reference"]],
       "duration_seconds":7,"quality":"480p","aspect_ratio":"16:9","generate_audio":True,"enhance_prompt":False}
    if len(model.get("operations",{}))>1:p["operation"]="video.general"
    issues=list(Draft202012Validator(schema).iter_errors(p))
