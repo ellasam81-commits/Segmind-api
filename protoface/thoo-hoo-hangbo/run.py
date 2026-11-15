@@ -119,20 +119,16 @@ def main():
    if result.get("status")!="completed":raise RuntimeError("Provider did not complete; no replacement request")
    download_video(result,OUT/f"scene-{i:02d}.mp4")
    summary(f"Scene {i} video downloaded. Provider ID: {rid}.")
-  srt=[]
-  for i in range(start,end+1):
-   at=(i-start)*7
-   srt.append(f"{i-start+1}\n00:00:{at:02d},200 --> 00:00:{at+6:02d},700\n{scenes[i-1]['sub']}\n")
-  (OUT/"subtitles.srt").write_text("\n".join(srt),encoding="utf-8")
   if start==1 and end==6:
-   clips=OUT/"clips.txt"
-   clips.write_text("".join(f"file 'scene-{i:02d}.mp4'\n" for i in range(1,7)),encoding="utf-8")
    try:
-    subprocess.run(["ffmpeg","-y","-loglevel","error","-f","concat","-safe","0",
-                    "-i","clips.txt","-c","copy","hangbo_42s.mp4"],cwd=OUT,check=True)
-    summary("All six parts joined: hangbo_42s.mp4; subtitles.srt included.")
-   except Exception as e:
-    summary("All six MP4 clips saved, but stitching failed; join them in CapCut with subtitles.srt.")
+    subprocess.run([sys.executable,"protoface/thoo-hoo-hangbo/assemble.py",str(OUT)],check=True)
+    summary("Completed 42-second MP4 with permanent upper-right credit: **制作 林爱丽** and Chinese subtitles. Download output artifact.")
+   except Exception as error:
+    summary("Six generated MP4 clips are retained, but automatic compilation failed. No extra provider calls were made. Detail: "+str(error))
+    raise
+  else:
+   summary("Selected scenes completed. A 42s compilation needs all six downloaded clips under one run (scenes 1-6).")
+
 if __name__=="__main__":
  try:main()
  except Exception as e:
