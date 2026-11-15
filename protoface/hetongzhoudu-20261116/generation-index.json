@@ -1,0 +1,30 @@
+{
+  "version": "shirtless-general-v2",
+  "final_duration_seconds": 44.7,
+  "image_asset": "asset_01M7G7VZJ3Z66X1HPQP4P3ED8C",
+  "video_assets": [
+    {
+      "label": "scene-01",
+      "asset_id": "asset_01M7G7ZFV2MR2K7TC2DP9GA7J2",
+      "charged_credits": 15
+    },
+    {
+      "label": "scene-02",
+      "asset_id": "asset_01M7G80GWY6VBZQZPW97N7G5M7",
+      "charged_credits": 15
+    },
+    {
+      "label": "scene-03",
+      "asset_id": "asset_01M7G82HYKYYPAJSWA87RSQJ9Z",
+      "charged_credits": 15
+    },
+    {
+      "label": "scene-04",
+      "asset_id": "asset_01M7G84ACGSPRF3N65S1DVW77W",
+      "charged_credits": 15
+    }
+  ],
+  "current_version_credits": 70,
+  "previous_clothed_version_credits": 70,
+  "note": "User requested shirtless athletic-general revision after the first generation. Extra unscripted phrases were removed in editing, with no additional generation charges."
+}
