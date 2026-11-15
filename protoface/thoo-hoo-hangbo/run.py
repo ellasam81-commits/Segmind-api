@@ -58,7 +58,21 @@ def main():
   model=request(c,"GET","/v1/models/"+MODEL)
   store(OUT/"model.json",model)
   if action=="inspect_model":
-   summary("Inspected live H3 schema and pricing. Zero paid video requests.");return
+   schema=model.get("request_schemas",{}).get("video.general")
+   test={"prompt":project["common"]+" "+scenes[0]["prompt"],"reference":project["reference"],
+         "duration_seconds":7,"quality":"480p","aspect_ratio":"16:9","generate_audio":True,"enhance_prompt":False}
+   if len(model.get("operations",{}))>1:test["operation"]="video.general"
+   if not isinstance(schema,dict):
+    summary("H3 live video.general schema unavailable. Zero paid requests.")
+    print("Schema unavailable; no generation");return
+   errors=list(Draft202012Validator(schema).iter_errors(test))
+   if errors:
+    summary("Current H3 request is incompatible: "+errors[0].message+"; no generation attempted")
+    print("Schema mismatch:",errors[0].message);return
+   credits=price(model)
+   summary(f"**FREE INSPECTION PASSED**. One 7-second scene estimate: **{credits:.2f} credits**. Six 7-second scenes estimate: **{credits*6:.2f} credits**. No paid requests.")
+   print(f"PREVIEW ONLY: scene={credits:.2f} credits, all6={credits*6:.2f} credits")
+   return
   if os.getenv("CONFIRM_SPEND","").lower()!="true":raise RuntimeError("Explicit confirm_spend required")
   start=int(os.getenv("START_SCENE","1"));end=int(os.getenv("END_SCENE","1"))
   cap=float(os.getenv("MAX_TOTAL_CREDITS","0"))
