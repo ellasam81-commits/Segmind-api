@@ -1,0 +1,83 @@
+{
+  "song": "幻火",
+  "source_range": [
+    0,
+    45.0
+  ],
+  "speech_duck_dbfs": -33,
+  "gap_music_dbfs": -26,
+  "action_music_dbfs": -22,
+  "outro_music_dbfs": -20,
+  "dialogue_intervals": [
+    [
+      1.6671604938271605,
+      4.64720987654321
+    ],
+    [
+      4.668049382716049,
+      6.772839506172839
+    ],
+    [
+      7.317270823834196,
+      8.67340208462867
+    ],
+    [
+      8.756856316062175,
+      10.394645607944732
+    ],
+    [
+      13.628497075993092,
+      14.254403811744387
+    ],
+    [
+      23.43571198971392,
+      24.375924140147863
+    ],
+    [
+      24.428158148505307,
+      26.5697524911604
+    ],
+    [
+      35.649706779637384,
+      37.04764262343097
+    ],
+    [
+      39.21757288842399,
+      39.99999966666667
+    ]
+  ],
+  "effects": [
+    {
+      "name": "mask removal cloth air",
+      "time": 19.392799742847963,
+      "duration": 0.3,
+      "peak_dbfs": -34
+    },
+    {
+      "name": "comic reaction accent",
+      "time": 24.478158148505308,
+      "duration": 0.48,
+      "peak_dbfs": -31
+    },
+    {
+      "name": "title soft air",
+      "time": 40.15,
+      "duration": 0.5,
+      "peak_dbfs": -32
+    }
+  ],
+  "loudness_measurement": {
+    "input_i": "-18.46",
+    "input_tp": "-2.48",
+    "input_lra": "10.30",
+    "input_thresh": "-28.91",
+    "output_i": "-17.19",
+    "output_tp": "-1.50",
+    "output_lra": "6.80",
+    "output_thresh": "-27.64",
+    "normalization_type": "dynamic",
+    "target_offset": "1.19"
+  },
+  "video_reencoded": false,
+  "duration": 45.0
+}

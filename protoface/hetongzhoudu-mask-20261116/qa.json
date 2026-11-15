@@ -1,0 +1,17 @@
+{
+  "duration_seconds": 45,
+  "resolution": [
+    720,
+    1280
+  ],
+  "frame_rate": 30,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "file_size": 17291509,
+  "integrated_lufs": -16.1,
+  "true_peak_dbfs": -1.49,
+  "full_decode": "passed",
+  "visual_review": "Contact sheet, mask prop crops and end card inspected",
+  "dialogue_review": "All retained dialogue identifiable by ASR; spurious source dialogue removed. Speech recognition is not a substitute for human listening.",
+  "end_card_seconds": 5
+}

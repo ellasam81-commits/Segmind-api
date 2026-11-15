@@ -1,0 +1,17 @@
+[
+  {
+    "kind": "air",
+    "name": "mask removal cloth air",
+    "time": 19.392799742847963,
+    "duration": 0.3,
+    "peak_db": -34
+  },
+  {
+    "kind": "chime",
+    "name": "comic reaction accent",
+    "time": 24.478158148505308,
+    "duration": 0.48,
+    "frequency": 830.61,
+    "peak_db": -31
+  }
+]

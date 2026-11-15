@@ -1,0 +1,64 @@
+{
+  "workflow_run": 43762236404,
+  "generation_credits": 80,
+  "assets": [
+    {
+      "label": "cast-masked",
+      "asset_id": "asset_01M7GGTXAE2N710V4PWYK3BRK0",
+      "credits": {
+        "pricing_version": "provider-catalog-55261be6419cd97d",
+        "reserved": 10,
+        "charged": 10
+      }
+    },
+    {
+      "label": "cast-unmasked",
+      "asset_id": "asset_01M7GGWCSKSAJK7MQMTT0WFW9W",
+      "credits": {
+        "pricing_version": "provider-catalog-55261be6419cd97d",
+        "reserved": 10,
+        "charged": 10
+      }
+    },
+    {
+      "label": "scene-01",
+      "asset_id": "asset_01M7GGX8ZMZHMP6B8CTPV0JZEM",
+      "credits": {
+        "pricing_version": "model-2026-08-15",
+        "reserved": 15,
+        "charged": 15
+      }
+    },
+    {
+      "label": "scene-02",
+      "asset_id": "asset_01M7GGX8KZ4F866MK1WM35G1TF",
+      "credits": {
+        "pricing_version": "model-2026-08-15",
+        "reserved": 15,
+        "charged": 15
+      }
+    },
+    {
+      "label": "scene-03",
+      "asset_id": "asset_01M7GGY7NKZG4MZ9T8YRW1ABE8",
+      "credits": {
+        "pricing_version": "model-2026-08-15",
+        "reserved": 15,
+        "charged": 15
+      }
+    },
+    {
+      "label": "scene-04",
+      "asset_id": "asset_01M7GGZ8WFR9X88Z1V3TX9TNF0",
+      "credits": {
+        "pricing_version": "model-2026-08-15",
+        "reserved": 15,
+        "charged": 15
+      }
+    }
+  ],
+  "duration_seconds": 45,
+  "end_card_seconds": 5,
+  "style": "9:16 anime fan fiction, black armor and mask, suspense with restrained comedy",
+  "canonical_basis": "Official platform synopses only: notorious turncoat reputation, hidden protective role. Mask origin was not verified. This is not a scene from the novel or drama."
+}

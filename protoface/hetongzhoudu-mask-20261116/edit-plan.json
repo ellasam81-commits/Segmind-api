@@ -1,0 +1,81 @@
+{
+  "1": [
+    [
+      0,
+      6.75
+    ]
+  ],
+  "2": [
+    [
+      2.6,
+      12.25
+    ]
+  ],
+  "3": [
+    [
+      0,
+      4.12
+    ],
+    [
+      6,
+      9.15
+    ],
+    [
+      9.15,
+      11.5
+    ],
+    [
+      11.5,
+      12.25
+    ]
+  ],
+  "4": [
+    [
+      0.3,
+      10
+    ],
+    [
+      10,
+      12.25
+    ]
+  ],
+  "crops": {
+    "3": {
+      "2": [
+        320,
+        568,
+        75,
+        0
+      ]
+    },
+    "4": {
+      "1": [
+        320,
+        568,
+        65,
+        5
+      ]
+    }
+  },
+  "mute": {
+    "3": [
+      [
+        2.2,
+        4.8
+      ]
+    ]
+  },
+  "target_frames": {
+    "1": 211,
+    "2": 302,
+    "3": 325,
+    "4": 374
+  },
+  "notes": "Remove spurious generated speech; retain actual female comic reply, verified with a second ASR pass; crop mask prop discontinuity. Five-second nonofficial end card.",
+  "durations": [
+    7.033333,
+    10.066667,
+    10.833333,
+    12.466667
+  ]
+}
