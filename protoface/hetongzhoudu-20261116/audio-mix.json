@@ -1,0 +1,116 @@
+{
+  "song": "游爱场",
+  "source_range": [
+    0,
+    47.2
+  ],
+  "speech_duck_dbfs": -30.5,
+  "gap_music_dbfs": -25.5,
+  "outro_music_dbfs": -19.5,
+  "dialogue_intervals": [
+    [
+      1.65,
+      4.95
+    ],
+    [
+      7.65,
+      8.98
+    ],
+    [
+      8.98,
+      11.85
+    ],
+    [
+      12.6,
+      15.4
+    ],
+    [
+      19.18,
+      20.85
+    ],
+    [
+      21.486666666666665,
+      24.066666666666663
+    ],
+    [
+      24.316666666666663,
+      26.816666666666663
+    ],
+    [
+      30.28333333333333,
+      33.18333333333333
+    ],
+    [
+      34.153333333333336,
+      36.53333333333333
+    ],
+    [
+      38.88333333333333,
+      40.35333333333333
+    ]
+  ],
+  "effects": [
+    {
+      "name": "small flame swell",
+      "time": 15.5,
+      "duration": 0.5,
+      "peak_dbfs": -28
+    },
+    {
+      "name": "kettle bubbling and soft steam",
+      "time": 16.15,
+      "duration": 2.8,
+      "peak_dbfs": -27
+    },
+    {
+      "name": "embarrassed flame flutter",
+      "time": 23.55,
+      "duration": 0.38,
+      "peak_dbfs": -33
+    },
+    {
+      "name": "returning kettle bubbles",
+      "time": 37.7,
+      "duration": 2.5,
+      "peak_dbfs": -30
+    },
+    {
+      "name": "title soft air",
+      "time": 41.02,
+      "duration": 0.9,
+      "peak_dbfs": -31
+    },
+    {
+      "name": "golden title glint",
+      "time": 41.72,
+      "duration": 1.25,
+      "peak_dbfs": -31
+    },
+    {
+      "name": "reservation button air",
+      "time": 42.48,
+      "duration": 0.5,
+      "peak_dbfs": -33
+    },
+    {
+      "name": "reservation button glint",
+      "time": 42.75,
+      "duration": 0.9,
+      "peak_dbfs": -33
+    }
+  ],
+  "loudness_measurement": {
+    "input_i": "-17.29",
+    "input_tp": "-3.48",
+    "input_lra": "5.60",
+    "input_thresh": "-28.05",
+    "output_i": "-16.43",
+    "output_tp": "-2.10",
+    "output_lra": "6.00",
+    "output_thresh": "-27.17",
+    "normalization_type": "dynamic",
+    "target_offset": "0.43"
+  },
+  "video_reencoded": false,
+  "duration": 47.2
+}
