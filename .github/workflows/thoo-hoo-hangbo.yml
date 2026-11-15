@@ -49,6 +49,10 @@ jobs:
         with:
           name: thoo-hoo-hangbo-${{ github.run_id }}
           path: thoo-hoo-hangbo-output
+      - name: Install Chinese subtitle fonts and FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
       - name: Run only selected scenes
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
