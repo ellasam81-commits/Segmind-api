@@ -22,3 +22,6 @@ Run `python3 trim_first_sword.py` after the photo ending revision. This removes 
 
 ## Arrow entrance correction
 Run `python3 trim_action.py` using the 45-second photo master. It applies both approved action trims in one encode: original frames 552–580 and 847–884. The second cut removes about 1.27 seconds of the arrow entrance from the prior version, jumping to the parry. Both audio seams use centered 80 ms crossfades. Result: approximately 42.77 seconds; all spoken dialogue and the five-second photo ending remain.
+
+## iPhone Photos compatibility repair
+Final delivery must run `python3 export_iphone.py` after all editorial cuts. An iPhone Photos save failure was reported. Inspection found the prior cut signalled H.264 level 6.2 with a microsecond time base and full-range video. The exporter explicitly uses H.264 Main level 4.0, limited-range 8-bit 4:2:0, constant 30 fps, encoder time base 1/30, MP4 video track time scale 30000, AAC-LC stereo and faststart. It validates these properties and fully decodes the result. This removes the observed encoding compatibility risk; actual saving to the user device must still be confirmed there. The film retains 1283 frames (42.77 seconds), all previous trims and the real-photo ending.
