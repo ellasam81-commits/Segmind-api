@@ -1,0 +1,32 @@
+{
+  "source": "何不同舟渡_面具之下_真人剧照片尾版.mp4",
+  "output": "何不同舟渡_面具之下_动作精剪版.mp4",
+  "cuts_source_frames": [
+    [
+      552,
+      581
+    ],
+    [
+      847,
+      885
+    ]
+  ],
+  "cuts_source_seconds": [
+    [
+      18.4,
+      19.366666666666667
+    ],
+    [
+      28.233333333333334,
+      29.5
+    ]
+  ],
+  "new_arrow_cut_in_previous_version_seconds": [
+    27.266666666666666,
+    28.533333333333335
+  ],
+  "newly_removed_seconds": 1.2666666666666666,
+  "duration_seconds": 42.766666666666666,
+  "audio_crossfade_seconds": 0.08,
+  "reason": "Retain previous first-sword correction and shorten floating arrow entrance, cutting to the parry. Render both from photo master to avoid another generational encode."
+}

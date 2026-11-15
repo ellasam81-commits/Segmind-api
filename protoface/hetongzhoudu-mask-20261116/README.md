@@ -19,3 +19,6 @@ Use `python3 render_story.py --masked-photo /path/masked.jpeg --unmasked-photo /
 
 ## First sword handling correction
 Run `python3 trim_first_sword.py` after the photo ending revision. This removes source frames 552 through 580 (18.400–19.367 seconds), cutting directly to the existing mask close-up. A centered 80 ms audio crossfade smooths the seam without changing subsequent synchronization. Result: approximately 44.03 seconds. The actual-photo ending, all dialogue and later action remain.
+
+## Arrow entrance correction
+Run `python3 trim_action.py` using the 45-second photo master. It applies both approved action trims in one encode: original frames 552–580 and 847–884. The second cut removes about 1.27 seconds of the arrow entrance from the prior version, jumping to the parry. Both audio seams use centered 80 ms crossfades. Result: approximately 42.77 seconds; all spoken dialogue and the five-second photo ending remain.
