@@ -1,7 +1,13 @@
 """Render the original fan story and a five-second identity/series card."""
-import json,subprocess,urllib.request
+import argparse,json,subprocess,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent;OUT=ROOT/'output';OUT.mkdir(exist_ok=True)
+parser=argparse.ArgumentParser()
+parser.add_argument('--masked-photo',type=Path,default=ROOT.parent/'upload/IMG_1883(2).jpeg')
+parser.add_argument('--unmasked-photo',type=Path,default=ROOT.parent/'upload/IMG_1869(2).jpeg')
+args=parser.parse_args()
+for photo in [args.masked_photo,args.unmasked_photo]:
+    if not photo.is_file(): raise FileNotFoundError(photo)
 FONT=ROOT/'fonts';FONT.mkdir(exist_ok=True)
 if not (FONT/'MaShanZheng-Regular.ttf').exists():
     urllib.request.urlretrieve('https://raw.githubusercontent.com/googlefonts/mashanzheng/master/fonts/ttf/MaShanZheng-Regular.ttf',FONT/'MaShanZheng-Regular.ttf')
@@ -47,9 +53,9 @@ e(BODY+.05,END,'Text',r'{\fs30\move(360,742,360,726,0,260)\fad(230,220)}背负�
 for i,ch in enumerate('何不同舟渡'):
     x=164+i*98
     e(BODY+.16+i*.045,END,'Art',f'{{\\move({x},850,{x},829,0,320)\\blur4\\t(0,320,\\blur0)\\fad(220,220)}}'+ch,22)
-e(BODY+.3,END,'Text',r'{\pos(360,923)\fs29\fsp2\fad(230,220)}檀健次 饰 谢却山',20)
-e(BODY+.35,END,'Text',r'{\pos(360,984)\fs31\1c&H97D8FF&\fad(230,220)}敬请期待 · 芒果 TV 可预约',20)
-e(BODY+.05,END,'Text',r'{\pos(360,1200)\fs20\1c&HCBDAE6&\fad(230,220)}粉丝原创动漫二创 · 非官方剧情',20)
+e(BODY+.3,END,'Text',r'{\pos(360,943)\fs44\fsp2\1c&H97D8FF&\fad(230,220)}檀健次 饰 谢却山',20)
+e(BODY+.35,END,'Text',r'{\pos(360,1014)\fs29\1c&H97D8FF&\fad(230,220)}敬请期待 · 芒果 TV 可预约',20)
+e(BODY+.05,END,'Text',r'{\pos(360,1200)\fs20\1c&HCBDAE6&\fad(230,220)}粉丝二创 · 动漫剧情非官方',20)
 ass=OUT/'story.ass';ass.write_text(header+'\n'.join(events)+'\n')
 (ROOT/'wordart-timeline.json').write_text(json.dumps({'scene_offsets':OFF,'body_duration':BODY,'duration':END,'endcard_duration':5,'crossfade_seconds':CROSS},indent=2))
 inputs=[];f=[]
@@ -59,11 +65,14 @@ for n in range(4):
 v='v0';a='a0'
 for n in range(1,4):
  f.extend([f'[{v}][v{n}]xfade=transition=fade:duration={CROSS}:offset={OFF[n]}[vx{n}]',f'[{a}][a{n}]acrossfade=d={CROSS}:c1=qsin:c2=qsin[ax{n}]']);v=f'vx{n}';a=f'ax{n}'
-inputs+=['-loop','1','-i',str(ROOT/'cast-unmasked.png')]
-f.append('[4:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,zoompan=z=\'min(zoom+0.0003,1.03)\':x=\'iw/2-iw/zoom/2\':y=\'ih/2-ih/zoom/2\':d=1:s=720x1280:fps=30,trim=duration=5.25,settb=1/30,setpts=PTS-STARTPTS,fps=30,setsar=1,format=yuv420p[card]')
+# Two user-supplied actual production photos, not regenerated portraits.
+inputs+=['-loop','1','-i',str(args.masked_photo),'-loop','1','-i',str(args.unmasked_photo)]
+for idx,length in [(4,3.05),(5,2.8)]:
+    f.append(f"[{idx}:v]scale=1440:2560:force_original_aspect_ratio=increase,crop=1440:2560,zoompan=z='min(zoom+0.00018,1.025)':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s=720x1280:fps=30,trim=duration={length},settb=1/30,setpts=PTS-STARTPTS,fps=30,setsar=1,format=yuv420p[photo{idx}]")
+f.append('[photo4][photo5]xfade=transition=fade:duration=0.6:offset=2.45,fps=30,trim=duration=5.25,settb=1/30,setpts=PTS-STARTPTS,fps=30[card]')
 f.append(f'[{v}][card]xfade=transition=fade:duration=0.25:offset={BODY-.25},ass=filename=\'{ass}\':fontsdir=\'{FONT}\',format=yuv420p[vout]')
 f.append(f'[{a}]asetpts=N/SR/TB,apad=pad_dur=5,loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,asetpts=N/SR/TB[aout]')
-dst=OUT/'何不同舟渡_面具之下_字幕版.mp4'
+dst=OUT/'何不同舟渡_面具之下_真人片尾_画面版.mp4'
 r=subprocess.run(['ffmpeg','-y',*inputs,'-filter_complex_threads','1','-filter_complex',';'.join(f),'-map','[vout]','-map','[aout]','-t',str(END),'-c:v','libx264','-crf','18','-preset','fast','-c:a','aac','-b:a','192k','-movflags','+faststart',str(dst)],capture_output=True)
 if r.returncode:raise RuntimeError(r.stderr.decode(errors='replace')[-4000:])
 print(dst)

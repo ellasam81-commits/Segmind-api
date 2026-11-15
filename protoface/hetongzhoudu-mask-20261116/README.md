@@ -11,3 +11,8 @@ The existing GitHub Actions workflow uses Protoface for two character reference 
 With scene-01.mp4 through scene-04.mp4 and cast-unmasked.png locally present, run prepare.py, render_story.py, then mix_soundtrack.py. The soundtrack script reads the user-supplied upload/幻火.mp3 from the parent directory; music and generated media are not committed to this public repository. FFmpeg, NumPy, SciPy and Noto Sans CJK SC are required. Ma Shan Zheng is fetched from its official font repository if absent.
 
 The edit removes unrelated generated speech, uses a close-up to hide inconsistent mask handling, preserves the actual comic reply, and uses modest timing adjustment. Both characters remain fully dressed in this episode. Captions follow the retained dialogue. Music ducks for dialogue; original Foley remains, with only quiet mask and comic accents added.
+
+## User-requested photo ending revision
+The final five seconds now show the two actual user-supplied production photographs: black armor and mask, followed by the uncovered face. A 0.6-second crossfade connects them; the actor/role credit is enlarged to 44px. No photo regeneration and no additional provider charge. Runtime remains 45 seconds.
+
+Use `python3 render_story.py --masked-photo /path/masked.jpeg --unmasked-photo /path/face.jpeg`, then `python3 finish_photo_ending.py --audio-source /path/previous-finished-video.mp4`. The second command copies the prior mastered audio without re-encoding, preserving dialogue, music, effects and synchronization. The photo revision replaces the previous delivered file.
