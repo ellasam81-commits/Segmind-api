@@ -1,0 +1,16 @@
+{
+  "phase": "cast",
+  "references": [
+    "male.b64",
+    "female.b64",
+    "style.b64"
+  ],
+  "payload": {
+    "operation": "image.edit",
+    "quality": "medium",
+    "resolution": "2k",
+    "aspect_ratio": "9:16",
+    "output_format": "png",
+    "prompt": "Create ONE breathtaking full-frame 9:16 premium Chinese historical romantic-comedy ANIME film still. References: image ONE is the exact adult male facial identity and hair silhouette to translate into anime (Tan Jianci as Xie Queshan); image TWO is the exact adult female FIRE SPIRIT character Xiao Tan Huo; image THREE provides ONLY the beautiful 2D anime drawing, delicate lines, cel shading, amber light quality and believable anatomy. Completely new nonsexual staging. Man must strongly resemble image ONE in anime form: slender angular oval face, long narrow dark almond eyes (NOT blue), straight defined brows, tall delicate straight nose, refined small lips, long black hair tied high half-up with simple dark gold hairpin, one loose forelock. Mature 30-year-old, 7.5-head proportions, handsome restrained, not chibi, not generic huge-eyed prince. He is sitting on the left foreground on a dark wooden bench, wearing a dark navy-black historical robe with narrow ivory undercollar, loosely lowered at only one shoulder to expose a small healing scratch on his upper shoulder; the chest stays covered, no blood. Black fur mantle neatly on bench beside him. He turns his face three-quarter toward the viewer/right so facial likeness is clearly visible. The grown woman stands close behind and to his right, normal adult proportions, beautiful face like image TWO, amber eyes, long orange-gold flowing hair with luminous flame tips, opaque flowing red-gold Hanfu fully covering chest and body, small decorative living flames along hair and sleeves, visible human face and hands. She holds a little white cotton pad poised near his exposed shoulder, mildly flustered expression. Warm wooden room with paper lattice window, dark teal moonlit garden beyond, a SMALL ceramic medicine dish and a brass kettle on a low side table at right. Warm gold highlights, subtle crimson, midnight teal shadows, exquisite clean line art and painterly cel shading, like reference THREE, faces bright and readable, detailed black hair, charming romantic chemistry. Camera medium two-shot from waist up, faces centered upper half, roomy margins. Fire only belongs to her magical hair, no building on fire. No kissing, no nudity, no photorealism, no 3D, no collage, no character sheet, no panels. NO TEXT, no logos, no watermark, no imitation of reference watermarks."
+  }
+}
