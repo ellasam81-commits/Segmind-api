@@ -1,0 +1,47 @@
+{
+  "title": "挂播？挂在哪儿？",
+  "author": "林爱丽",
+  "duration": 7,
+  "format": "16:9",
+  "model": "minimax/minimax-h3",
+  "reference": "https://raw.githubusercontent.com/ellasam81-commits/Segmind-api/main/protoface/thoo-hoo-hangbo/storyboard_reference.jpg",
+  "common": "A polished 16:9 single-shot anime minidrama, with identical expressive chibi Tan Jianci: neat dark hair, black jacket, gentle brown eyes; and exact yellow T Hoo Hoo flame mascot: blue oval eyes, pink cheeks, tiny arms, white shoes. The reference image is a CHARACTER STYLE BOARD only: NO visible storyboard panels, grid, speech bubbles, subtitles, watermarks or invented user interface. Soft cinematic pink-and-amber room lighting, expressive smooth motion, warm humor, native clear Mandarin speech, male voice for chibi idol, high sweet voice for T Hoo Hoo, mouth moves only while speaking. No copied music tracks, fake ranking numbers, face distortion or duplicated arms.",
+  "scenes": [
+    {
+      "n": 1,
+      "title": "榜单告急",
+      "sub": "T Hoo Hoo：哎呀！由你榜日榜掉出前十啦！",
+      "prompt": "A worried Tan Jianci sits behind a tablet, T Hoo Hoo notices a chart and gasps wide-eyed. The tablet is mostly blank, no ranking digits. T Hoo Hoo says: 哎呀！由你榜日榜掉出前十啦！. Tan Jianci gently raises one eyebrow."
+    },
+    {
+      "n": 2,
+      "title": "字面理解",
+      "sub": "T Hoo Hoo：挂播？我挂好了！",
+      "prompt": "Tiny yellow T Hoo Hoo drags a small coat hanger and literally hangs a smartphone on the hanger at the wall, grinning with pride. The anime man stares in surprise. T Hoo Hoo says: 挂播？我挂好了！. Comedic squeak as the coat hanger wobbles."
+    },
+    {
+      "n": 3,
+      "title": "无语三秒",
+      "sub": "动漫大哥：我是说听歌，不是把手机挂起来！",
+      "prompt": "The anime idol gives a long funny deadpan silent reaction, then gently removes the smartphone from the hanger. He says: 我是说听歌，不是把手机挂起来！. Yellow mascot's eyes blink in embarrassment, then lights up."
+    },
+    {
+      "n": 4,
+      "title": "正确示范",
+      "sub": "动漫大哥：打开QQ音乐，搜《Trouble In My DMs》，点击播放。",
+      "prompt": "The anime idol shows T Hoo Hoo a phone with simple music-player icons, pointing to a search icon and a play icon. Keep screen uncluttered without fabricated UI. He says: 打开QQ音乐，搜 Trouble In My DMs，点击播放。 The mascot nods seriously."
+    },
+    {
+      "n": 5,
+      "title": "快乐听歌",
+      "sub": "T Hoo Hoo：原来边做事，也能继续听歌！",
+      "prompt": "Three yellow T Hoo Hoo mascots doing calm hobbies, reading, drawing, organizing a table while enjoying music, one wears soft headphones, no chaotic dancing. Main mascot says: 原来边做事，也能继续听歌！ Smiling chibi idol watching."
+    },
+    {
+      "n": 6,
+      "title": "大声召集",
+      "sub": "T Hoo Hoo：挂播！挂播！挂播！ 大哥：量力支持，谢谢！",
+      "prompt": "Four cute yellow T Hoo Hoo mascots wave glow sticks and one holds a pink megaphone, while anime Tan Jianci smiles. Mascot shouts distinctly three times: 挂播！挂播！挂播！ He warmly replies: 量力支持，谢谢！ Joyful original confetti, final upbeat pose, keep lower third clear."
+    }
+  ]
+}
