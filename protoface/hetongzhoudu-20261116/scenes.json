@@ -1,0 +1,81 @@
+{
+  "phase": "video",
+  "reference": "PENDING_CAST",
+  "common": "A polished cinematic 2D historical ANIME romantic comedy, exactly the SAME two ADULT characters, clothing, room and delicate beautiful cel-shaded art as the reference image. Vertical 9:16, normal mature human proportions, never chibi, 3D or photorealistic. Male Xie Queshan has narrow dark brown almond eyes, slim angular face, exact recognizable face and high half-up black hair from reference, subtle restrained smiles and dry humor, navy-black robe with only one upper shoulder exposed for a small healing scratch. Female Xiao Tan Huo has fully opaque red-gold Hanfu, orange-gold long hair with magical living flame tips, amber eyes, charming quick-witted adult personality. She is a fan-created flame spirit. Strict visual continuity: male seated on left, female standing close behind/right applying a small white cotton pad to his shoulder; dark wooden bench, black fur cloak on bench, little medicine bowl and small brass kettle on a side table right, paper lattice window and dark teal night garden. The kettle is heated only by her harmless magical warmth, never an actual house fire. Rich amber bounce light, warm readable faces, beautiful fine lines, fluid acting and hair motion, restrained elegant camera moves, actual animated performance, NOT a still-image pan. No kissing or sexual content. All specified speech in CLEAR NATURAL MANDARIN, no narration, no invented dialogue, no overlap. Same original fictional voices in all clips: calm low-mid male voice, lively warm female adult voice, neither a real actor voice clone. Mouth moves only for the speaker, precise lip sync; listening mouth closed. Soft quiet original guzheng-plucked-string playful score below speech, room ambience, little flame crackle, subtle kettle sounds. Do NOT generate captions, logos, bubbles, watermark, Chinese text or titles; they will be added in editing. This is a fan-made fictional skit, not official footage. Each shot fills frame, no panels. Exactly 12 seconds.",
+  "scenes": [
+    {
+      "n": 1,
+      "prompt": "THE TRUST / 0-12s. Start medium two-shot, female pauses with white cotton pad hovering above his shoulder, her eyebrow raised; the man sits very calmly. 0.5-3.5s female asks, lightly teasing and genuinely surprised: “你的后背，就这样交给我？” He slowly looks over his shoulder at her. 4.0-5.5s he answers quietly: “别人，我防着。” Brief intimate pause. Her orange flame tips brighten with a small happy flare. 6.8-10.7s he adds in perfectly calm deadpan: “你嘛……先把火收一收。” His gaze flicks toward her newly flaring hair. 10.7-12s reaction: her confident face freezes, lips close, eyes dart up to her hair, one embarrassed blink. Preserve his composed handsome face, only a tiny corner-of-mouth smile. No other lines.",
+      "captions": [
+        [
+          0.5,
+          3.6,
+          "你的后背，就这样交给我？"
+        ],
+        [
+          4.0,
+          5.8,
+          "别人，我防着。"
+        ],
+        [
+          6.8,
+          10.8,
+          "你嘛……先把火收一收。"
+        ]
+      ]
+    },
+    {
+      "n": 2,
+      "prompt": "THE KETTLE BETRAYS HER / 0-12s. Same room, same shoulder treatment. Female lightly dabs his small upper-shoulder scratch with the cotton pad, pretending to be very professional; nervous tiny wrist hesitation without spilling. 0.4-3.7s she says with proud mock seriousness: “谁紧张了？我手稳得很！” Her face blushes, magical orange flame tips surge gently upward, warming the nearby brass kettle. 4.0-5.7s cut to close insert of brass kettle lid gently rattling once and a thin white steam wisp; soft comic kettle whistle, no flame touching objects. 5.7s cut back to a handsome three-quarter male closeup, he raises one eyebrow just a little. 6.3-9.5s male says calmly: “嗯，水都替你开了。” 9.5-12s two-shot reaction; she looks sideways at the kettle, annoyed at being caught, then straightens her back and presses lips together; male looks amused. Controlled small acting, not exaggerated cartoon deformation. No other speech.",
+      "captions": [
+        [
+          0.4,
+          3.8,
+          "谁紧张了？我手稳得很！"
+        ],
+        [
+          6.3,
+          9.7,
+          "嗯，水都替你开了。"
+        ]
+      ]
+    },
+    {
+      "n": 3,
+      "prompt": "THE WARM-UP EXCUSE / 0-12s. Same two-shot and continuity, cotton pad in woman's right hand, kettle on table right. She lifts her chin, bright witty grin, recovering her dignity. 0.4-5.4s female declares with mock righteousness: “我这是替《何不同舟渡》预热！” Pronounce title precisely HE BU TONG ZHOU DU, Chinese title 何不同舟渡. She gestures once with her free LEFT hand while holding pad securely in right. Tiny flame rises in her hair with pride. 6.0-10.5s man replies with amused dry restraint: “预热可以，别把屋子点了。” He glances briefly at the wooden rafters and back to her, still calm. 10.5-12s she huffs with cheeks faintly pink, consciously makes flame shrink to a cute little crown; he gives an almost invisible approving smile. Warm charming comedy, no physical fire danger, no burned furniture, no added character, no additional dialogue.",
+      "captions": [
+        [
+          0.4,
+          5.5,
+          "我这是替《何不同舟渡》预热！"
+        ],
+        [
+          6.0,
+          10.7,
+          "预热可以，别把屋子点了。"
+        ]
+      ]
+    },
+    {
+      "n": 4,
+      "prompt": "THE PAYOFF: HE KNOWS / 0-12s. Same characters and room. Treatment finished; she places cotton pad into small medicine dish, he draws dark robe back neatly over his shoulder (no torso exposure). 0.3-3.3s female folds arms, playful challenge, says: “你不是说，别人都防着？” He turns his upper body a little to her and looks gently into her eyes. 3.8-6.8s male says softly, with a very slight teasing smile: “你不用防。得哄着。” 6.8-8.5s silent beat: her annoyed expression melts into an uncontrollable small smile, magical hair glows brighter, tiny fire spark shaped loosely like a heart lifts and vanishes. 8.5s kettle gives a small whistle again. Male glances sideways at it. 9.0-10.8s he says deadpan: “水又开了。” 10.8-12s she hides her blushing smile behind the ends of her long red sleeve, eyes still visible; he smiles gently, both full faces recognizable, hold final composition. No physical contact needed, no additional lines, keep chemistry tender and comic.",
+      "captions": [
+        [
+          0.3,
+          3.4,
+          "你不是说，别人都防着？"
+        ],
+        [
+          3.8,
+          6.9,
+          "你不用防。得哄着。"
+        ],
+        [
+          9.0,
+          11.0,
+          "水又开了。"
+        ]
+      ]
+    }
+  ]
+}
