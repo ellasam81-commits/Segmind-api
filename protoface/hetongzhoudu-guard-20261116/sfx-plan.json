@@ -1,0 +1,31 @@
+[
+  {
+    "name": "cold draft at shadow",
+    "time": 5.95,
+    "kind": "air",
+    "duration": 0.95,
+    "peak_db": -32
+  },
+  {
+    "name": "sword air at parry",
+    "time": 13.23333333333333,
+    "kind": "air",
+    "duration": 0.28,
+    "peak_db": -31
+  },
+  {
+    "name": "single blade contact",
+    "time": 14.58333333333333,
+    "kind": "metal",
+    "duration": 0.2,
+    "peak_db": -33
+  },
+  {
+    "name": "token recognition accent",
+    "time": 29.1,
+    "kind": "chime",
+    "frequency": 587.33,
+    "duration": 0.75,
+    "peak_db": -36
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "title": "将军，你不是受伤了吗？！",
+  "series": "何不同舟渡",
+  "classification": "粉丝原创动漫二创 · 非官方剧情",
+  "duration_seconds": 33.966667,
+  "endcard_seconds": 3,
+  "charged_credits": 70,
+  "assets": [
+    {
+      "label": "action-cast",
+      "asset_id": "asset_01M7GDVA9S5D3GQGZCS69BWJNS"
+    },
+    {
+      "label": "scene-01",
+      "asset_id": "asset_01M7GDWPCAWBCBQK91GF9BZ8TZ"
+    },
+    {
+      "label": "scene-02",
+      "asset_id": "asset_01M7GDX9PS1SPHT0E15HSZSHJS"
+    },
+    {
+      "label": "scene-04",
+      "asset_id": "asset_01M7GDZMWWYTJX7JJNC8JVFV4X"
+    },
+    {
+      "label": "scene-03",
+      "asset_id": "asset_01M7GDZTG579M7MAQ206FNRSPP"
+    }
+  ],
+  "music": "用户提供：幻火",
+  "retries": 0,
+  "edit_notes": "Removed extra generated speech and repeated entrances; reframed the attack into window, weapon, rising hero and face shots to avoid duplicated figures. Preserve attacker recognition and token reveal."
+}
