@@ -1,0 +1,29 @@
+name: Anime fan skit - free model inspection
+on:
+  push:
+    branches: [fan-hangbo-anime-20261115]
+    paths: [.github/workflows/fan-hangbo-anime-probe.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect models only
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          base='https://api.protoface.com'
+          key=os.environ['PROTOFACE_API_KEY']
+          if not key: raise RuntimeError('Repository API key is missing')
+          def get(path):
+              req=urllib.request.Request(base+path,headers={'Authorization':'Bearer '+key})
+              with urllib.request.urlopen(req,timeout=45) as r:return json.load(r)
+          models=get('/v1/models')
+          print('CATALOG',json.dumps(models))
+          print('H3',json.dumps(get('/v1/models/minimax/minimax-h3')))
+          print('INSPECTION_ONLY_NO_GENERATIONS')
+          PY
