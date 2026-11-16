@@ -1,0 +1,42 @@
+[
+  {
+    "file": "01_小炭火上药记_穿衣修订版.mp4",
+    "duration": 47.2,
+    "frames": 1416,
+    "profile": "Main",
+    "level": 40,
+    "pixel_format": "yuv420p",
+    "audio_original_exact_match": true,
+    "decode": "pass"
+  },
+  {
+    "file": "02_先把药瓶打开_穿衣修订版.mp4",
+    "duration": 36.6,
+    "frames": 1098,
+    "profile": "Main",
+    "level": 40,
+    "pixel_format": "yuv420p",
+    "audio_original_exact_match": true,
+    "decode": "pass"
+  },
+  {
+    "file": "03_将军你不是受伤了吗_穿衣修订版.mp4",
+    "duration": 33.966667,
+    "frames": 1019,
+    "profile": "Main",
+    "level": 40,
+    "pixel_format": "yuv420p",
+    "audio_original_exact_match": true,
+    "decode": "pass"
+  },
+  {
+    "file": "04_面具之下_动作修订版.mp4",
+    "duration": 42.766667,
+    "frames": 1283,
+    "profile": "Main",
+    "level": 40,
+    "pixel_format": "yuv420p",
+    "audio_original_exact_match": null,
+    "decode": "pass"
+  }
+]

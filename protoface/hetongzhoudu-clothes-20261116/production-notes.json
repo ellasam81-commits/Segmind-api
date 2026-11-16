@@ -9,12 +9,10 @@
   "pilot_review": "Torso covered; face and motion broadly retained; fabric follows body. Proceeded with same references.",
   "generation_budget_credits": 366,
   "no_extra_episode_generation": true,
-  "final_pending": [
-    "final encode/decode checks",
-    "save final versions"
-  ],
+  "final_pending": [],
   "full_generation_completed": true,
   "credits_charged_total": 366,
   "provider_limitation": "Motion-transfer editing did not retain all cuts and props. Restored original narrative inserts with torso-excluding framing, retaining clothed generated wides. Do not claim exact original camera/lip-motion preservation.",
-  "mask_action": "Replaced unclear arrow segment; removed hover and synchronized quiet Foley."
+  "mask_action": "Replaced unclear arrow segment; removed hover and synchronized quiet Foley.",
+  "validation": "All four pass exact frame-count, full decode and iPhone-format checks; first three AAC packet streams exactly match original."
 }

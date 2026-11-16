@@ -15,6 +15,11 @@ def command(c):
 def audio(path):
  b=subprocess.check_output(['ffmpeg','-v','error','-i',str(path),'-ac','2','-ar',str(RATE),'-f','f32le','pipe:1']);return np.frombuffer(b,dtype=np.float32).reshape(-1,2).copy()
 def render():
+ if not ACTION.exists():
+  source=ROOT/'generated/mask-action-repaired.mp4';ranges=[(0,40),(53,55),(71,87),(100,120),(123,158)];filters=[]
+  for n,(a,b) in enumerate(ranges):filters.append(f'[0:v]trim=start_frame={a}:end_frame={b},setpts=PTS-STARTPTS[t{n}]')
+  filters.append(''.join(f'[t{n}]' for n in range(len(ranges)))+f'concat=n={len(ranges)}:v=1:a=0,fps=30,trim=end_frame=141,settb=1/30,setpts=N/(30*TB),format=yuv420p[v]')
+  command(['ffmpeg','-v','error','-y','-i',str(source),'-filter_complex',';'.join(filters),'-map','[v]','-an','-c:v','libx264','-preset','fast','-crf','18',str(ACTION)])
  lines=[]
  for l in (BASE/'hetongzhoudu-mask/output/story.ass').read_text().splitlines():
   if l.startswith('Dialogue:'):
