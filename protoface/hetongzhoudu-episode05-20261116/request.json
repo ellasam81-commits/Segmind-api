@@ -1,0 +1,32 @@
+{
+  "budget_cap": 155,
+  "cast_prompt": "Create ONE new cinematic 2D hand-drawn anime shot using the reference's EXACT two adult character identities, faces, hair, costumes and visual style. General: mature handsome narrow dark eyes, refined angular face, long half-up black hair, full black engraved heavy armor with beast shoulder guards, high collar and sleeves, opaque covered chest, slender athletic build, sheathed Chinese jian at left waist. He is UNMASKED and his unique black carved half-mask hangs at his belt. Xiao Tan Huo: beautiful adult woman with orange-gold magical flame hair, amber eyes, fully opaque red-gold Hanfu, normal adult proportions. New location is an ancient riverside safehouse at midnight: narrow wooden corridor, paper-lattice window on left, thick timber door to an inner room on right, cool blue moonlight and a low warm oil lantern. General foreground LEFT stands beside a small rough wooden desk with one folded paper list, woman foreground RIGHT partly behind a pillar, looking curious. BOTH faces clearly visible, medium full shot to knees, balanced cool-dark cinematic lighting with clean readable faces. The reference is character design, NOT the previous balcony background. Subtle danger and restrained humor, no romance pose, no muscles exposed, no modern items, no text, no subtitles, no logos, no panels, no chibi, no photorealism. Keep his exact identity and her recognizable face. No extra characters yet.",
+  "common": "竖屏9:16，精致手绘二维古装动漫，延续参考图同一成年谢却山和成年小炭火，脸、发型、黑色兽首重甲、红金不透汉服严格一致。不是写实真人，不是3D，不是静态图片推拉。深夜河边旧宅，窄木走廊、纸窗、右侧内门、木桌与油灯，冷蓝月光和暖金火光，暗处有层次，人物五官清楚。将军始终穿完整黑甲，剑始终在左腰剑鞘中，不拔剑；面具在腰侧直到最后一段戴上。小炭火的头发火焰不会烧伤人或建筑，正常成人比例，机灵不幼稚。每段2至3个自然切镜，以连续真实人物动作推进故事，不能全段同一角度。人物左右与门的位置连贯。普通话对白只说本段引号中的台词，各一次，不加旁白、心声、英语、哼唱或路人声音；将军低沉冷静的成年男声，小炭火清亮自然的成年女声，语速自然，只有正在说话的人嘴动，口型同步。自然轻微夜风、脚步、衣甲声，不生成音乐。没有文字、字幕、片名、logo或水印。原创粉丝架空小剧场，不伪装为电视剧正片。",
+  "scenes": [
+    {
+      "n": 1,
+      "duration": 8,
+      "prompt": "0—1.3秒，极近景一只戴黑护腕的手将折叠名单推过木桌，纸上只见模糊墨迹，左侧冷光和右侧油灯。1.3—5.8秒切将军无面具侧脸中近景，对桌另一侧普通深灰布衣的成年接应者平静说：“天亮之前，这些人，一个都不能留。”嘴只在此句动，声音不凶喊。接应者背对镜头，无面具无盔甲，与将军造型明显不同，只接过名单点头，不说话。5.8—8秒切门外，小炭火通过门缝看见这一幕，眼神惊疑，身子往后缩，火焰在纸窗上投下显眼轮廓。最后没有人说话。将军台词务必在6秒前说完。"
+    },
+    {
+      "n": 2,
+      "duration": 8,
+      "prompt": "0—1秒侧面，小炭火贴着纸窗偷偷挪步，头顶火苗在窗纸上投出大影子，完全暴露。将军从她左侧走到窗边，示意她退到柱后安全处，不能抓扯伤害她。1—4.3秒切小炭火的正面近景，她压低声音认真问：“你到底是救人，还是害人？”4.3—6.1秒切将军无面具近景，他看一眼纸窗上的火光，淡淡说：“先把火收一收。”6.1—8秒切双人中景，她意识到自己暴露，迅速用双手拢低头顶火苗，火焰缩小，尴尬眨眼；将军沉静不嘲笑，转向右侧内门。只两句，严格顺序，各一次。"
+    },
+    {
+      "n": 3,
+      "duration": 8,
+      "prompt": "0—2秒，跟随将军推开右侧内门，单次连贯向内移镜揭示真相：里面坐着两名穿灰褐便服的成年受伤者，手臂干净绷带，没有血。他们不是囚犯，无捆绑。深灰布衣接应者打开布包，展示白瓷药瓶和叠好的便衣。2—4秒切将军与伤者中景，他从椅背拿起一件厚灰披风，轻轻盖在伤者肩上，自己的黑甲始终不脱。4—6.7秒他低声交代接应者：“走水路，天亮前出城。”6.7—8秒切小炭火，她看看药瓶又看看他的手，神情由怀疑转为明白，主动拿起油灯照向侧门，嘴闭合，不说话。镜头动作清晰，人数固定两名伤者加一名接应者及两位主角，不复制将军。"
+    },
+    {
+      "n": 4,
+      "duration": 7,
+      "prompt": "0—2秒，小炭火举灯帮助深灰布衣接应者扶着一名灰褐衣受伤者穿过左侧的侧门，另一名受伤者随后离开，走向河边的暗路。将军独自停在右侧木柱旁，没有跟上，仍穿黑甲、无面具。2—3秒切她低头看一眼手中接应名单，又回头看将军，注意到他不准备离开。3—5.8秒切她近景，火光映在眼睛里，认真轻声问：“送走所有人……那你呢？”5.8—7秒反打将军，他望向画外越来越近的巡夜灯影，没有立即回答，嘴闭合。不要让将军说女声台词。"
+    },
+    {
+      "n": 5,
+      "duration": 8,
+      "prompt": "第一个参考图保持同一将军、小炭火及旧宅。第二参考图仅用于准确的黑色雕花半面具设计，不采用其背景。0—2秒，镜头从画外巡夜脚步方向回到将军无面具的脸，他听到远处脚步，眼神坚定克制。2—4.7秒他看向小炭火，低声清楚说：“我还有一场戏，没演完。”这句在5秒前说完。4.7—6秒，侧面中景，他用左手从腰侧取下唯一的实体半面具，稳稳戴在自己脸上，遮住眼与鼻而嘴可见；自然手部动作，不出现两个面具、不换脸。6—8秒广一点的侧后方双人镜头，他穿黑甲向右侧巡兵来路走去，小炭火把火苗收暗，护着最后一名伤者向左侧河边出口离开，两人的方向相反。结尾将军戴面具回望一瞬，随后转身，留下背影。小炭火无台词，走路清楚，脚步自然，不慢动作摆拍。"
+    }
+  ]
+}
