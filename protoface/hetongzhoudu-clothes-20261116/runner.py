@@ -2,6 +2,8 @@
 import base64,hashlib,json,math,os,subprocess,sys,time
 from pathlib import Path
 import httpx
+from threading import Lock
+LOCK=Lock()
 from jsonschema import Draft202012Validator
 ROOT=Path('protoface/hetongzhoudu-clothes-20261116');OUT=Path('hetongzhoudu-clothes-output');OUT.mkdir(exist_ok=True)
 REQ=json.loads((ROOT/'request.json').read_text());SOURCES=json.loads((ROOT/'source-index.json').read_text())
@@ -24,10 +26,12 @@ def run(mid,payload,label,cost):
  global SPENT
  m=model(mid);Draft202012Validator(m['request_schemas'][payload['operation']]).validate(payload)
  if m.get('available') is False:raise RuntimeError('Model unavailable')
- if SPENT+cost>REQ['budget_cap']:raise RuntimeError('Phase budget cap')
+ with LOCK:
+  if SPENT+cost>REQ['budget_cap']:raise RuntimeError('Phase budget cap')
+  SPENT+=cost
  if float(call('GET','/v1/billing/quota')['balance_credits'])<cost:raise RuntimeError('Insufficient remaining credits')
  digest=hashlib.sha256(json.dumps(payload,sort_keys=True).encode()).hexdigest()[:24]
- result=call('POST','/v1/run/'+mid,json=payload,headers={'Idempotency-Key':'wardrobe-20261116-'+label+'-'+digest});SPENT+=cost
+ result=call('POST','/v1/run/'+mid,json=payload,headers={'Idempotency-Key':'wardrobe-20261116-'+label+'-'+digest})
  rid=result['id'];print('ACCEPTED',label,rid,'estimated_credits',cost,flush=True)
  for _ in range(300):
   s=call('GET','/v1/runs/'+rid+'/status')
@@ -56,6 +60,34 @@ def main():
   if cost>18:raise RuntimeError('Pilot price changed')
   run(m['id'],{'operation':'video.edit','images':[seated],'video':'data:video/mp4;base64,'+base64.b64encode(pilot.read_bytes()).decode(),'prompt':REQ['video_prompt'],'resolution':'720p','fps':'original','save_audio':False},'wardrobe-pilot',cost)
   h=model('minimax/minimax-h3');print('H3_SCHEMA '+json.dumps({'id':h['id'],'pricing':h['pricing'],'schema':h['request_schemas']}),flush=True)
+ elif REQ['phase']=='full':
+  from build_clean import build
+  jobs=[]
+  for project in ['hetongzhoudu','hetongzhoudu-bottle','hetongzhoudu-guard']:
+   source,duration=build(project,ROOT,OUT,original)
+   seated=REQ['seated_asset'];standing=REQ['standing_asset']
+   ref=standing if project=='hetongzhoudu-guard' else seated
+   m=model('pruna-ai/p-video-replace');grid=m['pricing']['operations']['video.edit']['price_grid']['entries']
+   price=next(x for x in grid if x['resolution']=='720p' and x['fps']=='original' and x['save_audio']==False and x['__input_count_images']==1)
+   cost=math.ceil(float(price['unit_price_usd'])*math.ceil(duration)*100-1e-7)
+   if cost>math.ceil(duration)*3:raise RuntimeError('Video editing price changed')
+   prompt=REQ['video_prompt']
+   if project=='hetongzhoudu-guard':prompt=REQ['fight_video_prompt']
+   jobs.append((m['id'],{'operation':'video.edit','images':[ref],'video':'data:video/mp4;base64,'+base64.b64encode(source.read_bytes()).decode(),'prompt':prompt,'resolution':'720p','fps':'original','save_audio':False},project+'-clothed',cost))
+  m=model('minimax/minimax-h3');p=REQ['mask_payload'];quality=p['quality'];price=m['pricing']
+  rule=next(x for x in price['add_ons'] if x['id']=='reference_image')['by_quality'][quality]
+  cost=math.ceil(p['duration_seconds']*float(price['qualities'][quality]['credits_per_second'])+max(0,len(p['reference'])-int(rule.get('included',0)))*float(rule['credits_each']))
+  jobs.append((m['id'],p,'mask-action-repaired',cost))
+  if sum(j[3] for j in jobs)>REQ['budget_cap']:raise RuntimeError('Combined phase budget exceeded')
+  from concurrent.futures import ThreadPoolExecutor
+  with ThreadPoolExecutor(max_workers=4) as pool:
+   futures=[pool.submit(run,*j) for j in jobs]
+   for f in futures:f.result()
+ elif REQ['phase']=='mask-action':
+  m=model('minimax/minimax-h3');p=REQ['mask_payload'];quality=p['quality'];price=m['pricing']
+  rule=next(x for x in price['add_ons'] if x['id']=='reference_image')['by_quality'][quality]
+  cost=math.ceil(p['duration_seconds']*float(price['qualities'][quality]['credits_per_second'])+max(0,len(p['reference'])-int(rule.get('included',0)))*float(rule['credits_each']))
+  run(m['id'],p,'mask-action-repaired',cost)
  else:raise RuntimeError('Unknown phase')
  (OUT/'results.json').write_text(json.dumps(MOVES));print('PHASE_COMPLETE',REQ['phase'],'estimated_credits',SPENT,flush=True)
 if __name__=='__main__':
