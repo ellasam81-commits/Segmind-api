@@ -1,0 +1,20 @@
+{
+  "scope": "Three clothed re-edits and one mask action repair",
+  "video_originals_unchanged": true,
+  "image_references_completed": [
+    "run_01M7H1WVDCS2055X5G0TREDYMV",
+    "run_01M7H1YN5RE2JMS5SP340TCNPE"
+  ],
+  "pilot_completed": "run_01M7H29V5DZT9J66WB8GGBP1JM",
+  "pilot_review": "Torso covered; face and motion broadly retained; fabric follows body. Proceeded with same references.",
+  "generation_budget_credits": 366,
+  "no_extra_episode_generation": true,
+  "final_pending": [
+    "final encode/decode checks",
+    "save final versions"
+  ],
+  "full_generation_completed": true,
+  "credits_charged_total": 366,
+  "provider_limitation": "Motion-transfer editing did not retain all cuts and props. Restored original narrative inserts with torso-excluding framing, retaining clothed generated wides. Do not claim exact original camera/lip-motion preservation.",
+  "mask_action": "Replaced unclear arrow segment; removed hover and synchronized quiet Foley."
+}

@@ -10,7 +10,7 @@ def sh(c):
 def seconds(t):
  h,m,s=t.split(':');return int(h)*3600+int(m)*60+float(s)
 def render(i):
- project=PROJECTS[i-1];frames=BODIES[i-1];total=TOTAL[i-1];src=ROOT/'generated'/f'{project}-clothed.mp4';audio=BASE/'douyin-endcards/output'/cards.CONFIG[i-1]['output'];duration=frames/30
+ project=PROJECTS[i-1];frames=BODIES[i-1];total=TOTAL[i-1];src=ROOT/'restored'/f'{project}-clothed.mp4';audio=BASE/'douyin-endcards/output'/cards.CONFIG[i-1]['output'];duration=frames/30
  source_ass=BASE/project/'output'/('story.ass' if i==3 else 'wordart_v3.ass');lines=[]
  for line in source_ass.read_text().splitlines():
   if line.startswith('Dialogue:'):

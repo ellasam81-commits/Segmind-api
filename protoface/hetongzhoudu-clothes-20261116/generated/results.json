@@ -1,0 +1,42 @@
+[
+  {
+    "label": "mask-action-repaired",
+    "run_id": "run_01M7H2MGRDEDVF3NCGJEH969R3",
+    "asset_id": "asset_01M7H2Q29GFN1XMXDZYWD74229",
+    "credits": {
+      "pricing_version": "model-2026-08-15",
+      "reserved": 22,
+      "charged": 22
+    }
+  },
+  {
+    "label": "hetongzhoudu-guard-clothed",
+    "run_id": "run_01M7H2MH33BEA95X6H962EM4H5",
+    "asset_id": "asset_01M7H2WCB354N01A0PE5WG42YQ",
+    "credits": {
+      "pricing_version": "provider-catalog-55261be6419cd97d",
+      "reserved": 93,
+      "charged": 93
+    }
+  },
+  {
+    "label": "hetongzhoudu-clothed",
+    "run_id": "run_01M7H2MF3DSPQ2AKCTZYVVW6D4",
+    "asset_id": "asset_01M7H2XR908DQD2GN06TQ7Q2KB",
+    "credits": {
+      "pricing_version": "provider-catalog-55261be6419cd97d",
+      "reserved": 123,
+      "charged": 123
+    }
+  },
+  {
+    "label": "hetongzhoudu-bottle-clothed",
+    "run_id": "run_01M7H2MHQ1GXDEM42G4AWVAZDC",
+    "asset_id": "asset_01M7H30NWNSSVXXQ4YE9CGMZE3",
+    "credits": {
+      "pricing_version": "provider-catalog-55261be6419cd97d",
+      "reserved": 90,
+      "charged": 90
+    }
+  }
+]
