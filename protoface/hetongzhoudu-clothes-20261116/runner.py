@@ -47,8 +47,8 @@ def main():
  if REQ['phase']=='pilot':
   m=model('openai/gpt-image-2');entry=next(x for x in m['pricing']['operations']['image.edit']['price_grid']['entries'] if x['quality']=='medium' and x['resolution']=='2k');cost=float(entry['credits'])
   if cost>10:raise RuntimeError('Reference price changed')
-  seated=run(m['id'],{'operation':'image.edit','images':['asset_01M7G7VZJ3Z66X1HPQP4P3ED8C'],'prompt':REQ['seated_prompt'],'quality':'medium','resolution':'2k','aspect_ratio':'9:16','output_format':'png'},'seated-clothed',cost)
-  standing=run(m['id'],{'operation':'image.edit','images':['asset_01M7GDVA9S5D3GQGZCS69BWJNS',seated],'prompt':REQ['standing_prompt'],'quality':'medium','resolution':'2k','aspect_ratio':'9:16','output_format':'png'},'standing-clothed',cost)
+  seated=REQ['seated_asset']
+  standing=REQ['standing_asset']
   source=original('hetongzhoudu','scene-01');pilot=OUT/'pilot-input.mp4'
   subprocess.run(['ffmpeg','-v','error','-y','-i',str(source),'-t','6','-an','-vf','fps=30','-c:v','libx264','-crf','18','-preset','fast',str(pilot)],check=True)
   m=model('pruna-ai/p-video-replace');grid=m['pricing']['operations']['video.edit']['price_grid']['entries'];price=next(x for x in grid if x['resolution']=='720p' and x['fps']=='original' and x['save_audio']==False and x['__input_count_images']==1)

@@ -20,6 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -q httpx jsonschema
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Edit requested wardrobe
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
