@@ -1,0 +1,42 @@
+[
+  {
+    "output": "01_小炭火上药记_剧情片尾版.mp4",
+    "duration": "47.200000",
+    "size": "14530256",
+    "frame_count": "1416",
+    "iPhone_encoding_checks": "passed",
+    "audio_bitstream_unchanged": true,
+    "full_decode": "passed",
+    "endcard_external_cta_check": "passed"
+  },
+  {
+    "output": "02_先把药瓶打开_剧情片尾版.mp4",
+    "duration": "36.600000",
+    "size": "13501293",
+    "frame_count": "1098",
+    "iPhone_encoding_checks": "passed",
+    "audio_bitstream_unchanged": true,
+    "full_decode": "passed",
+    "endcard_external_cta_check": "passed"
+  },
+  {
+    "output": "03_将军你不是受伤了吗_剧情片尾版.mp4",
+    "duration": "33.966667",
+    "size": "12366289",
+    "frame_count": "1019",
+    "iPhone_encoding_checks": "passed",
+    "audio_bitstream_unchanged": true,
+    "full_decode": "passed",
+    "endcard_external_cta_check": "passed"
+  },
+  {
+    "output": "04_面具之下_剧情片尾版.mp4",
+    "duration": "42.766667",
+    "size": "14468130",
+    "frame_count": "1283",
+    "iPhone_encoding_checks": "passed",
+    "audio_bitstream_unchanged": true,
+    "full_decode": "passed",
+    "endcard_external_cta_check": "passed"
+  }
+]
