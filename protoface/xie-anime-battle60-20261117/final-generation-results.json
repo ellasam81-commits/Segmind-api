@@ -1,0 +1,52 @@
+[
+  {
+    "label": "scene-04",
+    "run_id": "run_01M7JTQ42ZMCFS3W7RJ78XZ2VG",
+    "asset_id": "asset_01M7JTRF53XYJ3PQKTES3BWTT4",
+    "credits": {
+      "pricing_version": "model-2026-08-18",
+      "reserved": 6,
+      "charged": 6
+    }
+  },
+  {
+    "label": "scene-02",
+    "run_id": "run_01M7JTQ4XPQ2V20F2DA7B3J38K",
+    "asset_id": "asset_01M7JTSP48V384030K7BVS8AHQ",
+    "credits": {
+      "pricing_version": "model-2026-08-18",
+      "reserved": 6,
+      "charged": 6
+    }
+  },
+  {
+    "label": "scene-03",
+    "run_id": "run_01M7JTQ5NKZXCCY9DCQYTNSHWK",
+    "asset_id": "asset_01M7JTTYQ0GGYBDWRJ08SSHB3S",
+    "credits": {
+      "pricing_version": "model-2026-08-18",
+      "reserved": 6,
+      "charged": 6
+    }
+  },
+  {
+    "label": "scene-05",
+    "run_id": "run_01M7JTRQJPQ2A2N7GJSA1SGP7B",
+    "asset_id": "asset_01M7JTW7DTH5FRP05VGQY96ZB0",
+    "credits": {
+      "pricing_version": "model-2026-08-18",
+      "reserved": 6,
+      "charged": 6
+    }
+  },
+  {
+    "label": "scene-06",
+    "run_id": "run_01M7JTSZ8HNCBJQVZXRPV0HKGG",
+    "asset_id": "asset_01M7JTXFFW02XTW6F6MDNSK8KD",
+    "credits": {
+      "pricing_version": "model-2026-08-18",
+      "reserved": 6,
+      "charged": 6
+    }
+  }
+]
