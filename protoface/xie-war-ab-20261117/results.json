@@ -1,0 +1,22 @@
+[
+  {
+    "label": "h3",
+    "run_id": "run_01M7JRPXEHWH7XK24T0KVG7WJ5",
+    "asset_id": "asset_01M7JRRAJQ4JX7BVY0QD1CN0EN",
+    "credits": {
+      "pricing_version": "model-2026-08-15",
+      "reserved": 36,
+      "charged": 36
+    }
+  },
+  {
+    "label": "ltx",
+    "run_id": "run_01M7JRPVNMRGEB1DCP8E0A5GVM",
+    "asset_id": "asset_01M7JRRDV2AFW8QR822XEFWKQ5",
+    "credits": {
+      "pricing_version": "model-2026-08-18",
+      "reserved": 6,
+      "charged": 6
+    }
+  }
+]

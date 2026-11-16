@@ -1,0 +1,21 @@
+{
+  "test": "one sample per model; not a general benchmark",
+  "duration_seconds": 10,
+  "aspect_ratio": "9:16",
+  "models": [
+    "lightricks/ltx-2.5-fast",
+    "minimax/minimax-h3"
+  ],
+  "shared_keyframe": true,
+  "same_prompt": true,
+  "prompt_enhancement": false,
+  "native_audio": true,
+  "criteria": [
+    "weapon and body continuity",
+    "readability of parry and counter",
+    "anime style consistency",
+    "visual effects contact timing",
+    "camera and pacing"
+  ],
+  "budget_credits": 52
+}
