@@ -1,1 +1,14 @@
-{"phase":"inspect","models":["lightricks/ltx-2.5-fast","minimax/minimax-h3"]}
+{
+  "phase": "keyframe",
+  "payload": {
+    "operation": "image.edit",
+    "images": [
+      "asset_01M7GGTXAE2N710V4PWYK3BRK0"
+    ],
+    "prompt": "Create a SINGLE spectacular opening animation keyframe for a Chinese historical war anime. True hand-drawn 2D anime aesthetic with precise ink linework, sophisticated cel shading and painterly cinematic background, not live action and not photorealistic CGI. The reference is ONLY costume and mask design inspiration. Adult male general with subtly Tan Jianci-inspired intense narrow almond eyes and lean dancer-athlete proportions, but distinctly original stylized anime facial structure, NOT an exact likeness or face copy. Black high ponytail, long loose strands, elaborate black-silver flame-scroll half mask, engraved black dragon shoulder armor, fitted layered black lamellar cuirass, black cape. Show entire body including grounded boots and both hands clearly. ONE anatomically correct steel sword securely held in his right hand, ready low beside his right hip. He occupies center-left, about 65% frame height. A single opposing helmeted adult soldier with spear stands at midground screen right 3 metres away, about to attack; three small background silhouettes only. Powerful low 3/4 camera angle, rain-slick flagstones at a colossal ancient city gate, deep midnight navy storm clouds, amber fires behind gate, torn red battle banners, drifting embers, cool silver moonlight outlining the hero and restrained warm rim light. Strong readable silhouette, asymmetric balanced combat composition, substantial space to move between opponents. Hero is calm, dangerous and alert, poised for physical combat, not a fashion portrait. Cinematic anime feature-film production quality, finely drawn attractive eyes, elegant face, armor articulated for movement. Weapons straight, physically separate, correct grips. No injuries, no blood, no extra limbs, no text, no watermark, no split panels, no border. Vertical 9:16.",
+    "quality": "medium",
+    "resolution": "2k",
+    "aspect_ratio": "9:16",
+    "output_format": "png"
+  }
+}
