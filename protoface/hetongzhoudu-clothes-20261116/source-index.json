@@ -1,0 +1,60 @@
+{
+  "hetongzhoudu": {
+    "scene-01": {
+      "asset_id": "asset_01M7G7ZFV2MR2K7TC2DP9GA7J2",
+      "run_id": "run_01M7G7YMHMDSE9HG3A1BB01P34"
+    },
+    "scene-02": {
+      "asset_id": "asset_01M7G80GWY6VBZQZPW97N7G5M7",
+      "run_id": "run_01M7G7ZNTPKFQRXMA2VCGMNQE6"
+    },
+    "scene-03": {
+      "asset_id": "asset_01M7G82HYKYYPAJSWA87RSQJ9Z",
+      "run_id": "run_01M7G80QZWHJEWZVW7S3MZ2TJE"
+    },
+    "scene-04": {
+      "asset_id": "asset_01M7G84ACGSPRF3N65S1DVW77W",
+      "run_id": "run_01M7G82SAREDDSQ8W1M8QGPKX7"
+    }
+  },
+  "hetongzhoudu-bottle": {
+    "scene-01": {
+      "asset_id": "asset_01M7GBVX244BRDRXJHY57GHX14",
+      "run_id": "run_01M7GBSE1AX9EC7GDRRQM5M0XJ"
+    },
+    "scene-02": {
+      "asset_id": "asset_01M7GBVXJ73DHEZST39X8GG5XA",
+      "run_id": "run_01M7GBSFAC6M5RVVB1G6CDQZBX"
+    },
+    "scene-03": {
+      "asset_id": "asset_01M7GBYSREBX7DSM7TP478FY6C",
+      "run_id": "run_01M7GBW11F4WC1S8M7VHWJ26SJ"
+    },
+    "scene-04": {
+      "asset_id": "asset_01M7GBYT5ZY9DKHS75AVYTPV2K",
+      "run_id": "run_01M7GBW1KHPDG9D366BE51YZCC"
+    }
+  },
+  "hetongzhoudu-guard": {
+    "action-cast": {
+      "asset_id": "asset_01M7GDVA9S5D3GQGZCS69BWJNS",
+      "run_id": "run_01M7GDSVBHTBVJRSEBGJAH8R4Q"
+    },
+    "scene-01": {
+      "asset_id": "asset_01M7GDWPCAWBCBQK91GF9BZ8TZ",
+      "run_id": "run_01M7GDVE6YVA5CD8ZP0XA64X78"
+    },
+    "scene-02": {
+      "asset_id": "asset_01M7GDX9PS1SPHT0E15HSZSHJS",
+      "run_id": "run_01M7GDVF2Y6R7APJ6W1MRABB8M"
+    },
+    "scene-04": {
+      "asset_id": "asset_01M7GDZMWWYTJX7JJNC8JVFV4X",
+      "run_id": "run_01M7GDXGY85S1Z9AA9TTQFMZ3B"
+    },
+    "scene-03": {
+      "asset_id": "asset_01M7GDZTG579M7MAQ206FNRSPP",
+      "run_id": "run_01M7GDWRMS2CPXM42RH0B14KG1"
+    }
+  }
+}
