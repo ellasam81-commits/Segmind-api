@@ -123,12 +123,33 @@ def backing():
     from scipy.ndimage import gaussian_filter1d
     envelope = gaussian_filter1d(envelope[::480], 3)
     envelope = np.interp(np.arange(size), np.arange(len(envelope))*480, envelope)
-    mix *= envelope[:, None]
+    mix *= 2.0 * envelope[:, None]
     mix[:sr] *= np.linspace(0, 1, sr)[:, None]
     mix[-sr*2:] *= np.linspace(1, 0, sr*2)[:, None]
     with wave.open(str(OUT/'original_backing.wav'), 'wb') as f:
         f.setnchannels(2); f.setsampwidth(2); f.setframerate(sr)
         f.writeframes((np.clip(mix, -1, 1)*32767).astype('<i2').tobytes())
+
+
+def clean_audio():
+    """Retain verified native dialogue, removing extra generated speech and repetition."""
+    windows = json.loads((OUT/'dialogue_windows.json').read_text())
+    sr = 48000
+    for n in range(1, 6):
+        data = subprocess.check_output(['ffmpeg','-v','error','-i',str(OUT/f'scene-{n:02d}.mp4'),
+                                        '-f','f32le','-ac','2','-ar',str(sr),'pipe:1'])
+        audio = np.frombuffer(data,np.float32).reshape(-1,2).copy()
+        gain = np.zeros(len(audio),np.float32)
+        for start,end in windows[str(n)]:
+            a=max(0,int(start*sr)); b=min(len(gain),int(end*sr))
+            fade=min(int(.025*sr),(b-a)//2)
+            gain[a:b]=1
+            gain[a:a+fade]=np.linspace(0,1,fade)
+            gain[b-fade:b]=np.linspace(1,0,fade)
+        audio*=gain[:,None]
+        with wave.open(str(OUT/f'clean_audio-{n:02d}.wav'),'wb') as f:
+            f.setnchannels(2);f.setsampwidth(2);f.setframerate(sr)
+            f.writeframes((np.clip(audio,-1,1)*32767).astype('<i2').tobytes())
 
 
 def ass_time(seconds):
@@ -147,17 +168,17 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name,Fontname,Fontsize,PrimaryColour,SecondaryColour,OutlineColour,BackColour,Bold,Italic,Underline,StrikeOut,ScaleX,ScaleY,Spacing,Angle,BorderStyle,Outline,Shadow,Alignment,MarginL,MarginR,MarginV,Encoding
-Style: Dialogue,Noto Sans CJK SC,36,&H00FFFFFF,&H00FFFFFF,&H00211220,&H80180E18,-1,0,0,0,100,100,0,0,1,2.2,0.6,2,42,42,180,1
-Style: Title,Noto Sans CJK SC,29,&H00E9EFFB,&H00FFFFFF,&H00422636,&H00000000,-1,0,0,0,100,100,0,0,1,1.3,0.3,7,36,36,110,1
-Style: Label,Noto Sans CJK SC,19,&H00E5DDE8,&H00FFFFFF,&H00422636,&H00000000,0,0,0,0,100,100,0,0,1,1,0,7,36,36,153,1
-Style: End,Noto Sans CJK SC,34,&H00FFFFFF,&H00FFFFFF,&H00332635,&H00000000,-1,0,0,0,100,100,0,0,1,2,0,2,38,38,210,1
+Style: Dialogue,Noto Sans CJK SC,46,&H00FFFFFF,&H00FFFFFF,&H00211220,&H80180E18,-1,0,0,0,100,100,0,0,1,2.2,0.6,2,42,42,180,1
+Style: Title,Noto Sans CJK SC,38,&H00E9EFFB,&H00FFFFFF,&H00422636,&H00000000,-1,0,0,0,100,100,0,0,1,1.3,0.3,7,36,36,110,1
+Style: Label,Noto Sans CJK SC,23,&H00E5DDE8,&H00FFFFFF,&H00422636,&H00000000,0,0,0,0,100,100,0,0,1,1,0,7,36,36,153,1
+Style: End,Noto Sans CJK SC,42,&H00FFFFFF,&H00FFFFFF,&H00332635,&H00000000,-1,0,0,0,100,100,0,0,1,2,0,2,38,38,210,1
 
 [Events]
 Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 '''
     lines = [header,
-             'Dialogue: 1,0:00:00.00,0:01:00.00,Title,,0,0,0,,大哥，我不是氛围灯！',
-             'Dialogue: 1,0:00:00.00,0:01:00.00,Label,,0,0,0,,T HOO HOO · AI动漫二创']
+             'Dialogue: 1,0:00:00.00,0:00:02.80,Title,,0,0,0,,大哥，我不是氛围灯！',
+             r'Dialogue: 1,0:00:00.00,0:01:00.00,Label,,0,0,0,,{\an9\pos(687,34)}AI动漫二创']
     for c in captions:
         lines.append(f"Dialogue: 2,{ass_time(c['start'])},{ass_time(c['end'])},Dialogue,,0,0,0,,{c['text']}")
     lines += [r'Dialogue: 2,0:00:57.20,0:01:00.00,End,,0,0,0,,{\pos(360,978)\fad(200,0)}嘴上说只听一首',
@@ -167,8 +188,11 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
     ass = OUT/'captions.ass'
     ass.write_text('\n'.join(lines)+'\n', encoding='utf-8')
     for n in range(1, 6):
+        if (OUT/f'norm-{n:02d}.mp4').exists():
+            continue
         command(['ffmpeg','-y','-v','error','-i',str(OUT/f'scene-{n:02d}.mp4'),
-                 '-vf','fps=24,scale=720:1280:flags=lanczos,setsar=1,format=yuv420p',
+                 '-i',str(OUT/f'clean_audio-{n:02d}.wav'),'-map','0:v:0','-map','1:a:0',
+                 '-vf','fps=24,scale=720:1280:force_original_aspect_ratio=increase:flags=lanczos,crop=720:1280,setsar=1,format=yuv420p',
                  '-af','aresample=async=1:first_pts=0,loudnorm=I=-17:TP=-2:LRA=11,apad',
                  '-t','12','-c:v','libx264','-preset','fast','-crf','19','-c:a','aac',
                  '-ar','48000','-ac','2','-b:a','192k',str(OUT/f'norm-{n:02d}.mp4')])
@@ -177,7 +201,7 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
     clean = OUT/'clean.mp4'
     command(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',str(playlist),'-c','copy',str(clean)])
     final = OUT/'THooHoo_Color_Doll_60s.mp4'
-    video_filter = f"[0:v]drawbox=x=22:y=88:w=456:h=96:color=0x291021@0.52:t=fill,drawbox=x=22:y=918:w=676:h=248:color=0x291021@0.82:t=fill:enable='gte(t,57.2)',ass={ass}[v];[0:a][1:a]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[a]"
+    video_filter = f"[0:v]drawbox=x=22:y=88:w=456:h=96:color=0x291021@0.52:t=fill:enable='lt(t,2.8)',drawbox=x=22:y=918:w=676:h=248:color=0x291021@0.82:t=fill:enable='gte(t,57.2)',ass={ass}[v];[0:a][1:a]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95[a]"
     command(['ffmpeg','-y','-v','error','-i',str(clean),'-i',str(OUT/'original_backing.wav'),
              '-filter_complex',video_filter,'-map','[v]','-map','[a]','-t','60',
              '-c:v','libx264','-preset','fast','-crf','18','-pix_fmt','yuv420p',
@@ -186,5 +210,5 @@ Format: Layer,Start,End,Style,Name,MarginL,MarginR,MarginV,Effect,Text
 
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser();p.add_argument('action',choices=['transcribe','inspect','backing','render'])
+    p = argparse.ArgumentParser();p.add_argument('action',choices=['transcribe','inspect','backing','clean_audio','render'])
     globals()[p.parse_args().action]()
