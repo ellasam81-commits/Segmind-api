@@ -1,0 +1,50 @@
+{
+  "streams": [
+    {
+      "codec_name": "h264",
+      "profile": "Main",
+      "level": 40,
+      "width": 720,
+      "height": 1280,
+      "pix_fmt": "yuv420p",
+      "r_frame_rate": "30/1",
+      "nb_frames": "1350",
+      "duration": "45.000000",
+      "sample_rate": null,
+      "channels": null
+    },
+    {
+      "codec_name": "aac",
+      "profile": "LC",
+      "level": null,
+      "width": null,
+      "height": null,
+      "pix_fmt": null,
+      "r_frame_rate": "0/0",
+      "nb_frames": "2111",
+      "duration": "45.000000",
+      "sample_rate": "48000",
+      "channels": 2
+    }
+  ],
+  "bytes": 18898050,
+  "full_decode": "passed",
+  "mp4_boxes": [
+    [
+      "ftyp",
+      0
+    ],
+    [
+      "moov",
+      32
+    ],
+    [
+      "free",
+      50777
+    ],
+    [
+      "mdat",
+      50785
+    ]
+  ]
+}

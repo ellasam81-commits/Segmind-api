@@ -16,7 +16,7 @@ def prepare():
  clips=[]
  for i,d in enumerate(DURS,1):
   dst=OUT/f'normalized-{i:02}.mp4';src=GEN/f'scene-{i:02}.mp4';frames=round(d*30)
-  sh(['ffmpeg','-v','error','-y','-ss',str(CUT),'-i',str(src),'-vf',f'scale=720:1280:force_original_aspect_ratio=increase:out_range=tv,crop=720:1280,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=0.2,trim=end_frame={frames},settb=1/30,setpts=N/(30*TB),format=yuv420p','-af',f'aresample=48000,apad,atrim=duration={d},asetpts=PTS-STARTPTS','-c:v','libx264','-threads','2','-preset','fast','-crf','18','-profile:v','main','-level:v','4.0','-r','30','-fps_mode','cfr','-video_track_timescale','30000','-c:a','aac','-b:a','192k','-t',str(d),str(dst)]);clips.append(dst)
+  sh(['ffmpeg','-v','error','-y','-ss',str(CUT),'-i',str(src),'-vf',f'scale=720:1280:force_original_aspect_ratio=increase:out_range=tv,crop=720:1280,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=1.0,trim=end_frame={frames},settb=1/30,setpts=N/(30*TB),format=yuv420p','-af',f'aresample=48000,apad,atrim=duration={d},asetpts=PTS-STARTPTS','-c:v','libx264','-threads','2','-preset','fast','-crf','18','-profile:v','main','-level:v','4.0','-r','30','-fps_mode','cfr','-video_track_timescale','30000','-c:a','aac','-b:a','192k','-t',str(d),str(dst)]);clips.append(dst)
  f=[];args=[]
  for i,p in enumerate(clips):args+=['-i',str(p)];f.append(f'[{i}:v]settb=1/30,setpts=PTS-STARTPTS,fps=30[v{i}]');f.append(f'[{i}:a]asetpts=PTS-STARTPTS[a{i}]')
  v='v0';a='a0'
