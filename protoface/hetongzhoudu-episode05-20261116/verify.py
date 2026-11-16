@@ -7,7 +7,7 @@ summary=[{k:s.get(k) for k in ['codec_name','profile','level','width','height','
 print(summary,flush=True)
 assert r['streams'][0]['nb_frames']=='1350'
 canvas=Image.new('RGB',(1080,640))
-for j,t in enumerate([2,4,12,14,20,29.7,33,35,39.7,41,42.7,44]):
+for j,t in enumerate([17.8,18.0,18.15,18.5,20,28.1,31.4,33.4,38,41,43,44]):
  f=p.parent/f'final-{j}.png';subprocess.run(['ffmpeg','-v','error','-y','-ss',str(t),'-i',str(p),'-frames:v','1','-vf','scale=180:320,format=rgb24',str(f)],check=True);canvas.paste(Image.open(f),((j%6)*180,(j//6)*320))
 canvas.save(p.parent/'final-review.jpg')
 subprocess.run(['ffmpeg','-v','error','-i',str(p),'-f','null','-'],check=True)
