@@ -1,11 +1,101 @@
 {
-  "phase": "keyframe",
-  "payload": {
-    "operation": "image.generate",
-    "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. SINGLE full-frame opening battle shot, NOT a character sheet. Hero left foreground shown head to boots in a dynamic low fencing stance, facing screen right. One red-brown-armored helmeted enemy with a long wooden spear in right midground, beginning a thrust from 3 metres away. Hero's sword already raised in a readable defensive diagonal. Both fighters separated spatially with correct hands and solid footing. Ancient fortified city gate courtyard at blue dusk, burnt orange fires behind the arch, torn red banners, rain-dark stone ground with simplified painted reflections. Low tracking-camera composition with enough room for action. Dramatic but readable contrast, warm rim light drawn as clean cel shapes. Three tiny background soldier silhouettes, no clutter around hands. Vertical 9:16, head and feet fully in frame, no text or watermark, no blood, no gore.",
-    "quality": "medium",
-    "resolution": "2k",
-    "aspect_ratio": "9:16",
-    "output_format": "png"
-  }
+  "phase": "frames_and_first_clip",
+  "jobs": [
+    {
+      "model": "lightricks/ltx-2.5-fast",
+      "label": "scene-01",
+      "cap": 6,
+      "payload": {
+        "operation": "video.general",
+        "image_url": "asset_01M7JT7GSR7PJ2GH2E255V753E",
+        "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. Continue the supplied DRAWN ANIME frame in exactly the same illustration style. All characters and effects remain 2D with crisp outlines and flat cel shadows for the entire clip, including close-ups. Make a dynamic 10-second scene, immediate movement, decisive grounded physical weight. No photorealistic morphing at any point. Readable sword grips, consistent weapon shapes, no body intersections or extra limbs. Screen direction remains hero moving left to right. No freeze-frame slideshow. No blood, gore, text or logo. Start with an immediate spear thrust, not a still pose. Hero steps outside the spear, sword intercepts its shaft at a visible point with an orange spark. He advances one step and strikes the enemy's weapon guard, forcing him backward. Low tracking view then one cut to a side medium-wide shot. End as hero advances toward the gate, sword in his right hand. Exactly two foreground fighters. Synchronized battle sound effects only: metal impacts exactly at contact, cloth rushes, wet footsteps, wood impacts and distant battle ambience. NO speech, NO chanting, NO singing, NO human vocalizations, no gibberish.",
+        "duration_seconds": 10,
+        "aspect_ratio": "9:16",
+        "quality": "720p",
+        "generate_audio": true,
+        "enhance_prompt": false,
+        "seed": 202611171
+      }
+    },
+    {
+      "model": "openai/gpt-image-2",
+      "label": "frame-02",
+      "cap": 10,
+      "payload": {
+        "operation": "image.edit",
+        "images": [
+          "asset_01M7JT7GSR7PJ2GH2E255V753E"
+        ],
+        "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. Preserve the EXACT same DRAWN anime character design, mask, face, hair, armor and color palette as the reference. Create a DIFFERENT single action keyframe, not a collage: Same courtyard, closer to the stone stairs beside the gate. Hero center-left is running toward screen right, cape trailing left. Two distinct red-armored foes ahead: one with a short saber at right front, one with a round wooden shield one body length behind. Keep all hands and weapons separate. Readable separation of limbs, accurate hands and weapon grips, room for movement, dynamic anime action composition, background in the same ancient gate battlefield. Vertical 9:16, no text or watermark. No blood or gore.",
+        "quality": "medium",
+        "resolution": "2k",
+        "aspect_ratio": "9:16",
+        "output_format": "png"
+      }
+    },
+    {
+      "model": "openai/gpt-image-2",
+      "label": "frame-03",
+      "cap": 10,
+      "payload": {
+        "operation": "image.edit",
+        "images": [
+          "asset_01M7JT7GSR7PJ2GH2E255V753E"
+        ],
+        "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. Preserve the EXACT same DRAWN anime character design, mask, face, hair, armor and color palette as the reference. Create a DIFFERENT single action keyframe, not a collage: At the foot of the same city gate's broad stone steps, hero left with sword ready low, a red-armored spearman at right with a level spear. The stone wall and torn red banner from prior scenes remain visible, orange cinders in cool evening air. Readable separation of limbs, accurate hands and weapon grips, room for movement, dynamic anime action composition, background in the same ancient gate battlefield. Vertical 9:16, no text or watermark. No blood or gore.",
+        "quality": "medium",
+        "resolution": "2k",
+        "aspect_ratio": "9:16",
+        "output_format": "png"
+      }
+    },
+    {
+      "model": "openai/gpt-image-2",
+      "label": "frame-04",
+      "cap": 10,
+      "payload": {
+        "operation": "image.edit",
+        "images": [
+          "asset_01M7JT7GSR7PJ2GH2E255V753E"
+        ],
+        "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. Preserve the EXACT same DRAWN anime character design, mask, face, hair, armor and color palette as the reference. Create a DIFFERENT single action keyframe, not a collage: Same gate courtyard beneath a damaged wooden canopy. A burning crossbeam overhead is visibly cracked, about to fall between the hero at left and one saber enemy at right. Hero looks upward alert with sword lowered right. Fire and ash behind, open safe landing area to his right. Readable separation of limbs, accurate hands and weapon grips, room for movement, dynamic anime action composition, background in the same ancient gate battlefield. Vertical 9:16, no text or watermark. No blood or gore.",
+        "quality": "medium",
+        "resolution": "2k",
+        "aspect_ratio": "9:16",
+        "output_format": "png"
+      }
+    },
+    {
+      "model": "openai/gpt-image-2",
+      "label": "frame-05",
+      "cap": 10,
+      "payload": {
+        "operation": "image.edit",
+        "images": [
+          "asset_01M7JT7GSR7PJ2GH2E255V753E"
+        ],
+        "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. Preserve the EXACT same DRAWN anime character design, mask, face, hair, armor and color palette as the reference. Create a DIFFERENT single action keyframe, not a collage: Directly before the open city gate arch, orange light beyond. Hero screen left faces an imposing red-armored enemy captain screen right, each holding ONE straight sword in right hand. Both are grounded in ready stances, entire upper bodies, hands and knees visible. Same hero's black mask and cel-shaded face, not photoreal. Readable separation of limbs, accurate hands and weapon grips, room for movement, dynamic anime action composition, background in the same ancient gate battlefield. Vertical 9:16, no text or watermark. No blood or gore.",
+        "quality": "medium",
+        "resolution": "2k",
+        "aspect_ratio": "9:16",
+        "output_format": "png"
+      }
+    },
+    {
+      "model": "openai/gpt-image-2",
+      "label": "frame-06",
+      "cap": 10,
+      "payload": {
+        "operation": "image.edit",
+        "images": [
+          "asset_01M7JT7GSR7PJ2GH2E255V753E"
+        ],
+        "prompt": "STRICT TWO-DIMENSIONAL HAND-DRAWN ANIME. Visible confident dark ink outlines around faces, fingers, hair strands, cloth and armor. Flat painted colors, exactly two or three hard-edged cel-shading tones on skin and clothing, graphic anime highlights on steel. Simplified elegant drawn face, expressive long narrow almond eyes with clean iris shapes, angular brows, refined nose drawn with a few lines. Absolutely NO photographic skin, NO pores, NO realistic facial shading, NO 3D render, NO game-engine lighting, NO ray tracing, NO semi-realistic CGI. This must unmistakably look like a frame of an expensive hand-drawn action anime. Painterly detailed background, graphic anime fire and rain effects. Adult male anime general Xie Queshan fan interpretation, original anime facial anatomy subtly inspired by Tan Jianci's intense eyes and elegant lean dancer build, NOT an exact celebrity face. Long ink-black hair in a high ponytail with two loose bangs. Same distinctive black-silver flame-scroll half-mask around eyes, leaving mouth visible. Stylized engraved black dragon shoulder plates, articulated black lamellar torso armor, fitted black sleeves, silver belt medallion, long black cape with deep blue lining, black boots. Lean athletic silhouette, never bulky. ONE long straight silver sword with simple black grip held firmly in RIGHT hand only; empty LEFT hand. Mask stays on. Serious controlled expression. Preserve the EXACT same DRAWN anime character design, mask, face, hair, armor and color palette as the reference. Create a DIFFERENT single action keyframe, not a collage: Continuation of the captain duel just inside the gate. Hero left in an advanced stance, captain right has an open guard and is leaning back. Both swords remain distinct and straight, same costumes. Behind them, courtyard and distant friendly silhouettes are becoming visible through thinning smoke. Readable separation of limbs, accurate hands and weapon grips, room for movement, dynamic anime action composition, background in the same ancient gate battlefield. Vertical 9:16, no text or watermark. No blood or gore.",
+        "quality": "medium",
+        "resolution": "2k",
+        "aspect_ratio": "9:16",
+        "output_format": "png"
+      }
+    }
+  ]
 }
