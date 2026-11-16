@@ -1,0 +1,111 @@
+{
+  "request_id": "thoo-three-charts-20261116-v2",
+  "action": "generate",
+  "quality": "480p",
+  "budget_cap": 75,
+  "reference": "https://raw.githubusercontent.com/ellasam81-commits/Segmind-api/fan-thoo-color-doll-20261116/protoface/thoo-color-doll-20261116/reference.jpg",
+  "title": "T Hoo Hoo 的三榜小任务",
+  "common": "Create a polished, genuinely animated 12-second vertical 9:16 Japanese anime comedy. Use the supplied reference ONLY to lock the SAME two identities and costumes. The adult male has tousled black hair, refined amber-brown eyes, mature handsome anime proportions, a fully covered black high-neck long-sleeve outfit and delicate silver shoulder fringe. The little doll IS T Hoo Hoo, the same mascot in doll form, not an unrelated new person: huge oval blue eyes, pink cheeks, rounded fluffy bob haircut with one curled tuft, small puff-sleeve dress, white shoes, 30 cm toy scale. Keep the doll's face, blue eyes, hairstyle silhouette, body proportions and white shoes identical. Only hair and dress colors change smoothly. This is a female collectible toy, not a real child. SAME warm burgundy music room, cream sofa, round cream coffee table. The man remains seated on the left; T Hoo Hoo stands on the table to the right. ONE cream smartphone only, continuously held by the doll throughout the entire shot; the table stays EMPTY, never put or duplicate a phone on it. Medium-wide two-shot with very gentle camera motion, frame BOTH entire heads and the doll's full body. Keep the top 25 percent of the frame a clean burgundy wall above both heads, for an explanatory overlay added later. Never cut to an extreme close-up, never crop a head. Natural body movement, reactive eyes, thoughtful pauses and playful facial acting. The man uses a consistent warm low adult male Mandarin voice; T Hoo Hoo uses a consistent clear lively female Mandarin voice, not a squeaky or distorted voice. ONLY the exact Mandarin dialogue enclosed in quotation marks in this shot may be spoken, each line ONCE in the specified order. Never speak the English directions. No narrator, no whispering background speech, no improvised dialogue, no English words, no mumbling, no singing, no music. Only the speaking character moves their mouth. Match spoken syllables to lips. Soft natural movement sounds allowed, but no voices outside dialogue. No generated text, captions, logos, UI, panels, crowns, awards, fire, flames or extra people. No face distortion, extra limbs or duplicated props. This is explicitly fictional fan-made animation, not an official artist statement.",
+  "scenes": [
+    {
+      "n": 1,
+      "duration": 12,
+      "color": "peach",
+      "prompt": "At the beginning T Hoo Hoo has peach-pink hair and a matching peach-pink dress. She studies her single phone, looks at her two tiny hands, then looks up at the man with exaggerated comic disbelief. From 1.0 to 4.7 seconds, ONLY the doll says: \"三个榜单？我只有两只手呀！\" Pause for the joke. From 5.5 to 8.8 seconds, ONLY the man replies gently: \"别慌，跟着三个颜色来。\" He counts three with his free hand without touching her or the phone. From 9 to 12 seconds, the doll's hair and dress change slowly from peach pink to mint green to lavender, each color lasts at least one second, then she gives a small determined nod. No glowing flames or flashing lights. Keep the top quarter clear. Exactly two spoken lines.",
+      "lines": [
+        [
+          1,
+          4.7,
+          "T Hoo Hoo",
+          "三个榜单？我只有两只手呀！"
+        ],
+        [
+          5.5,
+          8.8,
+          "动漫大哥",
+          "别慌，跟着三个颜色来。"
+        ]
+      ]
+    },
+    {
+      "n": 2,
+      "duration": 12,
+      "color": "pink",
+      "prompt": "T Hoo Hoo's hair and dress are peach pink throughout this shot, representing the first task. She keeps the single cream phone in both hands and taps once with a thumb. The man points lightly toward the clean empty area above them where the real task card will be composited later. At 0.8 to 6.0 seconds ONLY the man says: \"国际榜，先做任务攒积分，再投给这首歌。\" The doll carefully listens with mouth closed. At 6.6 to 10.3 seconds ONLY the doll answers happily: \"收到！攒了积分，还要记得投！\" At the end she nods twice and hugs the phone proudly, the man gives a small approving smile. No chart generated in the image. Exactly two spoken lines.",
+      "lines": [
+        [
+          0.8,
+          6,
+          "动漫大哥",
+          "国际榜，先做任务攒积分，再投给这首歌。"
+        ],
+        [
+          6.6,
+          10.3,
+          "T Hoo Hoo",
+          "收到！攒了积分，还要记得投！"
+        ]
+      ]
+    },
+    {
+      "n": 3,
+      "duration": 12,
+      "color": "mint",
+      "prompt": "T Hoo Hoo's hair and dress smoothly become mint green in the first half second and then stay mint green. Still holding her single cream phone, she gently taps a white shoe on the table in time, leaning proudly toward the man. At 1.0 to 5.1 seconds ONLY the doll says: \"由你榜，我会！听歌陪我做事情！\" The man gives an amused small smile. At 5.8 to 10.5 seconds ONLY the man says: \"还有推荐、分享，别漏掉榜单任务。\" The doll remembers something, raises one finger while holding the phone with her other hand, and nods enthusiastically. At the end both quietly bop once, mouths closed. Keep top quarter empty for the explanatory card. Exactly two spoken lines.",
+      "lines": [
+        [
+          1,
+          5.1,
+          "T Hoo Hoo",
+          "由你榜，我会！听歌陪我做事情！"
+        ],
+        [
+          5.8,
+          10.5,
+          "动漫大哥",
+          "还有推荐、分享，别漏掉榜单任务。"
+        ]
+      ]
+    },
+    {
+      "n": 4,
+      "duration": 12,
+      "color": "lavender",
+      "prompt": "T Hoo Hoo's hair and dress are soft lavender, the same exact identity and white shoes. She holds the single phone and almost repeats the previous selection, then pauses and tilts her head, looking at the man. At 1.0 to 4.1 seconds ONLY the doll asks: \"第三榜，还是同一首吗？\" The man gently raises an index finger to stop the mistaken choice, never grabbing her hand. At 4.8 to 10.2 seconds ONLY the man answers: \"这次要换歌！听歌、收藏、评论、分享。\" At the end the doll shows a wide-eyed aha expression and makes one deliberate thumb tap. Do not speak or generate any song title; the correct title will be overlaid in editing. Keep clean empty burgundy space above both heads. Exactly two spoken lines.",
+      "lines": [
+        [
+          1,
+          4.1,
+          "T Hoo Hoo",
+          "第三榜，还是同一首吗？"
+        ],
+        [
+          4.8,
+          10.2,
+          "动漫大哥",
+          "这次要换歌！听歌、收藏、评论、分享。"
+        ]
+      ]
+    },
+    {
+      "n": 5,
+      "duration": 12,
+      "color": "peach",
+      "prompt": "Closing shot in the same room, same seated man and standing T Hoo Hoo. The doll's hair and dress begin lavender then softly return to peach pink. Still holding the one cream phone, she proudly shows the man her TWO tiny hands, carefully balancing the phone in one hand rather than creating extra fingers. At 1.0 to 5.8 seconds ONLY the doll says: \"三榜记住啦！原来不用长出三双手！\" The man chuckles very softly once, not a spoken word. At 6.2 to 9.0 seconds ONLY the man warmly says: \"量力参与，开心听歌。\" From 9.0 to 12 seconds both smile and gently nod along to a beat, mouths closed, allowing a clean ending summary card. No new speech or extra people. Keep upper quarter clear. Exactly two spoken lines.",
+      "lines": [
+        [
+          1,
+          5.8,
+          "T Hoo Hoo",
+          "三榜记住啦！原来不用长出三双手！"
+        ],
+        [
+          6.2,
+          9,
+          "动漫大哥",
+          "量力参与，开心听歌。"
+        ]
+      ]
+    }
+  ]
+}
