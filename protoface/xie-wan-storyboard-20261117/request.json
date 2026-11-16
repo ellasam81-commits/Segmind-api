@@ -1,17 +1,45 @@
 {
   "jobs": [
     {
-      "label": "scene-01",
-      "board": "board-01.b64",
+      "label": "scene-02",
+      "board": "board-02.b64",
       "payload": {
         "operation": "video.reference",
-        "prompt": "The reference image is a 12-panel sequential storyboard, read left to right row by row. It is NOT a collage to animate simultaneously. Render a FULL SCREEN 9:16 anime film with NO gutters, NO panel numbers, NO split screen. Follow the ordered action keyframes as three connected shots, about 5 seconds each. Begin action immediately within 0.3 seconds; no pose hold. Preserve the exact hand-drawn 2D character design in every moving frame, bold ink contours, FLAT two-tone cel shadows, simple graphic armor, painted background. Never turn into 3D/CGI or live action. Hero same black flame mask, black ponytail, navy cape, black silver armor, sword always right hand. Clearly show opponent attack, hero defense and resulting counter; compact purposeful choreography, no random spinning. Draw sword contact sparks and speed smears, short impact emphasis then resume full-speed action. Keep blades rigid and attached to grips, no morphs or duplicate limbs. No blood. Sound: timed steel clangs, fast sword whooshes, boots and rain, fire crackle; NO spoken words, NO human voices, NO music, NO subtitles. 0–5s: on a ruined bridge, arrow volley shoots from gate toward hero; hero runs then pivots behind stone buttress, arrows strike stone, sparks. 5–10s: red-armored spearman thrusts from right, hero bends and slides under spear, left palm on wet ground, sword held safely in right hand. 10–15s: hero plants foot, rises into one upward parry breaking spear shaft, splinters, enemy recoils as hero advances toward gate.",
+        "prompt": "The reference image is a 12-panel sequential storyboard, read left to right row by row. It is NOT a collage to animate simultaneously. Render a FULL SCREEN 9:16 anime film with NO gutters, NO panel numbers, NO split screen. Follow the ordered action keyframes as three connected shots, about 5 seconds each. Begin action immediately within 0.3 seconds; no pose hold. Preserve the exact hand-drawn 2D character design in every moving frame, bold ink contours, FLAT two-tone cel shadows, simple graphic armor, painted background. Never turn into 3D/CGI or live action. Hero same black flame mask, black ponytail, navy cape, black silver armor, sword always right hand. Clearly show opponent attack, hero defense and resulting counter; compact purposeful choreography, no random spinning. Draw sword contact sparks and speed smears, short impact emphasis then resume full-speed action. Keep blades rigid and attached to grips, no morphs or duplicate limbs. No blood. Sound: timed steel clangs, fast sword whooshes, boots and rain, fire crackle; NO spoken words, NO human voices, NO music, NO subtitles. 0–5s: continue from broken spear, hero traps shaft with sword guard then shoulder-checks enemy aside into wall, enemy staggers without injury. 5–10s: two foes close in, hero steps sideways through their gap, lets weapons cross, kicks shield to create space. 10–15s: hero sprints up stone steps onto parapet, burning awning collapses behind with falling tiles and sparks; look ahead at narrow gap.",
         "duration": 15,
         "resolution": "480p",
         "aspect_ratio": "9:16",
         "enable_audio": true,
         "enable_prompt_expansion": false,
-        "seed": 171101
+        "seed": 171102
+      }
+    },
+    {
+      "label": "scene-03",
+      "board": "board-03.b64",
+      "payload": {
+        "operation": "video.reference",
+        "prompt": "The reference image is a 12-panel sequential storyboard, read left to right row by row. It is NOT a collage to animate simultaneously. Render a FULL SCREEN 9:16 anime film with NO gutters, NO panel numbers, NO split screen. Follow the ordered action keyframes as three connected shots, about 5 seconds each. Begin action immediately within 0.3 seconds; no pose hold. Preserve the exact hand-drawn 2D character design in every moving frame, bold ink contours, FLAT two-tone cel shadows, simple graphic armor, painted background. Never turn into 3D/CGI or live action. Hero same black flame mask, black ponytail, navy cape, black silver armor, sword always right hand. Clearly show opponent attack, hero defense and resulting counter; compact purposeful choreography, no random spinning. Draw sword contact sparks and speed smears, short impact emphasis then resume full-speed action. Keep blades rigid and attached to grips, no morphs or duplicate limbs. No blood. Sound: timed steel clangs, fast sword whooshes, boots and rain, fire crackle; NO spoken words, NO human voices, NO music, NO subtitles. 0–5s: establish two stone ledges with a small 2-meter gap; hero runs one step, leaps from left to right and lands crouched with dust burst. 5–10s: red-armored captain rushes with saber, hero rises and parries overhead strike, two blades connect clearly with sparks. 10–15s: captain sweeps horizontally, hero ducks, pivots on planted foot, counters upward; captain blocks and both blades separate. Three coherent full-speed action shots.",
+        "duration": 15,
+        "resolution": "480p",
+        "aspect_ratio": "9:16",
+        "enable_audio": true,
+        "enable_prompt_expansion": false,
+        "seed": 171103
+      }
+    },
+    {
+      "label": "scene-04",
+      "board": "board-04.b64",
+      "payload": {
+        "operation": "video.reference",
+        "prompt": "The reference image is a 12-panel sequential storyboard, read left to right row by row. It is NOT a collage to animate simultaneously. Render a FULL SCREEN 9:16 anime film with NO gutters, NO panel numbers, NO split screen. Follow the ordered action keyframes as three connected shots, about 5 seconds each. Begin action immediately within 0.3 seconds; no pose hold. Preserve the exact hand-drawn 2D character design in every moving frame, bold ink contours, FLAT two-tone cel shadows, simple graphic armor, painted background. Never turn into 3D/CGI or live action. Hero same black flame mask, black ponytail, navy cape, black silver armor, sword always right hand. Clearly show opponent attack, hero defense and resulting counter; compact purposeful choreography, no random spinning. Draw sword contact sparks and speed smears, short impact emphasis then resume full-speed action. Keep blades rigid and attached to grips, no morphs or duplicate limbs. No blood. Sound: timed steel clangs, fast sword whooshes, boots and rain, fire crackle; NO spoken words, NO human voices, NO music, NO subtitles. 0–5s: hero feints low, captain lowers saber; hero steps inside changing blade angle, clear single contact with sparks. 5–10s: hero hooks captain guard with own blade, twists to disarm, captain saber visibly flies and falls onto stone while hero's sword stays in right hand; captain retreats and friendly soldiers secure gate. 10–15s: sword lowers, cape settles, close-up of same drawn 2D face and flame mask, pull wide to gate at dawn and survivors. No 3D closeups.",
+        "duration": 15,
+        "resolution": "480p",
+        "aspect_ratio": "9:16",
+        "enable_audio": true,
+        "enable_prompt_expansion": false,
+        "seed": 171104
       }
     }
   ]
