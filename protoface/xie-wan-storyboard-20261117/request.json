@@ -1,1 +1,18 @@
-{"phase":"discover"}
+{
+  "jobs": [
+    {
+      "label": "scene-01",
+      "board": "board-01.b64",
+      "payload": {
+        "operation": "video.reference",
+        "prompt": "The reference image is a 12-panel sequential storyboard, read left to right row by row. It is NOT a collage to animate simultaneously. Render a FULL SCREEN 9:16 anime film with NO gutters, NO panel numbers, NO split screen. Follow the ordered action keyframes as three connected shots, about 5 seconds each. Begin action immediately within 0.3 seconds; no pose hold. Preserve the exact hand-drawn 2D character design in every moving frame, bold ink contours, FLAT two-tone cel shadows, simple graphic armor, painted background. Never turn into 3D/CGI or live action. Hero same black flame mask, black ponytail, navy cape, black silver armor, sword always right hand. Clearly show opponent attack, hero defense and resulting counter; compact purposeful choreography, no random spinning. Draw sword contact sparks and speed smears, short impact emphasis then resume full-speed action. Keep blades rigid and attached to grips, no morphs or duplicate limbs. No blood. Sound: timed steel clangs, fast sword whooshes, boots and rain, fire crackle; NO spoken words, NO human voices, NO music, NO subtitles. 0–5s: on a ruined bridge, arrow volley shoots from gate toward hero; hero runs then pivots behind stone buttress, arrows strike stone, sparks. 5–10s: red-armored spearman thrusts from right, hero bends and slides under spear, left palm on wet ground, sword held safely in right hand. 10–15s: hero plants foot, rises into one upward parry breaking spear shaft, splinters, enemy recoils as hero advances toward gate.",
+        "duration": 15,
+        "resolution": "480p",
+        "aspect_ratio": "9:16",
+        "enable_audio": true,
+        "enable_prompt_expansion": false,
+        "seed": 171101
+      }
+    }
+  ]
+}
