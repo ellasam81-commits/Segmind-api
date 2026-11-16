@@ -1,14 +1,38 @@
 {
-  "phase": "keyframe",
-  "payload": {
-    "operation": "image.edit",
-    "images": [
-      "asset_01M7GGTXAE2N710V4PWYK3BRK0"
-    ],
-    "prompt": "Create a SINGLE spectacular opening animation keyframe for a Chinese historical war anime. True hand-drawn 2D anime aesthetic with precise ink linework, sophisticated cel shading and painterly cinematic background, not live action and not photorealistic CGI. The reference is ONLY costume and mask design inspiration. Adult male general with subtly Tan Jianci-inspired intense narrow almond eyes and lean dancer-athlete proportions, but distinctly original stylized anime facial structure, NOT an exact likeness or face copy. Black high ponytail, long loose strands, elaborate black-silver flame-scroll half mask, engraved black dragon shoulder armor, fitted layered black lamellar cuirass, black cape. Show entire body including grounded boots and both hands clearly. ONE anatomically correct steel sword securely held in his right hand, ready low beside his right hip. He occupies center-left, about 65% frame height. A single opposing helmeted adult soldier with spear stands at midground screen right 3 metres away, about to attack; three small background silhouettes only. Powerful low 3/4 camera angle, rain-slick flagstones at a colossal ancient city gate, deep midnight navy storm clouds, amber fires behind gate, torn red battle banners, drifting embers, cool silver moonlight outlining the hero and restrained warm rim light. Strong readable silhouette, asymmetric balanced combat composition, substantial space to move between opponents. Hero is calm, dangerous and alert, poised for physical combat, not a fashion portrait. Cinematic anime feature-film production quality, finely drawn attractive eyes, elegant face, armor articulated for movement. Weapons straight, physically separate, correct grips. No injuries, no blood, no extra limbs, no text, no watermark, no split panels, no border. Vertical 9:16.",
-    "quality": "medium",
-    "resolution": "2k",
-    "aspect_ratio": "9:16",
-    "output_format": "png"
-  }
+  "phase": "compare",
+  "budget_cap": 42,
+  "shared_keyframe": "asset_01M7JRKFTAG317166JJZTAXSZ1",
+  "jobs": [
+    {
+      "model": "lightricks/ltx-2.5-fast",
+      "label": "ltx",
+      "cap": 6,
+      "payload": {
+        "operation": "video.general",
+        "prompt": "A spectacular 10-second Chinese historical WAR ANIME action sequence, continuing the supplied opening frame. Maintain its clearly drawn 2D anime linework, cel-shaded characters and painterly environment throughout; NEVER transition to live action or photorealistic 3D. The adult masked black-armored general remains the same attractive original anime character, narrow intense eyes, lean agile physique, high ponytail, long black cape, flame-scroll black-silver mask. He holds exactly ONE continuous straight steel sword in his RIGHT HAND throughout. His left hand stays empty. The enemy is the same helmeted spear soldier on screen right. Physical grounded choreography, danger and precise timing, not a portrait slideshow.\n0.0–2.7 seconds: start moving immediately. Low lateral tracking camera, keep both combatants' full bodies readable. The spear soldier lunges from screen right toward the general's torso. The general steps diagonally toward screen left, rotates his hips and brings his sword upward to clearly deflect the spear to his outside. Bright short-lived orange sparks ONLY at the visible metal-to-metal contact. One fast forward step, splashing water.\n2.7–6.8 seconds: motivated cut to a 3/4 medium-wide side view on the SAME side of the action axis. The general stays screen left, enemy screen right. The general closes the gap along the now-deflected spear shaft, pivots once on a planted boot, uses one compact sword counterstrike against the enemy's armored shoulder/weapon guard; the enemy recoils and stumbles backward with plausible weight. Show anticipation, physical contact, then recoil clearly. His sword does not pass through bodies. Cape snaps after torso movement, wet ponytail follows. Tiny silver blade glint, crisp ink speed accents for a few frames only. Large showers of rain displaced by the footwork; battlefield ember gust and fiery debris far behind them.\n6.8–10.0 seconds: cut to low-angle medium shot as the general completes his counterstrike and plants both boots, sword still in his right hand pointing down. The enemy retreats out to screen right. Camera pushes toward the general's sharp anime eyes behind the consistent mask. Wind pulls the black cape across the lower foreground; orange fire blooms behind the distant gate and cold lightning briefly outlines banners and armor. End on a powerful controlled glare, not a smile. Action is fast at normal speed, with only a brief 0.3-second impact emphasis; no long slow motion.\nMaintain anatomy, weapon length, hand grips, mask shape, shoulder plates and position continuity. Exactly two foreground fighters; distant soldiers remain small silhouettes. Moody navy and silver storm lighting, luminous amber fire, tactile wet armor, high contrast but readable faces and bodies, cinematic anime feature-film animation. Vertical 9:16 composition. No blood, gore or dismemberment. No text or logos. AUDIO: synchronized blade clash, spear scrape, rushing cape, boots splashing, rain and distant thunder. Absolutely NO speech, NO words, NO chanting, NO singing, NO human vocalizations, NO gibberish.",
+        "duration_seconds": 10,
+        "aspect_ratio": "9:16",
+        "generate_audio": true,
+        "enhance_prompt": false,
+        "image_url": "asset_01M7JRKFTAG317166JJZTAXSZ1",
+        "quality": "720p",
+        "seed": 20261117
+      }
+    },
+    {
+      "model": "minimax/minimax-h3",
+      "label": "h3",
+      "cap": 36,
+      "payload": {
+        "operation": "video.general",
+        "prompt": "A spectacular 10-second Chinese historical WAR ANIME action sequence, continuing the supplied opening frame. Maintain its clearly drawn 2D anime linework, cel-shaded characters and painterly environment throughout; NEVER transition to live action or photorealistic 3D. The adult masked black-armored general remains the same attractive original anime character, narrow intense eyes, lean agile physique, high ponytail, long black cape, flame-scroll black-silver mask. He holds exactly ONE continuous straight steel sword in his RIGHT HAND throughout. His left hand stays empty. The enemy is the same helmeted spear soldier on screen right. Physical grounded choreography, danger and precise timing, not a portrait slideshow.\n0.0–2.7 seconds: start moving immediately. Low lateral tracking camera, keep both combatants' full bodies readable. The spear soldier lunges from screen right toward the general's torso. The general steps diagonally toward screen left, rotates his hips and brings his sword upward to clearly deflect the spear to his outside. Bright short-lived orange sparks ONLY at the visible metal-to-metal contact. One fast forward step, splashing water.\n2.7–6.8 seconds: motivated cut to a 3/4 medium-wide side view on the SAME side of the action axis. The general stays screen left, enemy screen right. The general closes the gap along the now-deflected spear shaft, pivots once on a planted boot, uses one compact sword counterstrike against the enemy's armored shoulder/weapon guard; the enemy recoils and stumbles backward with plausible weight. Show anticipation, physical contact, then recoil clearly. His sword does not pass through bodies. Cape snaps after torso movement, wet ponytail follows. Tiny silver blade glint, crisp ink speed accents for a few frames only. Large showers of rain displaced by the footwork; battlefield ember gust and fiery debris far behind them.\n6.8–10.0 seconds: cut to low-angle medium shot as the general completes his counterstrike and plants both boots, sword still in his right hand pointing down. The enemy retreats out to screen right. Camera pushes toward the general's sharp anime eyes behind the consistent mask. Wind pulls the black cape across the lower foreground; orange fire blooms behind the distant gate and cold lightning briefly outlines banners and armor. End on a powerful controlled glare, not a smile. Action is fast at normal speed, with only a brief 0.3-second impact emphasis; no long slow motion.\nMaintain anatomy, weapon length, hand grips, mask shape, shoulder plates and position continuity. Exactly two foreground fighters; distant soldiers remain small silhouettes. Moody navy and silver storm lighting, luminous amber fire, tactile wet armor, high contrast but readable faces and bodies, cinematic anime feature-film animation. Vertical 9:16 composition. No blood, gore or dismemberment. No text or logos. AUDIO: synchronized blade clash, spear scrape, rushing cape, boots splashing, rain and distant thunder. Absolutely NO speech, NO words, NO chanting, NO singing, NO human vocalizations, NO gibberish.",
+        "duration_seconds": 10,
+        "aspect_ratio": "9:16",
+        "generate_audio": true,
+        "enhance_prompt": false,
+        "first_frame": "asset_01M7JRKFTAG317166JJZTAXSZ1",
+        "quality": "768p"
+      }
+    }
+  ]
 }
