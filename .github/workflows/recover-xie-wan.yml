@@ -1,0 +1,32 @@
+name: Recover existing Xie Wan clips
+on:
+  push:
+    branches: [fan-hetongzhoudu-20261116]
+    paths: [.github/workflows/recover-xie-wan.yml]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Retrieve existing outputs without generation
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,pathlib
+          p=pathlib.Path('recovered');p.mkdir(exist_ok=True)
+          items=[{"label":"scene-01","run_id":"run_01M7JX7TN8FHRK1K7FZK46YMQM"},{"label":"scene-02","run_id":"run_01M7JXNEB4C07WC8ZNGV95JEP2"},{"label":"scene-03","run_id":"run_01M7JXNHT7YXQ69MTR558X6V64"},{"label":"scene-04","run_id":"run_01M7JXNK666Q2FF7QXBMM5G4XH"}]
+          for item in items:
+           req=urllib.request.Request('https://api.protoface.com/v1/runs/'+item['run_id'],headers={'Authorization':'Bearer '+os.environ['PROTOFACE_API_KEY'].strip()})
+           with urllib.request.urlopen(req,timeout=120) as r: d=json.load(r)
+           outs=[x for x in d.get('outputs',[]) if x.get('modality')=='video']
+           obj=d.get('video') or outs[0]['file']
+           urllib.request.urlretrieve(obj['url'],p/(item['label']+'.mp4'))
+           print('Recovered',item['label'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xie-wan-existing-clips
+          path: recovered/*.mp4
+          retention-days: 7
