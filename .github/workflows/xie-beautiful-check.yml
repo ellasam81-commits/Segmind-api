@@ -1,0 +1,28 @@
+name: Xie beautiful fight model check
+on:
+  push:
+    branches: [xie-beautiful-fight-ab-20261117]
+    paths: [.github/workflows/xie-beautiful-check.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect requested models
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          key=os.environ['PROTOFACE_API_KEY']
+          def get(path):
+              r=urllib.request.Request('https://api.protoface.com'+path,headers={'Authorization':'Bearer '+key})
+              return json.load(urllib.request.urlopen(r,timeout=60))
+          models=get('/v1/models')
+          for m in models.get('data',[]):
+              mid=m.get('id','')
+              if 'wan-3.0' in mid or ('seedance' in mid and '2.0' in mid):
+                  print('CONTRACT '+json.dumps(get('/v1/models/'+mid)))
+          PY
