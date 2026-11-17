@@ -1,0 +1,28 @@
+name: Xie rescue targeted fixes
+on:
+  push:
+    branches: [xie-rescue-wan-20261117]
+    paths: [.github/workflows/xie-rescue-fixes.yml]
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -q httpx jsonschema
+      - name: Correct three continuity defects
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/xie-rescue/fix_runner.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xie-rescue-fixes
+          path: output
