@@ -1,0 +1,23 @@
+name: Xie rescue Wan preflight
+on:
+  push:
+    branches: [xie-rescue-wan-20261117]
+    paths: [.github/workflows/xie-rescue-preflight.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect Wan contract and available balance
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import urllib.request,json,os
+          for p in ['/v1/models/alibaba/wan-3.0','/v1/billing/quota']:
+              req=urllib.request.Request('https://api.protoface.com'+p,headers={'Authorization':'Bearer '+os.environ['PROTOFACE_API_KEY']})
+              d=json.load(urllib.request.urlopen(req))
+              if 'quota' in p: print('BALANCE',d.get('balance_credits'))
+              else: print('MODEL',json.dumps({k:d.get(k) for k in ['id','available','pricing','request_schemas']}))
+          PY
