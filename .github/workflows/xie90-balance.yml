@@ -1,0 +1,21 @@
+name: Xie 90s balance preflight
+on:
+  push:
+    branches: [xie-beautiful-fight-ab-20261117]
+    paths: [.github/workflows/xie90-balance.yml]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read remaining credits without generation
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request
+          r=urllib.request.Request('https://api.protoface.com/v1/billing/quota',headers={'Authorization':'Bearer '+os.environ['PROTOFACE_API_KEY']})
+          d=json.load(urllib.request.urlopen(r,timeout=60))
+          print('BALANCE_CREDITS',d.get('balance_credits'))
+          PY
