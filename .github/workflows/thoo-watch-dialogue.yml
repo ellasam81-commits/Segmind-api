@@ -15,14 +15,14 @@ jobs:
           mkdir recordings
           python - <<'PY'
           import asyncio, edge_tts
-          lines=["谢却山不曾叛国。"]
+          lines=["最近大家对AI二创有意见。","来，镜头对着我。","你们看我，我看谢却山。","他明明没有叛国呀……","呜，纸巾给我一张。","谁按的重播啊？！","谢却山，你等我擤完鼻子。"]
           async def main():
               for i,line in enumerate(lines):
-                  rate='-8%'
-                  pitch='+2Hz'
+                  rate=['+5%','+6%','+4%','-6%','-2%','+8%','-3%'][i]
+                  pitch=['+6Hz','+7Hz','+7Hz','+1Hz','+2Hz','+10Hz','+3Hz'][i]
                   for attempt in range(3):
                       try:
-                          await edge_tts.Communicate(line,'zh-CN-YunxiNeural',rate=rate,pitch=pitch).save(f'recordings/loyalty.mp3')
+                          await edge_tts.Communicate(line,'zh-CN-XiaoyiNeural',rate=rate,pitch=pitch).save(f'recordings/{i}.mp3')
                           break
                       except Exception:
                           if attempt==2: raise
