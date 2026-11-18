@@ -13,32 +13,28 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Inspect H3 or render
+      - name: Check Protoface H3 connection
         env:
           PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
         run: |
-          if test -f prize/run.py; then
-            python -m pip install -q requests pillow edge-tts
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
-            python -u prize/run.py
-          else
-            python - <<'PY'
-          import os, requests
-          s=requests.Session()
-          s.headers.update(Authorization='Bearer '+os.environ['PROTOFACE_API_KEY'])
-          r=s.get('https://api.protoface.com/v1/models').json()
-          def walk(o):
-              if isinstance(o,dict):
-                  for v in o.values(): walk(v)
-              elif isinstance(o,list):
-                  for v in o: walk(v)
-              elif isinstance(o,str) and 'minimax/' in o and len(o)<120:print(o)
-          walk(r)
+          python - <<'PY'
+          import os, urllib.request
+          req = urllib.request.Request('https://api.protoface.com/v1/models/minimax/minimax-h3', headers={'Authorization':'Bearer '+os.environ['PROTOFACE_API_KEY']})
+          with urllib.request.urlopen(req, timeout=45) as reply:
+              print('H3 model lookup HTTP',reply.status)
           PY
-          fi
+      - name: Check media tools
+        timeout-minutes: 5
+        run: |
+          set -eu
+          python -c "import PIL, requests" || python -m pip install --timeout 20 --retries 1 Pillow requests
+          which ffmpeg && test -f /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc || sudo apt-get -o Acquire::Retries=1 -o Acquire::http::Timeout=20 install -y ffmpeg fonts-noto-cjk
+      - name: Resume eight H3 scenes using original request keys
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python -u prize/run.py
       - uses: actions/upload-artifact@v4
-        if: success() && hashFiles('output/*.mp4') != ''
         with:
           name: Chibi-Prize-Theatre
           path: output/*.mp4
+          if-no-files-found: error
