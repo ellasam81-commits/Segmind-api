@@ -1,0 +1,25 @@
+name: Prize H3 balance check
+on:
+  push:
+    branches: [fan-prize-h3-20261118]
+    paths: ['.github/workflows/prize-balance.yml']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read balance and current price
+        env:
+          KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          def get(p):
+              req=urllib.request.Request('https://api.protoface.com/v1/'+p,headers={'Authorization':'Bearer '+os.environ['KEY']})
+              return json.load(urllib.request.urlopen(req,timeout=40))
+          print('Current credits:',get('billing/quota')['balance_credits'])
+          p=get('models/minimax/minimax-h3')['pricing']
+          print('480p credits per second:',p['qualities']['480p']['credits_per_second'])
+          print('Add-ons:',p.get('add_ons'))
+          PY
