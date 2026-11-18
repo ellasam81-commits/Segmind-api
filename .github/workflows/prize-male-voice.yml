@@ -1,0 +1,34 @@
+name: Prize Mandarin male narration
+on:
+  push:
+    branches: [fan-prize-h3-20261118]
+    paths: ['.github/workflows/prize-male-voice.yml']
+permissions:
+  contents: write
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          pip install -q edge-tts
+          mkdir -p prize/audio
+          python - <<'PY'
+          import asyncio,edge_tts
+          lines=["当然可以！十一月二十三号，中午十二点开奖。","截好微博账号、平台账号和推荐积分页面，到微信小程序抽奖助手提交。","黄玫瑰、印签、编珠手串，你最想抽哪一个？","本档位及更低档位都可以选，但每个账号只能选一档抽奖。","第六档单独计算。四个平台所有账号加起来满一万分，就能参加围脖抽奖。","还有一本杂志，在抽奖细则微博的评论区抽取。","开奖后一天内，在抽奖助手填好收件人、电话和地址，逾期视为放弃。","入群备注登记手机号，二十四小时内提交中奖截图。邮费自理，快递到付。"]
+          async def main():
+              for i,line in enumerate(lines):
+                  for attempt in range(3):
+                      try:
+                          await edge_tts.Communicate(line,'zh-CN-YunxiNeural',rate='+6%').save(f'prize/audio/{i}.mp3')
+                          break
+                      except Exception:
+                          if attempt==2:raise
+          asyncio.run(main())
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add prize/audio
+          git commit -m 'Save Mandarin male host recordings'
+          git push
