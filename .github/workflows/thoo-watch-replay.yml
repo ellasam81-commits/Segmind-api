@@ -1,0 +1,25 @@
+name: T Hoo Hoo watches Xie Queshan
+on:
+  push:
+    branches: [thoo-watch-replay-nov19]
+    paths: ['protoface/watch-replay/episode.py']
+permissions:
+  contents: read
+jobs:
+  episode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python -m pip install -r protoface/requirements.txt
+      - name: Render one vertical episode
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/watch-replay/episode.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: THooHoo-Replay
+          path: watch-output/THooHoo_Replay.mp4
+          retention-days: 7
