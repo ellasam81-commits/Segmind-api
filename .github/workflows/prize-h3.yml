@@ -1,0 +1,44 @@
+name: H3 prize theatre
+on:
+  push:
+    branches: [fan-prize-h3-20261118]
+    paths: ['.github/workflows/prize-h3.yml', 'prize/run.py']
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Inspect H3 or render
+        env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: |
+          if test -f prize/run.py; then
+            python -m pip install -q requests pillow edge-tts
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+            python -u prize/run.py
+          else
+            python - <<'PY'
+          import os, requests
+          s=requests.Session()
+          s.headers.update(Authorization='Bearer '+os.environ['PROTOFACE_API_KEY'])
+          r=s.get('https://api.protoface.com/v1/models').json()
+          def walk(o):
+              if isinstance(o,dict):
+                  for v in o.values(): walk(v)
+              elif isinstance(o,list):
+                  for v in o: walk(v)
+              elif isinstance(o,str) and 'minimax/' in o and len(o)<120:print(o)
+          walk(r)
+          PY
+          fi
+      - uses: actions/upload-artifact@v4
+        if: success() && hashFiles('output/*.mp4') != ''
+        with:
+          name: Chibi-Prize-Theatre
+          path: output/*.mp4
