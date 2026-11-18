@@ -1,0 +1,35 @@
+name: Record T Hoo Hoo dialogue
+on:
+  push:
+    branches: [thoo-watch-replay-nov19]
+    paths: ['.github/workflows/thoo-watch-dialogue.yml']
+permissions:
+  contents: read
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - run: |
+          pip install -q edge-tts
+          mkdir recordings
+          python - <<'PY'
+          import asyncio, edge_tts
+          lines=["最近大家对AI二创有意见。","来，镜头对着我。","你们看我，我看谢却山。","还好你们看不见……","他怎么这么疼啊。","谁按的重播？！","谢却山，你等我擤完鼻子。"]
+          async def main():
+              for i,line in enumerate(lines):
+                  rate=['+4%','+6%','+4%','-8%','-12%','+9%','-5%'][i]
+                  pitch=['+9Hz','+10Hz','+9Hz','+1Hz','+1Hz','+20Hz','+3Hz'][i]
+                  for attempt in range(3):
+                      try:
+                          await edge_tts.Communicate(line,'zh-CN-YunxiNeural',rate=rate,pitch=pitch).save(f'recordings/{i}.mp3')
+                          break
+                      except Exception:
+                          if attempt==2: raise
+                          await asyncio.sleep(2)
+          asyncio.run(main())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: watch-dialogue
+          path: recordings/*.mp3
