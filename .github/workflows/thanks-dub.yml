@@ -15,10 +15,10 @@ jobs:
           python - <<'PY'
           import asyncio, edge_tts
           async def main():
-              for i,line in enumerate(["谢谢你们，小炭火。","谢谢！"]):
+              for i,line in enumerate(["小炭火，我们拿到的成绩单来啦！"]):
                   for attempt in range(3):
                       try:
-                          await edge_tts.Communicate(line,'zh-CN-YunxiNeural' if i==0 else 'zh-CN-XiaoyiNeural',rate='+6%',pitch='+4Hz' if i else '+0Hz').save(f'speech/{i}.mp3')
+                          await edge_tts.Communicate(line,'zh-CN-XiaoyiNeural',rate='+6%',pitch='+4Hz' if i else '+0Hz').save(f'speech/{i}.mp3')
                           break
                       except Exception:
                           if attempt==2: raise
