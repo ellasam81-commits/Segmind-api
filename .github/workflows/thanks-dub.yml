@@ -1,0 +1,31 @@
+name: Record the four-chart thank-you sketch
+on:
+  push:
+    branches: [thoo-four-chart-thanks]
+    paths: ['.github/workflows/thanks-dub.yml']
+permissions:
+  contents: read
+jobs:
+  dub:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          pip install -q edge-tts
+          mkdir speech
+          python - <<'PY'
+          import asyncio, edge_tts
+          async def main():
+              for i,line in enumerate(["送给你，也谢谢每一位小炭火。","哎呀，花都比我高啦！谢谢大家！","国际榜，第五名！","前五的歌曲，有海外便利店屏和国内楼宇屏推广。","星光力量月榜，第八名。","《宠》拿到第五名，收获十点二万星光。","《PROOF》卓越之星组第三名。谢谢小炭火！"]):
+                  for attempt in range(3):
+                      try:
+                          await edge_tts.Communicate(line,'zh-CN-YunxiNeural' if i==0 else 'zh-CN-XiaoyiNeural',rate='+6%',pitch='+4Hz' if i else '+0Hz').save(f'speech/{i}.mp3')
+                          break
+                      except Exception:
+                          if attempt==2: raise
+                          await asyncio.sleep(2)
+          asyncio.run(main())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thanks-speech
+          path: speech/*.mp3
