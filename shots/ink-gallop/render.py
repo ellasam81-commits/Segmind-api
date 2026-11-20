@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import sys
+import subprocess
 import time
 from pathlib import Path
 
@@ -26,22 +27,17 @@ if sys.argv[1] == "prepare":
         except requests.ConnectionError:
             pass
         time.sleep(2)
-    submitted = requests.post(local + "/prompt", json={"prompt": workflow}, timeout=20)
-    submitted.raise_for_status()
-    prompt_id = submitted.json()["prompt_id"]
-    for _ in range(90):
-        history = requests.get(local + "/history/" + prompt_id, timeout=4).json()
-        if prompt_id in history:
-            finished = history[prompt_id]
-            if finished["status"]["status_str"] != "success":
-                raise RuntimeError("ComfyUI image preparation failed")
-            image = finished["outputs"]["3"]["images"][0]
-            source = Path("ComfyUI/output") / image["subfolder"] / image["filename"]
-            Path("starter.png").write_bytes(source.read_bytes())
-            break
-        time.sleep(1)
-    else:
-        raise TimeoutError("ComfyUI did not return its prepared frame")
+    graph_path = Path("ink-starter-workflow.json")
+    graph_path.write_text(json.dumps(workflow))
+    subprocess.run(
+        ["comfy", "run", "--where", "local", "--host", "127.0.0.1", "--port", "8188",
+         "--workflow", str(graph_path), "--wait"],
+        check=True,
+    )
+    frames = sorted(Path("ComfyUI/output").glob("wan-starter*.png"))
+    if len(frames) != 1:
+        raise RuntimeError("Expected one prepared starter from ComfyUI CLI")
+    Path("starter.png").write_bytes(frames[0].read_bytes())
     sys.exit()
 
 from segmind import SegmindClient
