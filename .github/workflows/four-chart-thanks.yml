@@ -1,0 +1,23 @@
+name: T Hoo Hoo thanks the fans
+on:
+  push:
+    branches: [thoo-four-chart-thanks]
+    paths: ['protoface/thanks/episode.py']
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python -m pip install -r protoface/requirements.txt
+      - env:
+          PROTOFACE_API_KEY: ${{ secrets.PROTOFACE_API_KEY }}
+        run: python protoface/thanks/episode.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ThanksScene
+          path: watch-output/*.mp4
