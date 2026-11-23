@@ -1,0 +1,150 @@
+name: Download all60 Thirteen Doors episodes in one ZIP
+'on':
+  push:
+    branches:
+    - codex/thirteen-doors-all60-zip-20261123
+    paths:
+    - .github/workflows/thirteen-doors-all60-download.yml
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: thirteen-doors-all60-download-20261123
+  cancel-in-progress: false
+jobs:
+  package-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+    - name: Download original finals, package and verify all60 episodes
+      shell: bash
+      run: |
+        python - <<'PY'
+        import os
+        from pathlib import Path
+        TD_WORK=Path(os.environ['RUNNER_TEMP'])/'thirteen-doors-all60'
+        TD_WORK.mkdir(parents=True,exist_ok=True)
+        (TD_WORK/'all60-delivery-verified.json').write_text('{"archives": [{"first": 1, "last": 10, "bytes": 304006283, "episodes": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "name": "《十三扇门》第01-10集｜1080p悬疑配乐修订合集", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/1100fe64-0aa5-4c7f-9e92-d4a67ed22c6a.zip"}, {"first": 11, "last": 20, "bytes": 285384934, "episodes": [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], "name": "《十三扇门》第11-20集｜1080p悬疑配乐修订合集", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/b80435ed-65fe-4f7c-a93f-724e2e6c23df.zip"}, {"first": 21, "last": 30, "bytes": 316584241, "episodes": [21, 22, 23, 24, 25, 26, 27, 28, 29, 30], "name": "《十三扇门》第21-30集｜1080p悬疑配乐修订合集", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/36b702b3-9916-48a6-a9a4-01bda149a135.zip"}, {"first": 31, "last": 40, "bytes": 281969290, "episodes": [31, 32, 33, 34, 35, 36, 37, 38, 39, 40], "name": "《十三扇门》第31-40集｜1080p悬疑配乐修订合集", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/a6b02ad6-b231-449b-9acc-836754b87040.zip"}, {"first": 41, "last": 45, "bytes": 137936749, "episodes": [41, 42, 43, 44, 45], "name": "十三扇门 第41-45集 复查版下载包", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/bd4a707b-88bc-4d54-ae54-4a4f623a986d.zip"}, {"first": 46, "last": 50, "bytes": 107927713, "episodes": [46, 47, 48, 49, 50], "name": "十三扇门 第46-50集 复查版下载包", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/939c320c-8ffb-4798-97a3-e80c42f99bfc.zip"}, {"first": 51, "last": 55, "bytes": 120624975, "episodes": [51, 52, 53, 54, 55], "name": "十三扇门 第51-55集 复查版下载包", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/9452a658-f8c4-467a-8916-fa9e69263ba5.zip"}, {"first": 56, "last": 60, "bytes": 107443813, "episodes": [56, 57, 58, 59, 60], "name": "十三扇门 第56-60集 复查版下载包", "url": "https://cdn.creativeclaw.co/u/b3866ea4/zips/3d3860b1-96cc-4017-8690-c8f3010ba41c.zip"}]}')
+        """Repackage existing final media without video conversion or paid generation."""
+        from pathlib import Path,PurePosixPath
+        from concurrent.futures import ThreadPoolExecutor
+        import hashlib,json,re,shutil,time,urllib.request,zipfile,zlib
+        P=Path(os.environ['RUNNER_TEMP'])/'thirteen-doors-all60'
+        def sha_file(path):
+         h=hashlib.sha256()
+         with path.open('rb')as f:
+          while chunk:=f.read(4*1024*1024):h.update(chunk)
+         return h.hexdigest()
+        def download(row):
+         dest=P/'source-zips'/f'EP{row["first"]:02}-{row["last"]:02}.zip';dest.parent.mkdir(exist_ok=True)
+         if dest.exists() and dest.stat().st_size==row['bytes']:
+          print('Reusing complete source ZIP',dest.name,flush=True);return row,dest
+         part=dest.with_suffix('.zip.partial')
+         for attempt in range(3):
+          current=part.stat().st_size if part.exists()else 0
+          if current==row['bytes']:part.replace(dest);return row,dest
+          headers={'Range':f'bytes={current}-'}if current else {}
+          try:
+           with urllib.request.urlopen(urllib.request.Request(row['url'],headers=headers),timeout=60)as response:
+            assert response.status==(206 if current else 200)
+            if current:assert response.headers['Content-Range']==f'bytes {current}-{row["bytes"]-1}/{row["bytes"]}'
+            with part.open('ab'if current else'wb')as output:
+             while chunk:=response.read(4*1024*1024):output.write(chunk)
+           assert part.stat().st_size==row['bytes']
+           part.replace(dest);print('Downloaded source ZIP',dest.name,row['bytes'],flush=True);return row,dest
+          except Exception:
+           if attempt==2:raise
+           time.sleep(attempt+1)
+        def episode_number(name):
+         m=re.search(r'(?:EP(?:ISODE)?[-_ ]*0*|第\s*0*)(\d{1,2})(?=[^0-9]|$)',name,re.I)
+         if not m:raise ValueError('Unrecognized episode filename: '+name)
+         return int(m.group(1))
+        def main():
+         data=json.loads((P/'all60-delivery-verified.json').read_text());sources=data['archives']
+         assert sorted(e for r in sources for e in r['episodes'])==list(range(1,61))
+         with ThreadPoolExecutor(max_workers=4)as ex:downloaded=list(ex.map(download,sources))
+         downloaded.sort(key=lambda p:p[0]['first']);out=P/'delivery';out.mkdir(exist_ok=True)
+         target=out/'Thirteen-Doors-Episodes-01-60-Complete.zip';temp=target.with_suffix('.zip.partial')
+         expected={};manifest=[];seen=set();subtitle_count=0
+         with zipfile.ZipFile(temp,'w',compression=zipfile.ZIP_STORED,allowZip64=True)as output:
+          for row,src in downloaded:
+           with zipfile.ZipFile(src)as archive:
+            infos=archive.infolist();movies=[f for f in infos if f.filename.lower().endswith('.mp4')]
+            assert len(movies)==row['last']-row['first']+1
+            for entry in movies:
+             ep=episode_number(entry.filename);assert ep not in seen and row['first']<=ep<=row['last'];seen.add(ep)
+             name=f'Episodes/Thirteen-Doors-EP{ep:02}-1080p.mp4';h=hashlib.sha256();crc=0;count=0
+             with archive.open(entry)as incoming,output.open(name,'w',force_zip64=True)as outgoing:
+              while chunk:=incoming.read(4*1024*1024):outgoing.write(chunk);h.update(chunk);crc=zlib.crc32(chunk,crc);count+=len(chunk)
+             assert count==entry.file_size and crc==entry.CRC
+             expected[name]={'bytes':count,'sha256':h.hexdigest(),'crc32':f'{crc:08x}'}
+             manifest.append({'episode':ep,'filename':name,**expected[name],'source_archive_name':row['name'],'source_archive_url':row['url'],'source_filename':entry.filename,'media_conversion':False})
+            for entry in infos:
+             if not entry.filename.lower().endswith('.srt'):continue
+             basename=PurePosixPath(entry.filename).name
+             try:ep=episode_number(entry.filename);folder=f'EP{ep:02}'
+             except ValueError:folder=f'EP{row["first"]:02}-{row["last"]:02}'
+             name=f'Optional_Subtitles/{folder}/{basename}';assert name not in expected
+             content=archive.read(entry);output.writestr(name,content,compress_type=zipfile.ZIP_DEFLATED)
+             expected[name]={'bytes':len(content),'sha256':hashlib.sha256(content).hexdigest(),'crc32':f'{zlib.crc32(content):08x}'};subtitle_count+=1
+           print('Repacked unchanged episodes',row['first'],row['last'],flush=True)
+          assert seen==set(range(1,61))
+          manifest.sort(key=lambda x:x['episode'])
+          readme='''《十三扇门》全60集 · 单个ZIP完整合集
+        作者：林爱丽
+
+        Episodes文件夹包含第01—60集MP4，每集一个文件，已按集数命名。
+        第01—40集来自既有1080p悬疑配乐修订版；第41—60集来自上次交付的复查版。
+        本次原样合并现有成片，没有重新生成视频、转码、改声音或修改字幕。
+        保留原声、现有配乐、中英字幕及署名。视频为480p源片放大1080p，并非原生1080p。
+
+        MP4已经带有字幕。Optional_Subtitles文件夹仅为备用，不必再加载到播放器，以免重复显示。
+        第58集结尾“安宁”的呼唤仍略含糊，本次未更改原有声音。
+        部分既有画面修复采用分镜细节或轻微运镜。各版本的详细局限沿用此前交付说明。
+
+        本次检查压缩包内01—60集无缺集、无重复集，完整读取源MP4并核对CRC、逐文件SHA-256，再检查最终ZIP完整性。
+        这次只进行合并打包及文件完整性检查，没有重新完成一轮60集画面或声音质量审查。
+        '''
+          output.writestr('README-使用说明.txt',readme,compress_type=zipfile.ZIP_DEFLATED)
+          output.writestr('manifest.json',json.dumps({'episode_count':60,'episodes':manifest,'source_resolution':'480p','output_resolution':'1920x1080','new_generation_calls':0,'post_dubbing':False},ensure_ascii=False,indent=2),compress_type=zipfile.ZIP_DEFLATED)
+          output.writestr('SHA256SUMS.txt','\n'.join(v['sha256']+'  '+k for k,v in expected.items())+'\n',compress_type=zipfile.ZIP_DEFLATED)
+         print('Checking complete final ZIP CRC and SHA256',flush=True)
+         with zipfile.ZipFile(temp)as final:
+          movies=[f for f in final.infolist()if f.filename.endswith('.mp4')];assert len(movies)==60
+          assert len(set(final.namelist()))==len(final.namelist())
+          for name,expected_meta in expected.items():
+           h=hashlib.sha256()
+           with final.open(name)as f:
+            while chunk:=f.read(4*1024*1024):h.update(chunk)
+           assert h.hexdigest()==expected_meta['sha256']
+          assert final.testzip()is None
+         temp.replace(target)
+         report={'path':str(target),'filename':target.name,'bytes':target.stat().st_size,'sha256':sha_file(target),'episode_count':60,'episodes':list(range(1,61)),'optional_subtitle_files':subtitle_count,'source_mp4_bytes_preserved':True,'full_zip_CRC_passed':True,'each_file_SHA256_passed':True,'new_generation_calls':0,'media_reencoded':False}
+         (P/'single-zip-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2));print(json.dumps(report),flush=True)
+        if __name__=='__main__':main()
+
+        q=json.loads((P/'single-zip-report.json').read_text())
+        f=Path(q['path'])
+        f.with_suffix('.zip.sha256').write_text(q['sha256']+'  '+f.name+'\n')
+        (P/'release-notes.md').write_text('《十三扇门》作者：林爱丽。全60集，单个ZIP。包含既有1080p放大版成片和备用中英字幕，保留原声音轨、配乐与署名；本次只合并打包，无新视频生成、无转码或后期配音。第01—40集采用既有悬疑配乐修订版，第41—60集采用2026-11-12复查版。源片480p，并非原生1080p；第58集结尾呼唤仍略含糊。已逐文件核对SHA256、CRC以及全集集数。')
+        with open(os.environ['GITHUB_STEP_SUMMARY'],'a')as summary:
+         summary.write('## Complete60-episode ZIP\n\nEpisodes:60\n\nBytes:'+str(q['bytes'])+'\n\nSHA256:'+q['sha256']+'\n\nOriginal MP4 bytes preserved; no new generation.\n')
+
+        PY
+    - name: Publish the single ZIP as a GitHub Release download
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TD_RELEASE_TAG: thirteen-doors-complete-01-60-20261123
+      run: |
+        set -euo pipefail
+        zip_path="$RUNNER_TEMP/thirteen-doors-all60/delivery/Thirteen-Doors-Episodes-01-60-Complete.zip"
+        notes_path="$RUNNER_TEMP/thirteen-doors-all60/release-notes.md"
+        test -f "$zip_path"
+        if gh release view "$TD_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+          gh release upload "$TD_RELEASE_TAG" "$zip_path" "$zip_path.sha256" --repo "$GITHUB_REPOSITORY" --clobber
+        else
+          gh release create "$TD_RELEASE_TAG" "$zip_path" "$zip_path.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title '《十三扇门》全60集 · 单个ZIP · 作者林爱丽' --notes-file "$notes_path" --latest=false
+        fi
